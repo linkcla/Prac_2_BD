@@ -37,8 +37,7 @@ body {
 /*header section*/
 
 .hero_area {
-  background-color: #2801b9;
-  background-image: url(../images/hero.jpg);
+  background-color: #ffffff;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -82,7 +81,7 @@ body {
   display: block;
   width: 40px;
   height: 4px;
-  background-color: #fff;
+  background-color: #2801b9;
   margin: 7px 0;
   transition: all 0.3s;
   border-radius: 5px;
@@ -199,7 +198,7 @@ a:focus {
   font-family: "Righteous", cursive;
   font-size: 24px;
   font-weight: 500;
-  color: #fefeff;
+  color: #2801b9;
   margin-top: 5px;
 }
 
@@ -230,112 +229,6 @@ a:focus {
 
 /* slider section */
 
-.slider_section {
-  padding-top: 75px;
-}
-
-.slider_item-box {
-  width: 100%;
-  height: 100%;
-}
-
-.slider_item-box .container {
-  height: 100%;
-}
-
-.slider_img-box {
-  width: 85%;
-  margin: 0 auto;
-}
-
-.slider_img-box img {
-  width: 100%;
-}
-
-.slider_item-container {
-  width: 90%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.slider_item-detail {
-  text-align: center;
-  color: #fff;
-}
-
-.slider_item-detail h1 {
-  font-weight: 600;
-}
-
-.slider_item-detail p {
-  margin: 40px 0 45px 0;
-}
-
-.slider_item-detail a {
-  display: inline-block;
-  background-color: #fddd33;
-  color: #fff;
-  font-size: 15px;
-  border-radius: 10px;
-  padding: 10px 40px;
-}
-
-.slider_item-imgbox {
-  margin-top: 45px;
-  width: 75%;
-}
-
-.slider_item-imgbox img {
-  width: 100%;
-}
-
-.slider_section #carouselExampleControls,
-.carousel-inner,
-.carousel-item {
-  height: 100%;
-}
-
-.slider_section .carousel-control-prev,
-.slider_section .carousel-control-next {
-  position: absolute;
-  top: 50%;
-  width: 45px;
-  height: 45px;
-  border: none;
-  border-radius: 100%;
-  opacity: 1;
-  background-repeat: no-repeat;
-  background-size: 28px;
-  background-position: center;
-  background-color: #fff;
-  transform: translateY(-50%);
-}
-
-.slider_section .carousel-control-prev:hover,
-.slider_section .carousel-control-next:hover {
-  background-color: #292727;
-  background-size: 12px;
-}
-
-.slider_section .carousel-control-prev {
-  left: 2%;
-  background-image: url(../images/left-black-arrow.png);
-}
-
-.slider_section .carousel-control-next {
-  right: 2%;
-  background-image: url(../images/right-black-arrow.png);
-}
-
-.slider_section .carousel-control-prev:hover {
-  background-image: url(../images/prev.png);
-}
-
-.slider_section .carousel-control-next:hover {
-  background-image: url(../images/next.png);
-}
 
 /* end slider section */
 
@@ -494,7 +387,15 @@ a:focus {
 
 /* end feature section */
 
-/* contact section */
+/* login section */
+.text-uppercase {
+  font-family: "Righteous", cursive;
+  font-size: 50px;
+  font-weight: 500;
+  color: #2801b9;
+  margin-top: 5px;
+}
+
 .contact_section .row {
   align-items: center;
 }
@@ -543,6 +444,14 @@ a:focus {
   font-size: 16px;
   border-radius: 5px;
   text-transform: uppercase;
+}
+
+.card_usuari {
+  font-family: "Arial", cursive;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-top: 7px;
 }
 
 .contact_img-box img {
@@ -634,18 +543,18 @@ a:focus {
 
 .footer_section {
   font-family: "Poppins", sans-serif;
-  background-color: #ffffff;
+  background-color: #2801b9;
   padding: 25px 20px;
 }
 
 .footer_section p {
-  color: #292929;
+  color: #fff;
   margin: 0;
   text-align: center;
 }
 
 .footer_section a {
-  color: #292929;
+  color: #fff;
 }
 
 /* end footer section*/
