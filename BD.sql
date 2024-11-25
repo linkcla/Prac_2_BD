@@ -128,7 +128,7 @@ CREATE TABLE SAAS (
     CONSTRAINT fk_saas_producte FOREIGN KEY (idConfig) REFERENCES PRODUCTE(idConfig),
     CONSTRAINT fk_saas_modul_cms FOREIGN KEY (tipusMCMS) REFERENCES MODUL_CMS(tipus),
     CONSTRAINT fk_saas_cdn FOREIGN KEY (tipusCDN) REFERENCES CDN(tipus),
-    CONSTRAINT fk_saas_C_SSL FOREIGN KEY (tipusC_SSL) REFERENCES C_SSL(tipus),
+    CONSTRAINT fk_saas_c_ssl FOREIGN KEY (tipusC_SSL) REFERENCES C_SSL(tipus),
     CONSTRAINT fk_saas_sist_gestio_bd FOREIGN KEY (tipusSGBD) REFERENCES SIST_GESTIO_BD(tipus),
     CONSTRAINT fk_saas_ram FOREIGN KEY (tipusRam, GBRam) REFERENCES RAM(tipus, GB),
     CONSTRAINT fk_saas_disc_dur FOREIGN KEY (tipusDD, GBDD) REFERENCES DISC_DUR(tipus, GB)
