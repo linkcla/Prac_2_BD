@@ -1,9 +1,12 @@
+CREATE DATABASE bd_grupo;
+USE bd_grupo;
+
 -- Taules sense FK
 
 -- Revisar si es pot aplicar un trigger per comprovar si l'email ja existeix conté un "@" y un ".".
 CREATE TABLE PERSONA (
     nom VARCHAR(64) NOT NULL,
-    cognom VARCHAR(64), NOT NULL,
+    cognom VARCHAR(64) NOT NULL,
     email VARCHAR(128) PRIMARY KEY,
     contrasenya VARCHAR(64) NOT NULL
 );
@@ -47,7 +50,7 @@ CREATE TABLE CDN (
     preu DECIMAL(3, 2)
 );
 
-CREATE TABLE SSL (
+CREATE TABLE C_SSL (
     tipus ENUM('Bàsic', 'Professional', 'Avançat') PRIMARY KEY,
     preu DECIMAL(3, 2)
 );
@@ -65,7 +68,7 @@ CREATE TABLE RAM (
 
 CREATE TABLE DISC_DUR (
     tipus ENUM('HDD', 'SSD'),
-    GB INT
+    GB INT,
     preu DECIMAL(2, 2) NOT NULL,
     PRIMARY KEY (tipus, GB)
 );
@@ -116,7 +119,7 @@ CREATE TABLE SAAS (
     dataCreacio DATE NOT NULL,
     tipusMCMS ENUM('Sense modul', 'WordPress', 'Drupal', 'Joomla') NOT NULL,
     tipusCDN ENUM('Bàsic', 'Protegit', 'Avançat') NOT NULL,
-    tipusSSL ENUM('Bàsic', 'Professional', 'Avançat') NOT NULL,
+    tipusC_SSL ENUM('Bàsic', 'Professional', 'Avançat') NOT NULL,
     tipusSGBD VARCHAR(64) NOT NULL,
     tipusRam ENUM('DDR3', 'DDR4', 'DDR5') NOT NULL, 
     GBRam INT NOT NULL,
@@ -125,12 +128,10 @@ CREATE TABLE SAAS (
     CONSTRAINT fk_saas_producte FOREIGN KEY (idConfig) REFERENCES PRODUCTE(idConfig),
     CONSTRAINT fk_saas_modul_cms FOREIGN KEY (tipusMCMS) REFERENCES MODUL_CMS(tipus),
     CONSTRAINT fk_saas_cdn FOREIGN KEY (tipusCDN) REFERENCES CDN(tipus),
-    CONSTRAINT fk_saas_ssl FOREIGN KEY (tipusSSL) REFERENCES SSL(tipus),
+    CONSTRAINT fk_saas_C_SSL FOREIGN KEY (tipusC_SSL) REFERENCES C_SSL(tipus),
     CONSTRAINT fk_saas_sist_gestio_bd FOREIGN KEY (tipusSGBD) REFERENCES SIST_GESTIO_BD(tipus),
-    CONSTRAINT fk_saas_ram_tipus FOREIGN KEY (tipusRam) REFERENCES RAM(tipus),
-    CONSTRAINT fk_saas_ram_gb FOREIGN KEY (GBRam) REFERENCES RAM(GB),
-    CONSTRAINT fk_saas_disc_dur_tipus FOREIGN KEY (tipusDD) REFERENCES DISC_DUR(tipus),
-    CONSTRAINT fk_saas_disc_dur_gb FOREIGN KEY (GBDD) REFERENCES DISC_DUR(GB)
+    CONSTRAINT fk_saas_ram FOREIGN KEY (tipusRam, GBRam) REFERENCES RAM(tipus, GB),
+    CONSTRAINT fk_saas_disc_dur FOREIGN KEY (tipusDD, GBDD) REFERENCES DISC_DUR(tipus, GB)
 );
 
 CREATE TABLE PAAS (
@@ -145,10 +146,8 @@ CREATE TABLE PAAS (
     nNuclis ENUM('2', '4', '6', '8', '10', '12', '16', '24', '32', '64') NOT NULL,
     nomSO ENUM('Windows', 'Linux') NOT NULL,
     CONSTRAINT fk_paas_producte FOREIGN KEY (idConfig) REFERENCES PRODUCTE(idConfig),
-    CONSTRAINT fk_paas_ram_tipus FOREIGN KEY (tipusRAM) REFERENCES RAM(tipus),
-    CONSTRAINT fk_paas_ram_gb FOREIGN KEY (GBRam) REFERENCES RAM(GB),
-    CONSTRAINT fk_paas_disc_dur_tipus FOREIGN KEY (tipusDD) REFERENCES DISC_DUR(tipus),
-    CONSTRAINT fk_paas_disc_dur_gb FOREIGN KEY (GBDD) REFERENCES DISC_DUR(GB),
+    CONSTRAINT fk_paas_ram FOREIGN KEY (tipusRAM, GBRam) REFERENCES RAM(tipus, GB),
+    CONSTRAINT fk_paas_disc_dur FOREIGN KEY (tipusDD, GBDD) REFERENCES DISC_DUR(tipus, GB),
     CONSTRAINT fk_paas_cpu FOREIGN KEY (modelCPU, nNuclis) REFERENCES CPU(model, nNuclis),
     CONSTRAINT fk_paas_so FOREIGN KEY (nomSO) REFERENCES SO(nom)
 );
