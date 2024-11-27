@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php session_start() ?>
 <html>
   <head>
     <!-- Basic -->
@@ -43,9 +43,9 @@
       <header class="header_section">
         <div class="container-fluid">
           <nav class="navbar navbar-expand-lg custom_nav-container">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="loginform.php">
               <span>
-               MPHB
+                MPHB
               </span>
             </a>
 
@@ -60,7 +60,10 @@
               </div>
               <div id="myNav" class="overlay">
                 <div class="overlay-content">
-                  <a href="index.html">Home</a>
+                  <a href="loginform.php">Home</a>
+                </div>
+                <div class="overlay-content">
+                  <a href="servicesform.php">Services</a>
                 </div>
               </div>
             </div>
@@ -68,61 +71,59 @@
         </div>
       </header>
       <!-- end header section -->
-       
-      <!-- slider section -->
-    <section class="contact_section layout_padding">
-      <div class="container d-flex justify-content-center">
+    </div>
+
+    <!-- about section -->
+
+    <section class="about_section layout_paddingAbout">
+      <div class="container">
         <h2 class="text-uppercase">
-          Login
+          Nuestros Servicios
         </h2>
       </div>
-      <div class="container-fluid layout_padding-top">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="col-md-10 offset-md-2">
-              <div class="contact_img-box">
-                <img src="images/form-img.jpg" alt="" />
+
+      <div class="container">
+        <div class="about_card-container layout_padding2-top">
+          <div class="about_card">
+            <div class="about-detail">
+              <div class="about_img-container">
+                <div class="about_img-box">
+                  <a href="servicesSaaSform.php"><img src="images/work2.png" alt="" /></a>
+                </div>
+              </div>
+              <div class="card_detail-ox">
+                <h4>
+                  <a href="servicesSaaSform.php">Servicios SaaS</a>
+                </h4>
+                <p>
+                  pepito perez
+                </p>
               </div>
             </div>
           </div>
-          <div class="col-md-6 form_bg px-0">
-            <div class="col-md-10 px-0">
-              <form action="">
-                <div class="contact_form-container">
-                  <div>
-                    <div>
-                      <input type="nom" placeholder=" Name" />
-                    </div>
-                    <div>
-                      <input type="contrasena" placeholder="  Password" />
-                    </div>
-                    <div>
-                      <button type="submit" class="btn btn-primaryLogin">
-                        <a href="services.html">Login</a>
-                      </button>
-                    </div>
-                    <div class="card_usuari">
-                      <h4>
-                        Usuari nou?
-                      </h4>
-                    </div>
-                    <div>
-                      <button type="submit" class="btn btn-primaryRegistrarse">
-                        <a href="insereixusuari.html">Registrarse</a>
-                      </button>
-                    </div>
-                  </div>
+          <div class="about_card">
+            <div class="about-detail">
+              <div class="about_img-container">
+                <div class="about_img-box">
+                  <a href="servicesPaaSform.php"><img src="images/work3.png" alt="" /></a>
                 </div>
-              </form>
+              </div>
+              <div class="card_detail-ox">
+                <h4>
+                  <a href="servicesPaaSform.php">Servicios PaaS</a>
+                </h4>
+                <p>
+                  Don pepito perez
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-      <!-- end slider section -->
-    </div>
 
-  
+    <!-- end about section -->
+
 
     <!-- footer section -->
     <section class="container-fluid footer_section">

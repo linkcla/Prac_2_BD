@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<?php session_start() ?>
+
 <html>
 
 <head>
@@ -36,7 +37,7 @@
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container">
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" href="loginform.php">
                         <span>
                             MPHB
                         </span>
@@ -53,16 +54,16 @@
                         </div>
                         <div id="myNav" class="overlay">
                             <div class="overlay-content">
-                                <a href="index.html">Home</a>
+                                <a href="loginform.php">Home</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="services.html">Services</a>
+                                <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaS.html">SaaS</a>
+                                <a href="servicesSaaSform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaS.html">PaaS</a>
+                                <a href="servicesPaaSform.php">PaaS</a>
                             </div>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Nuestros Servicios SaaS
+                Nuestros Servicios PaaS
             </h2>
         </div>
 
