@@ -1,3 +1,5 @@
+<!-- @Author: Hai Zi Bibiloni Trobat -->
+
 <?php session_start();
     require_once 'conexion.php';
 

@@ -1,3 +1,5 @@
+<!-- @Author: Blanca Atienzar Martinez -->
+ 
 <?php session_start() ?>
 
 <html>
@@ -93,7 +95,8 @@
                     <div>
                       <input type="email" placeholder=" Email" />
                     </div>
-                    <div>
+                    <div> 
+
                       <form method="get"  action=“accio.php “>
                           <SELECT NAME= "Nom Organitzacio">
                               <OPTION VALUE="ALC">Alcúdia</OPTION>
@@ -101,8 +104,7 @@
                               <OPTION VALUE="ALG">Algaida</OPTION>
                           </SELECT>
                       </form>
-
-                      <!--DEBE SER UN DESPLEGABLE /-->
+                      
                     </div>
                     <div>
                       <input type="contrasena" placeholder="  Password" />

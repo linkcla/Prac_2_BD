@@ -1,3 +1,5 @@
+<!-- @Author: Blanca Atienzar Martinez -->
+
 <?php session_start() ?>
 <html>
   <head>
