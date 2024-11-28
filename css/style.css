@@ -4,6 +4,8 @@ body {
   background-color: #ffffff;
 }
 
+
+
 .body-bg {
   background-image: url(../images/body-bg.png);
   background-size: cover;
@@ -541,20 +543,51 @@ a:focus {
 
 /* footer section*/
 
-.footer_section {
-  font-family: "Poppins", sans-serif;
-  background-color: #2801b9;
-  padding: 25px 20px;
+/* Estilos para el contenedor de selección */
+.selection-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
 }
 
-.footer_section p {
-  color: #fff;
-  margin: 0;
-  text-align: center;
+/* Estilos para cada caja de selección */
+.selection-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid #2821b9; /* Color de borde acorde al estilo anterior */
+  border-radius: 10px;
+  background-color: #ffffff; /* Fondo blanco para cohesión */
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-.footer_section a {
-  color: #fff;
+/* Estilos para el input radio dentro de la caja de selección */
+.selection-box input[type="radio"] {
+  display: none;
 }
 
-/* end footer section*/
+/* Estilos para el texto dentro de la caja de selección */
+.selection-box span {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2821b9; /* Color de texto acorde al estilo anterior */
+}
+
+/* Estilos para la caja de selección cuando está seleccionada */
+.selection-box input[type="radio"]:checked + span {
+  background-color: #2821b9; /* Fondo azul acorde al estilo anterior */
+  color: #ffffff; /* Texto blanco cuando está seleccionado */
+  border-color: #1a0e91; /* Color de borde más oscuro cuando está seleccionado */
+}
+
+/* Estilos para la caja de selección cuando se pasa el ratón por encima */
+.selection-box:hover {
+  background-color: #e2e6ea; /* Fondo gris claro al pasar el ratón */
+  border-color: #1a0e91; /* Color de borde más oscuro al pasar el ratón */
+}
