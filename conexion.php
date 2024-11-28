@@ -25,8 +25,8 @@ class Conexion {
         return self::$instance;
     }
 
-    public static function getConnection() {
-        return $instance->connection;
+    public function getConnection() {
+        return $this->connection;
     } 
 }
 $conexio = Conexion::getInstance('localhost', 'root', '', 'bd_grupo');
