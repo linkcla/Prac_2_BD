@@ -97,9 +97,7 @@
                 <h4>
                   <a href="servicesSaaSform.php">Servicios SaaS</a>
                 </h4>
-                <p>
-                  pepito perez
-                </p>
+                
               </div>
             </div>
           </div>
@@ -114,12 +112,29 @@
                 <h4>
                   <a href="servicesPaaSform.php">Servicios PaaS</a>
                 </h4>
-                <p>
-                  Don pepito perez
-                </p>
+                
               </div>
             </div>
           </div>
+          <?php
+            if (!$_SESSION['esUsuari']) {
+              echo '<div class="about_card">
+                <div class="about-detail">
+                  <div class="about_img-container">
+                    <div class="about_img-box">
+                      <a href="gestOrg.php"><img src="images/work1.png" alt="" /></a>
+                    </div>
+                  </div>
+                  <div class="card_detail-ox">
+                    <h4>
+                      <a href="servicesPaaSform.php">Gestionar Organitzacións</a>
+                    </h4>
+                    
+                  </div>
+                </div>
+              </div>';
+            }
+          ?>
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ $conexio = Conexion::getInstance('localhost', 'root', '', 'ex_php1');
 $conn = $conexio->getConnection();
 -->
 
-<?php
+<!--?php
 class Conexion {
     private static $instance = null;
     private $connection;
@@ -30,4 +30,22 @@ class Conexion {
     } 
 }
 $conexio = Conexion::getInstance('localhost', 'root', '', 'bd_grupo');
+?>-->
+
+<!--
+------------- PARA PODER USAR LA CONEXIÓN DESDE OTRA PARTE DEL CODIGO -------------
+include "conexion.php";
+$conn = Conexion::getConnection();
+-->
+
+<?php
+class Conexion {
+    public static function getConnection() {
+        $conn = new mysqli('localhost', 'root', '', 'bd_grupo');
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        return $conn;
+    }
+}
 ?>

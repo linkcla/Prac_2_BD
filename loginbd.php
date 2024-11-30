@@ -1,39 +1,41 @@
 <!-- @Author: Marc Link Cladera -->
 
 <?php session_start();
-require_once 'conexion.php';
+include "conexion.php";
+
+$conn = Conexion::getConnection();
 
 $locemail = $_POST['email'];
 $loccont = $_POST['contrasenya'];
 
 
-$conn = Connection::getConnection();
-
-$cadena = "SELECT contrasenya, nom, cognom FROM persona WHERE email = {$locemail}";
+$cadena = "SELECT contrasenya, nom, cognom FROM persona WHERE email = '{$locemail}'";
 $resultado = mysqli_query($conn,$cadena);
 
 if (!$resultado || mysqli_num_rows($resultado) == 0) 
 {
     // Error de consulta o no existe el usuario
-    echo '<script>alert("Usuario no encontrado");</script>';
+    $_SESSION["error_msg"] = "Usuario no encontrado";
     header("Location: ./loginform.php");
+    die("Ha habido un error. Disculpa las molestias.");
 } 
 else
 {
     while ($fila = $resultado->fetch_assoc()) {
-        if (!password_verify($loccont, $fila['contrasenya'])) {
-            // contrasenya incorrecte
-            echo '<script>alert("Contraseña incorrecta");</script>';
+        //if (!password_verify($loccont, $fila['contrasenya'])) {
+        if ($loccont != $fila['contrasenya']) {
+        // contrasenya incorrecte
+            $_SESSION["error_msg"] = "Contraseña incorrecta";
             header("Location: ./loginform.php");
             die("Ha habido un error. Disculpa las molestias.");
         }
         
         // contrasenya correcta
-        $bool_es_usuari = esUsuari($locemail);
+        $bool_es_usuari = esUsuari($locemail, $conn);
         $_SESSION["nom"] = $fila['nom'];
         $_SESSION["cognom"] = $fila['cognom'];
         $_SESSION["email"] = $locemail; 
-        $_SESSION["usuari"] = $bool_es_usuari; 
+        $_SESSION["esUsuari"] = $bool_es_usuari; 
 
         // Guardam els permissos que te cada persona, si es personal tendrà tots els permisos
         if ($bool_es_usuari) {
@@ -45,23 +47,23 @@ else
             $_SESSION["permisos"] = array();
             if ($result && mysqli_num_rows($result) > 0){
                 while ($fila_aux = $result->fetch_assoc()) {
-                    $_SESSION["permisos"][] = $fila_aux
+                    $_SESSION["permisos"][] = $fila_aux;
                 }
             }
             
         }
         else
         {
-            $_SESSION["permisos"] = {"visualizar","borrar", "crear", "editar"};
+            $_SESSION["permisos"] = array("visualizar","borrar", "crear", "editar");
         }
         header("Location: ./servicesform.php");
+        die("Login acabado");
     }
 }
 
-function esUsuari($email) {
-    $cadena = "SELECT dni FROM personal WHERE email = {$email}";
+function esUsuari($email, $conn) {
+    $cadena = "SELECT dni FROM personal WHERE email = '{$email}'";
     $result = mysqli_query($conn, $cadena);
-    return (!$result || mysqli_num_rows($result) == 0)
+    return (!$result || mysqli_num_rows($result) == 0);
 }
-// Ahora puedes usar $connection en cualquier parte de tu archivo index.php
 ?>

@@ -20,7 +20,7 @@ CREATE TABLE PRIVILEGI (
 );
 
 CREATE TABLE ORGANITZACIO (
-    nom VARCHAR(128) PRIMARY KEY,
+    nomOrg VARCHAR(128) PRIMARY KEY,
     adreca VARCHAR(128) NOT NULL,
     telefon VARCHAR(16) NOT NULL
 );
@@ -62,27 +62,27 @@ CREATE TABLE SIST_GESTIO_BD (
 CREATE TABLE RAM (
     tipus ENUM('DDR3', 'DDR4', 'DDR5'),
     GB INT,
-    preu DECIMAL(2, 2) NOT NULL,
+    preu DECIMAL(4, 2) NOT NULL,
     PRIMARY KEY (tipus, GB)
 );
 
 CREATE TABLE DISC_DUR (
     tipus ENUM('HDD', 'SSD'),
     GB INT,
-    preu DECIMAL(2, 2) NOT NULL,
+    preu DECIMAL(5, 2) NOT NULL,
     PRIMARY KEY (tipus, GB)
 );
 
 CREATE TABLE CPU (
     model ENUM('Intel', 'AMD'),
     nNuclis ENUM('2', '4', '6', '8', '10', '12', '16', '24', '32', '64'),
-    preu DECIMAL(3, 2) NOT NULL,
+    preu DECIMAL(5, 2) NOT NULL,
     PRIMARY KEY (model, nNuclis)
 );
 
 CREATE TABLE SO (
     nom ENUM('Windows', 'Linux') PRIMARY KEY,
-    preu DECIMAL(10, 2) NOT NULL
+    preu DECIMAL(5, 2) NOT NULL
 );
 
 -- Taules amb FK

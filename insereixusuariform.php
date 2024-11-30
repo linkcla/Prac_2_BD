@@ -1,6 +1,13 @@
-<!-- @Author: Blanca Atienzar Martinez -->
+<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Hai Zi Bibiloni Trobat (PHP y funcionalidad per inserir usuari) -->
  
-<?php session_start() ?>
+<?php 
+include "conexion.php";
+
+$con = Conexion::getConnection();
+$sql = "SELECT nomOrg FROM ORGANITZACIO";
+$result = $con->query($sql);
+?>
 
 <html>
 
@@ -83,35 +90,35 @@
           </div>
           <div class="col-md-6 form_bg px-0">
             <div class="col-md-10 px-0">
-              <form action="">
+              <form action="insereixusuaribd.php" method="post">
                 <div class="contact_form-container">
                   <div>
                     <div>
-                      <input type="nom" placeholder=" Name" />
+                      <input type="text" name = "nom" placeholder=" Name" />
                     </div>
                     <div>
-                      <input type="cognom" placeholder=" Last name" />
+                      <input type="text" name = "cognom" placeholder=" Last name" />
                     </div>
                     <div>
-                      <input type="email" placeholder=" Email" />
+                      <input type="email" name = "email" placeholder=" Email" />
+                    </div>                    
+                    <div>
+                      <input type="password" name = "contrasenya" placeholder="  Password" />
                     </div>
                     <div> 
-
-                      <form method="get"  action=“accio.php “>
-                          <SELECT NAME= "Nom Organitzacio">
-                              <OPTION VALUE="ALC">Alcúdia</OPTION>
-                              <OPTION VALUE="FEL">Felanitx</OPTION>
-                              <OPTION VALUE="ALG">Algaida</OPTION>
-                          </SELECT>
-                      </form>
-                      
-                    </div>
-                    <div>
-                      <input type="contrasena" placeholder="  Password" />
+                    <select name="nomOrg">
+                      <option value="" selected disabled>Seleccion Organizacion</option>
+                        <?php
+                        while ($row = mysqli_fetch_assoc($result)) {
+                          echo "<option value='" . $row['nomOrg'] . "'>" . $row['nomOrg'] . "</option>";
+                        }
+                        mysqli_close($con);
+                        ?>
+                      </select>                     
                     </div>
                     <div>
                       <button type="submit" class="btn btn-primaryLogin">
-                        <a href="loginform.php">Insert</a-->
+                        <a href="loginform.php">Insert</a>
                       </button>
                     </div>
                   </div>

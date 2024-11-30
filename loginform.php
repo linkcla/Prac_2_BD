@@ -1,5 +1,8 @@
 <!-- @Author: Blanca Atienzar Martinez -->
-<?php session_start() ?>
+<?php session_start();
+require_once "conexion.php";
+$conn = Conexion::getConnection();
+?>
 
 <html>
   <head>
@@ -40,6 +43,22 @@
   </head>
 
   <body>
+    <?php
+      if(isset($_SESSION['error_msg'])) {
+        echo '
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">'
+          . $_SESSION["error_msg"] .
+          '</div>';
+        unset($_SESSION['error_msg']);
+      }
+      if(isset($_SESSION['usuariCreat'])) {
+        echo '
+        <div class="alert alert-success alert-dismissible fade show" role="alert">'
+        . $_SESSION["usuariCreat"] .
+        '</div>';
+      unset($_SESSION['usuariCreat']);
+      }
+    ?>
     <div class="hero_area">
       <!-- header section strats -->
       <header class="header_section">
@@ -90,7 +109,6 @@
           </div>
           <div class="col-md-6 form_bg px-0">
             <div class="col-md-10 px-0">
-              <form action="">
                 <div class="contact_form-container">
                   <div>
                     <form action="loginbd.php" method="post">
@@ -98,7 +116,7 @@
                         <input name="email" placeholder=" Email" />
                       </div>
                       <div>
-                        <input name="contrasenya" placeholder="  Password" />
+                        <input name="contrasenya" placeholder=" Password"  type="password"/>
                       </div>
                       <div>
                         <button type="submit" class="btn btn-primaryLogin">
@@ -113,14 +131,12 @@
                       </h4>
                     </div>
                     <div>
-
-                      <button type="submit" class="btn btn-primaryRegistrarse">
+                      <button type="button" class="btn btn-primaryRegistrarse">
                         <a href="insereixusuariform.php">Registrarse</a>
                       </button>
                     </div>
                   </div>
                 </div>
-              </form>
             </div>
           </div>
         </div>
