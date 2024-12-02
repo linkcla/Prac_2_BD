@@ -68,7 +68,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesSaaSPersonalform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaSPersonalform.php">PaaS</a>
+                                <a href="servicesPaaSfPersonalorm.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
@@ -86,14 +86,14 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Eliminar
+                Servicios SaaS - Crear
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformCreate.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformDelete.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                 </div>
             </form>
         </div>

@@ -90,19 +90,20 @@ $conn = Conexion::getConnection();
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformCreate.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformDelete.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                 </div>
             </form>
         </div>
         <div class="container">
-            <form action="servicesSaaSform.php" method="POST">
+            <form action="servicesSaaSDeleteBD.php" method="POST">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Seleccionar</th>
                             <th>ID Configuración</th>
                             <th>Dominio</th>
                             <th>Fecha Creación</th>
@@ -118,9 +119,12 @@ $conn = Conexion::getConnection();
                         <?php
                         $cadenaContracte = "SELECT * FROM SAAS";
                         $resultadoContracte = mysqli_query($conn, $cadenaContracte);
-                        
+
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
                             echo "<tr>
+                                <td>
+                                    <input type='checkbox' name='selectedRows[]' value='{$rowContracte['idConfig']}'>
+                                </td>
                                 <td>{$rowContracte['idConfig']}</td>
                                 <td>{$rowContracte['domini']}</td>
                                 <td>{$rowContracte['dataCreacio']}</td>
@@ -130,12 +134,12 @@ $conn = Conexion::getConnection();
                                 <td>{$rowContracte['tipusSGBD']}</td>
                                 <td>{$rowContracte['tipusRam']} - {$rowContracte['GBRam']} GB</td>
                                 <td>{$rowContracte['tipusDD']} - {$rowContracte['GBDD']} GB</td>
-                                
-                                </tr>";
+                            </tr>";
                         }
                         ?>
                     </tbody>
                 </table>
+                <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Eliminar Seleccionados</button>
             </form>
         </div>
     </section>

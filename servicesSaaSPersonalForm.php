@@ -91,18 +91,18 @@ $conn = Conexion::getConnection();
             </h2>
             <form>    
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformCreate.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformDelete.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                 </div>
             </form>
         </div>
                      
     
         <div class="container">
-                    <form action="servicesSaaSform.php" method="POST">
-                        <!-- Tabla para mostrar los datos de CONTRACTE -->
+            <form action="servicesSaaSform.php" method="POST">
+                <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -116,35 +116,35 @@ $conn = Conexion::getConnection();
                         </tr>
                     </thead>
                     <tbody>
-                    <?php
-                // Consulta para obtener los idConfig de la tabla SAAS
-                $cadenaSaas = "SELECT idConfig FROM SAAS";
-                $resultadoSaas = mysqli_query($conn, $cadenaSaas);
-                $idConfigs = [];
-                while ($rowSaas = $resultadoSaas->fetch_assoc()) {
-                    $idConfigs[] = $rowSaas['idConfig'];
-                }
-                if (!empty($idConfigs)) {
-                    $idConfigsString = implode(',', $idConfigs);
+                        <?php
+                        // Consulta para obtener los idConfig de la tabla SAAS
+                        $cadenaSaas = "SELECT idConfig FROM SAAS";
+                        $resultadoSaas = mysqli_query($conn, $cadenaSaas);
+                        $idConfigs = [];
+                        while ($rowSaas = $resultadoSaas->fetch_assoc()) {
+                            $idConfigs[] = $rowSaas['idConfig'];
+                        }
+                        if (!empty($idConfigs)) {
+                            $idConfigsString = implode(',', $idConfigs);
 
-                    // Consulta para obtener los datos de la tabla CONTRACTE donde idConfigProducte esté en la lista de idConfigs
-                    $cadenaContracte = "SELECT * FROM CONTRACTE WHERE idConfigProducte IN ($idConfigsString)";
-                    $resultadoContracte = mysqli_query($conn, $cadenaContracte);
-                    while ($rowContracte = $resultadoContracte->fetch_assoc()) {
-                        echo "<tr>
-                            <td>{$rowContracte['idContracte']}</td>
-                            <td>{$rowContracte['dataInici']}</td>
-                            <td>{$rowContracte['estat']}</td>
-                            <td>{$rowContracte['nomOrg']}</td>
-                            <td>{$rowContracte['emailU']}</td>
-                            <td>{$rowContracte['idConfigProducte']}</td>
-                            <td>{$rowContracte['mesos']}</td>
-                            </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
-                }
-                ?>
+                            // Consulta para obtener los datos de la tabla CONTRACTE donde idConfigProducte esté en la lista de idConfigs
+                            $cadenaContracte = "SELECT * FROM CONTRACTE WHERE idConfigProducte IN ($idConfigsString)";
+                            $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+                            while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                                echo "<tr>
+                                    <td>{$rowContracte['idContracte']}</td>
+                                    <td>{$rowContracte['dataInici']}</td>
+                                    <td>{$rowContracte['estat']}</td>
+                                    <td>{$rowContracte['nomOrg']}</td>
+                                    <td>{$rowContracte['emailU']}</td>
+                                    <td>{$rowContracte['idConfigProducte']}</td>
+                                    <td>{$rowContracte['mesos']}</td>
+                                    </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
             </form>

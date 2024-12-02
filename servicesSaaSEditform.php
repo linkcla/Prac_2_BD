@@ -68,7 +68,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesSaaSPersonalform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaSfPersonalorm.php">PaaS</a>
+                                <a href="servicesPaaSPersonalform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
@@ -86,15 +86,60 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Crear
+                Servicios SaaS - Visualizar
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformCreate.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformDelete.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                 </div>
+            </form>
+        </div>
+        <div class="container">
+            <form action=" " method="POST">
+                <!-- Tabla para mostrar los datos de CONTRACTE -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Seleccionar</th>
+                            <th>ID Configuración</th>
+                            <th>Dominio</th>
+                            <th>Fecha Creación</th>
+                            <th>Modulo CMS</th>
+                            <th>CDN</th>
+                            <th>SSL</th>
+                            <th>SGBD</th>
+                            <th>RAM</th>
+                            <th>DD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $cadenaContracte = "SELECT * FROM SAAS";
+                        $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+
+                        while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                            echo "<tr>
+                                <td>
+                                    <input type='radio' name='selectedRow' value='{$rowContracte['idConfig']}'>
+                                </td>
+                                <td>{$rowContracte['idConfig']}</td>
+                                <td>{$rowContracte['domini']}</td>
+                                <td>{$rowContracte['dataCreacio']}</td>
+                                <td>{$rowContracte['tipusMCMS']}</td>
+                                <td>{$rowContracte['tipusCDN']}</td>
+                                <td>{$rowContracte['tipusSSL']}</td>
+                                <td>{$rowContracte['tipusSGBD']}</td>
+                                <td>{$rowContracte['tipusRam']} - {$rowContracte['GBRam']} GB</td>
+                                <td>{$rowContracte['tipusDD']} - {$rowContracte['GBDD']} GB</td>
+                            </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Editar Seleccionado</button>
             </form>
         </div>
     </section>

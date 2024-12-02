@@ -69,10 +69,10 @@ $conn = Conexion::getConnection();
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
-                            </div>   
+                            </div>  
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>                      
+                            </div>                       
                         </div>
                     </div>
                 </nav>
@@ -86,18 +86,61 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Editar
+                Servicios SaaS - Visualizar
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformCreate.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSformDelete.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                 </div>
             </form>
         </div>
+        <div class="container">
+            <form action="servicesSaaSform.php" method="POST">
+                <!-- Tabla para mostrar los datos de CONTRACTE -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Configuración</th>
+                            <th>Dominio</th>
+                            <th>Fecha Creación</th>
+                            <th>Modulo CMS</th>
+                            <th>CDN</th>
+                            <th>SSL</th>
+                            <th>SGBD</th>
+                            <th>RAM</th>
+                            <th>DD</th>
+                            <th>Estado?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $cadenaContracte = "SELECT * FROM SAAS";
+                        $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+                        
+                        while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                            echo "<tr>
+                                <td>{$rowContracte['idConfig']}</td>
+                                <td>{$rowContracte['domini']}</td>
+                                <td>{$rowContracte['dataCreacio']}</td>
+                                <td>{$rowContracte['tipusMCMS']}</td>
+                                <td>{$rowContracte['tipusCDN']}</td>
+                                <td>{$rowContracte['tipusSSL']}</td>
+                                <td>{$rowContracte['tipusSGBD']}</td>
+                                <td>{$rowContracte['tipusRam']} - {$rowContracte['GBRam']} GB</td>
+                                <td>{$rowContracte['tipusDD']} - {$rowContracte['GBDD']} GB</td>
+                                
+                                </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </form>
+        </div>
     </section>
+
     <!-- end about section -->
 
 
