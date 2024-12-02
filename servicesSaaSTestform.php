@@ -99,12 +99,11 @@ $conn = Conexion::getConnection();
             </form>
         </div>
         <div class="container">
-            <form action="servicesSaaSDeleteBD.php" method="POST">
+            <form action=" " method="POST">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Seleccionar</th>
                             <th>ID Configuración</th>
                             <th>Dominio</th>
                             <th>Fecha Creación</th>
@@ -114,18 +113,62 @@ $conn = Conexion::getConnection();
                             <th>SGBD</th>
                             <th>RAM</th>
                             <th>DD</th>
+                            <th>Nombre del Test</th>
+                            <th>Estado del Test</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $cadenaContracte = "SELECT * FROM SAAS";
+                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                            // Procesar actualización de estado
+                            $idConfig = $_POST['idConfig'];
+                            $nomT = $_POST['nomT'];
+                            $newState = $_POST['newState'];
+
+                            $updateQuery = "
+                                UPDATE ESTAT
+                                SET estat = ?
+                                WHERE idConfigProducte = ? AND nomT = ?
+                            ";
+                            $stmt = $conn->prepare($updateQuery);
+                            $stmt->bind_param("sis", $newState, $idConfig, $nomT);
+
+                            if ($stmt->execute()) {
+                                echo "<div class='alert alert-success'>Estado actualizado correctamente</div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error al actualizar: " . $stmt->error . "</div>";
+                            }
+
+                            $stmt->close();
+                        }
+
+                        $cadenaContracte = "
+                            SELECT 
+                                SAAS.idConfig, 
+                                SAAS.domini, 
+                                SAAS.dataCreacio, 
+                                SAAS.tipusMCMS, 
+                                SAAS.tipusCDN, 
+                                SAAS.tipusSSL, 
+                                SAAS.tipusSGBD, 
+                                CONCAT(SAAS.tipusRam, ' - ', SAAS.GBRam, ' GB') AS ram,
+                                CONCAT(SAAS.tipusDD, ' - ', SAAS.GBDD, ' GB') AS disc,
+                                TEST.nom AS testNom,
+                                ESTAT.estat AS testEstat
+                            FROM SAAS
+                            LEFT JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
+                            LEFT JOIN TEST ON ESTAT.nomT = TEST.nom
+                            ORDER BY SAAS.idConfig, TEST.nom
+                        ";
+                        
                         $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+                        
+                        if (!$resultadoContracte) {
+                            die("Error al obtener datos: " . mysqli_error($conn));
+                        }
 
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
                             echo "<tr>
-                                <td>
-                                    <input type='checkbox' name='selectedRows[]' value='{$rowContracte['idConfig']}'>
-                                </td>
                                 <td>{$rowContracte['idConfig']}</td>
                                 <td>{$rowContracte['domini']}</td>
                                 <td>{$rowContracte['dataCreacio']}</td>
@@ -133,14 +176,15 @@ $conn = Conexion::getConnection();
                                 <td>{$rowContracte['tipusCDN']}</td>
                                 <td>{$rowContracte['tipusSSL']}</td>
                                 <td>{$rowContracte['tipusSGBD']}</td>
-                                <td>{$rowContracte['tipusRam']} - {$rowContracte['GBRam']} GB</td>
-                                <td>{$rowContracte['tipusDD']} - {$rowContracte['GBDD']} GB</td>
+                                <td>{$rowContracte['ram']}</td>
+                                <td>{$rowContracte['disc']}</td>
+                                <td>{$rowContracte['testNom']}</td>
+                                <td>{$rowContracte['testEstat']}</td>
                             </tr>";
                         }
                         ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Eliminar Seleccionados</button>
             </form>
         </div>
     </section>

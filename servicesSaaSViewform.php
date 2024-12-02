@@ -94,6 +94,7 @@ $conn = Conexion::getConnection();
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>
         </div>
@@ -112,7 +113,6 @@ $conn = Conexion::getConnection();
                             <th>SGBD</th>
                             <th>RAM</th>
                             <th>DD</th>
-                            <th>Estado?</th>
                         </tr>
                     </thead>
                     <tbody>
