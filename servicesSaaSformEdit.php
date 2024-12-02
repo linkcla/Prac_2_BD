@@ -2,8 +2,7 @@
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();    
-
+$conn = Conexion::getConnection();              
 ?>
 
 <html>
@@ -70,10 +69,10 @@ $conn = Conexion::getConnection();
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
-                            </div>
+                            </div>   
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>                        
+                            </div>                      
                         </div>
                     </div>
                 </nav>
@@ -85,11 +84,11 @@ $conn = Conexion::getConnection();
     <!-- about section -->
 
     <section class="about_section layout_paddingAbout">
-        <div class="container">        
-            <h2 class="text-uppercase" >
-                Servicios SaaS - Personal
+        <div class="container">
+            <h2 class="text-uppercase">
+                Servicios SaaS - Editar
             </h2>
-            <form>    
+            <form>
                 <div class="container">
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSformView.php">Visualizar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSformEdit.php" >Editar</button>
@@ -98,59 +97,7 @@ $conn = Conexion::getConnection();
                 </div>
             </form>
         </div>
-                     
-    
-        <div class="container">
-                    <form action="servicesSaaSform.php" method="POST">
-                        <!-- Tabla para mostrar los datos de CONTRACTE -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID Contracte</th>
-                            <th>Data Inici</th>
-                            <th>Estat</th>
-                            <th>Nom Org</th>
-                            <th>Email Usuari</th>
-                            <th>ID Config Producte</th>
-                            <th>Mesos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                // Consulta para obtener los idConfig de la tabla SAAS
-                $cadenaSaas = "SELECT idConfig FROM SAAS";
-                $resultadoSaas = mysqli_query($conn, $cadenaSaas);
-                $idConfigs = [];
-                while ($rowSaas = $resultadoSaas->fetch_assoc()) {
-                    $idConfigs[] = $rowSaas['idConfig'];
-                }
-                if (!empty($idConfigs)) {
-                    $idConfigsString = implode(',', $idConfigs);
-
-                    // Consulta para obtener los datos de la tabla CONTRACTE donde idConfigProducte esté en la lista de idConfigs
-                    $cadenaContracte = "SELECT * FROM CONTRACTE WHERE idConfigProducte IN ($idConfigsString)";
-                    $resultadoContracte = mysqli_query($conn, $cadenaContracte);
-                    while ($rowContracte = $resultadoContracte->fetch_assoc()) {
-                        echo "<tr>
-                            <td>{$rowContracte['idContracte']}</td>
-                            <td>{$rowContracte['dataInici']}</td>
-                            <td>{$rowContracte['estat']}</td>
-                            <td>{$rowContracte['nomOrg']}</td>
-                            <td>{$rowContracte['emailU']}</td>
-                            <td>{$rowContracte['idConfigProducte']}</td>
-                            <td>{$rowContracte['mesos']}</td>
-                            </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
-                }
-                ?>
-                    </tbody>
-                </table>
-            </form>
-        </div>
     </section>
-
     <!-- end about section -->
 
 
