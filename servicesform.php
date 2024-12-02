@@ -86,22 +86,29 @@
 
       <div class="container">
         <div class="about_card-container layout_padding2-top">
-          <div class="about_card">
-            <div class="about-detail">
-              <div class="about_img-container">
-                <div class="about_img-box">
-                  <a href="servicesSaaSform.php"><img src="images/work2.png" alt="" /></a>
+          <?php
+              if ($_SESSION['esUsuari']) {
+                echo '<div class="about_card">
+              <div class="about-detail">
+                <div class="about_img-container">
+                  <div class="about_img-box">
+                    <a href="servicesSaaSform.php"><img src="images/work2.png" alt="" /></a>
+                  </div>
+                </div>
+                <div class="card_detail-ox">
+                  <h4>
+                    <a href="servicesSaaSform.php">Servicios SaaS</a>
+                  </h4>
+                  
                 </div>
               </div>
-              <div class="card_detail-ox">
-                <h4>
-                  <a href="servicesSaaSform.php">Servicios SaaS</a>
-                </h4>
-                
-              </div>
-            </div>
-          </div>
-          <div class="about_card">
+            </div>';
+              }
+          ?>
+
+          <?php
+            if ($_SESSION['esUsuari']) {
+              echo '<div class="about_card">
             <div class="about-detail">
               <div class="about_img-container">
                 <div class="about_img-box">
@@ -115,7 +122,50 @@
                 
               </div>
             </div>
-          </div>
+          </div>';
+            }
+          ?>  
+
+          <?php
+            if (!$_SESSION['esUsuari']) {
+              echo '<div class="about_card">
+            <div class="about-detail">
+              <div class="about_img-container">
+                <div class="about_img-box">
+                  <a href="servicesSaaSPersonalform.php"><img src="images/work2.png" alt="" /></a>
+                </div>
+              </div>
+              <div class="card_detail-ox">
+                <h4>
+                  <a href="servicesSaaSPersonalform.php">Servicios SaaS</a>
+                </h4>
+                
+              </div>
+            </div>
+          </div>';
+            }
+          ?>
+
+          <?php
+            if (!$_SESSION['esUsuari']) {
+              echo '<div class="about_card">
+            <div class="about-detail">
+              <div class="about_img-container">
+                <div class="about_img-box">
+                  <a href="servicesPaaSPersonalform.php"><img src="images/work3.png" alt="" /></a>
+                </div>
+              </div>
+              <div class="card_detail-ox">
+                <h4>
+                  <a href="servicesPaaSPersonalform.php">Servicios PaaS</a>
+                </h4>
+                
+              </div>
+            </div>
+          </div>';
+            }
+          ?>
+          
           <?php
             if (!$_SESSION['esUsuari']) {
               echo '<div class="about_card">

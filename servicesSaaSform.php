@@ -85,13 +85,6 @@ $conn = Conexion::getConnection();
             <h2 class="text-uppercase">
                 Nuestros Servicios SaaS
             </h2>
-            <button type="submit" class="btn btn-primaryLogin">
-                <?php
-                if (!$_SESSION['esUsuari']) {
-                echo "<div class='overlay-content'> <a href='servicesSaaSPersonalForm.php'>ADMIN</a> </div>";
-                }
-                ?>          
-            </button>
         </div>
                         
     
