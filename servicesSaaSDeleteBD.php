@@ -18,7 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'delete') {
             // Sanitiza el ID
             $id = mysqli_real_escape_string($conn, $id);
 
-            // Eliminar registro
+            // Actualizar el estado de los contratos asociados a "Cancelat"
+            $updateQuery = "UPDATE CONTRACTE SET estat = 'Cancel·lat' WHERE idConfigProducte = '$id'";
+            if (!mysqli_query($conn, $updateQuery)) {
+                $error_ocurred = true;
+                break;
+            }
+
+            // Eliminar registro de SAAS
             $deleteQuery = "DELETE FROM SAAS WHERE idConfig = '$id'";
             if (!mysqli_query($conn, $deleteQuery)) {
                 $error_ocurred = true;

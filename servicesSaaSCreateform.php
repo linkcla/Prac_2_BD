@@ -90,6 +90,7 @@ $conn = Conexion::getConnection();
             </h2>
             <form>
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>

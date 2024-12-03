@@ -91,6 +91,7 @@ $conn = Conexion::getConnection();
             </h2>
             <form>    
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
@@ -136,7 +137,7 @@ $conn = Conexion::getConnection();
                                     <td>{$rowContracte['idContracte']}</td>
                                     <td>{$rowContracte['dataInici']}</td>
                                     <td>{$rowContracte['estat']}</td>
-                                    <td>{$rowContracte['nomOrg']}</td>
+                                    <td>{$rowContracte['nom']}</td>
                                     <td>{$rowContracte['emailU']}</td>
                                     <td>{$rowContracte['idConfigProducte']}</td>
                                     <td>{$rowContracte['mesos']}</td>
@@ -145,6 +146,8 @@ $conn = Conexion::getConnection();
                         } else {
                             echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
                         }
+                        
+
                         ?>
                     </tbody>
                 </table>

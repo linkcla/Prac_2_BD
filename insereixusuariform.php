@@ -5,7 +5,7 @@
 include "conexion.php";
 
 $con = Conexion::getConnection();
-$sql = "SELECT nomOrg FROM ORGANITZACIO";
+$sql = "SELECT nom FROM ORGANITZACIO";
 $result = $con->query($sql);
 ?>
 
@@ -110,7 +110,7 @@ $result = $con->query($sql);
                       <option value="" selected disabled>Seleccion Organizacion</option>
                         <?php
                         while ($row = mysqli_fetch_assoc($result)) {
-                          echo "<option value='" . $row['nomOrg'] . "'>" . $row['nomOrg'] . "</option>";
+                          echo "<option value='" . $row['nom'] . "'>" . $row['nom'] . "</option>";
                         }
                         mysqli_close($con);
                         ?>

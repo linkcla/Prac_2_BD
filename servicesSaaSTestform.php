@@ -86,16 +86,158 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Visualizar
+                Servicios SaaS - Test
             </h2>
             <form>
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
+            </form>
+            
+                <div class="card p-4" style="width: 100%;">
+
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <form action="" method="POST">
+                        <div class="form-row align-items-center">
+                        
+                            <div class="col-auto">
+                                <input type="text" class="form-control mb-2" id="testName" name="testName" placeholder="Nombre del nuevo Test" required>
+                            </div>
+                            <div class="col-auto">
+                                <input type="text" class="form-control mb-2" id="testDescription" name="testDescription" placeholder="Descripción del Test" required>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary mb-2" name="createTest">Crear Test</button>
+                            </div>
+                        
+                        </div>
+                        </form>
+                    </div>
+                    <div class="container d-flex justify-content-center align-items-center2">
+                    <form action="" method="POST">
+                        <div class="form-row align-items-center2">
+                            <div class="col-auto1">
+                                    <?php
+                                    $testOptions = [];
+                                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                        if (isset($_POST['noms'])) {
+                                            $test = $_POST['noms'];
+                                        } else {
+                                            $test = '';
+                                        }
+                                        if ($test !== '') {
+                                            $cadena = "SELECT * FROM TEST WHERE nom = '$test'";
+                                            $resultado = mysqli_query($conn, $cadena);
+                                            while ($row = $resultado->fetch_assoc()) {
+                                                $testOptions[] = $row;
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                
+                                    <select name="noms" id="noms" class="form-control" onchange="this.form.submit()">
+                                        <option value="">Selecciona Test a Eliminar</option>
+                                        <?php
+                                            $cadena = "SELECT DISTINCT nom FROM TEST";
+                                            $resultado = mysqli_query($conn, $cadena);
+                                            while ($row = $resultado->fetch_assoc()) {
+                                                $selected = '';
+                                                if (isset($test)) {
+                                                    if ($row['nom'] === $tests) {
+                                                        $selected = 'selected';
+                                                    }
+                                                } else {
+                                                    if ($row['nom'] === '') {
+                                                        $selected = 'selected';
+                                                    }
+                                                }
+                                                echo "<option value='" . $row['nom'] . "' $selected>" . $row['nom'] . "</option>";
+                                            }
+                                        ?>
+                                    </select>
+                            </div>   
+                            <div class="col-auto1">
+                                <button type="submit" class="btn btn-primary mb-3" name="deleteTest">Eliminar Test</button>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+               
+                <?php
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createTest'])) {
+                        // Procesar creación de nuevo test
+                        $testName = $_POST['testName'];
+                        $testDescription = $_POST['testDescription'];
+                        $currentDate = date('Y-m-d H:i:s');
+
+                        // Verificar si el test ya existe
+                        $select_check_Query = "SELECT nom FROM TEST WHERE nom = '$testName'";
+                        $result_test = mysqli_query($conn, $select_check_Query);
+
+                        if (!$result_test){
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die("Error al verificar la existencia del usuario: " . mysqli_error($conn));
+                        }
+
+                        if(mysqli_num_rows($result_test) == 0) {
+                            // Insertar el nuevo test
+                            $insertQuery = "INSERT INTO TEST (nom, descripció, dataCreacio)
+                                VALUES ('$testName', '$testDescription', '$currentDate')";
+                            
+                            if(mysqli_query($conn, $insertQuery) == false) {
+                                $message = "Error al crear el test.";
+                                echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            };
+
+                            $message = "Test creat.";
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die($message);
+                        }else {
+                            $message = "Error. Test ja creat.";
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die($message);
+                        }
+                    }
+
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteTest'])) {
+                        // Procesar creación de nuevo test
+                        $testName = $_POST['testName'];
+
+                        // Verificar si el test ya existe
+                        $select_check_Query = "SELECT nom FROM TEST WHERE nom = '$testName'";
+                        $result_test = mysqli_query($conn, $select_check_Query);
+
+                        if (!$result_test){
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die("Error al verificar la existencia del usuario: " . mysqli_error($conn));
+                        }
+
+                        if(mysqli_num_rows($result_test) == 0) {
+                            // Insertar el nuevo test
+                            $insertQuery = "INSERT INTO TEST (nom, descripció, dataCreacio)
+                                VALUES ('$testName', '$testDescription', '$currentDate')";
+                            
+                            if(mysqli_query($conn, $insertQuery) == false) {
+                                $message = "Error al crear el test.";
+                                echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            };
+
+                            $message = "Test creat.";
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die($message);
+                        }else {
+                            $message = "Error. Test ja creat.";
+                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
+                            die($message);
+                        }
+                    }
+                ?>
             </form>
         </div>
         <div class="container">
@@ -105,21 +247,14 @@ $conn = Conexion::getConnection();
                     <thead>
                         <tr>
                             <th>ID Configuración</th>
-                            <th>Dominio</th>
-                            <th>Fecha Creación</th>
-                            <th>Modulo CMS</th>
-                            <th>CDN</th>
-                            <th>SSL</th>
-                            <th>SGBD</th>
-                            <th>RAM</th>
-                            <th>DD</th>
                             <th>Nombre del Test</th>
                             <th>Estado del Test</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+                        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateState'])) {
                             // Procesar actualización de estado
                             $idConfig = $_POST['idConfig'];
                             $nomT = $_POST['nomT'];
@@ -145,14 +280,6 @@ $conn = Conexion::getConnection();
                         $cadenaContracte = "
                             SELECT 
                                 SAAS.idConfig, 
-                                SAAS.domini, 
-                                SAAS.dataCreacio, 
-                                SAAS.tipusMCMS, 
-                                SAAS.tipusCDN, 
-                                SAAS.tipusSSL, 
-                                SAAS.tipusSGBD, 
-                                CONCAT(SAAS.tipusRam, ' - ', SAAS.GBRam, ' GB') AS ram,
-                                CONCAT(SAAS.tipusDD, ' - ', SAAS.GBDD, ' GB') AS disc,
                                 TEST.nom AS testNom,
                                 ESTAT.estat AS testEstat
                             FROM SAAS
@@ -161,27 +288,22 @@ $conn = Conexion::getConnection();
                             ORDER BY SAAS.idConfig, TEST.nom
                         ";
                         
-                        $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+                        $resultado = mysqli_query($conn, $cadenaContracte);
                         
-                        if (!$resultadoContracte) {
+                        if (!$resultado) {
                             die("Error al obtener datos: " . mysqli_error($conn));
                         }
 
-                        while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                        while ($rowContracte = mysqli_fetch_assoc($resultado)) {
                             echo "<tr>
                                 <td>{$rowContracte['idConfig']}</td>
-                                <td>{$rowContracte['domini']}</td>
-                                <td>{$rowContracte['dataCreacio']}</td>
-                                <td>{$rowContracte['tipusMCMS']}</td>
-                                <td>{$rowContracte['tipusCDN']}</td>
-                                <td>{$rowContracte['tipusSSL']}</td>
-                                <td>{$rowContracte['tipusSGBD']}</td>
-                                <td>{$rowContracte['ram']}</td>
-                                <td>{$rowContracte['disc']}</td>
                                 <td>{$rowContracte['testNom']}</td>
                                 <td>{$rowContracte['testEstat']}</td>
                             </tr>";
                         }
+
+                        // Cerrar la conexión
+                        mysqli_close($conn);
                         ?>
                     </tbody>
                 </table>

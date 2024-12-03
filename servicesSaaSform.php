@@ -2,7 +2,18 @@
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();              
+$conn = Conexion::getConnection();      
+
+// Suponiendo que el email del usuario está almacenado en la sesión
+$emailUsuario = $_SESSION['emailUsuario'];
+
+// Obtener el grupo del usuario
+$query = $conn->prepare("SELECT nomG FROM US_PERTANY_GRU WHERE emailU = ?");
+$query->bind_param("s", $emailUsuario);
+$query->execute();
+$result = $query->get_result();
+$usuario = $result->fetch_assoc();
+$grupo = $usuario['nomG'];
 ?>
 
 <html>
