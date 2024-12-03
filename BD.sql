@@ -20,7 +20,7 @@ CREATE TABLE PRIVILEGI (
 );
 
 CREATE TABLE ORGANITZACIO (
-    nomOrg VARCHAR(128) PRIMARY KEY,
+    nom VARCHAR(128) PRIMARY KEY,
     adreca VARCHAR(128) NOT NULL,
     telefon VARCHAR(16) NOT NULL
 );
@@ -94,20 +94,20 @@ CREATE TABLE PERSONAL (
 
 CREATE TABLE USUARI (
     email VARCHAR(128) PRIMARY KEY,
-    nomOrg VARCHAR(128) NOT NULL,
+    nom VARCHAR(128) NOT NULL,
     CONSTRAINT fk_usuari_persona FOREIGN KEY (email) REFERENCES PERSONA(email),
-    CONSTRAINT fk_usuari_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom)
+    CONSTRAINT fk_usuari_organitzacio FOREIGN KEY (nom) REFERENCES ORGANITZACIO(nom)
 );
 
 CREATE TABLE CONTRACTE (
     idContracte INT AUTO_INCREMENT PRIMARY KEY,
     dataInici DATE NOT NULL,
     estat ENUM('Actiu', 'Finalitzat', 'Cancel·lat') NOT NULL,
-    nomOrg VARCHAR(128) NOT NULL,
+    nom VARCHAR(128) NOT NULL,
     emailU VARCHAR(128) NOT NULL,
     idConfigProducte INT NOT NULL,
     mesos INT NOT NULL,
-    CONSTRAINT fk_contracte_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom),
+    CONSTRAINT fk_contracte_organitzacio FOREIGN KEY (nom) REFERENCES ORGANITZACIO(nom),
     CONSTRAINT fk_contracte_usuari FOREIGN KEY (emailU) REFERENCES USUARI(email),
     CONSTRAINT fk_contracte_producte FOREIGN KEY (idConfigProducte) REFERENCES PRODUCTE(idConfig),
     CONSTRAINT fk_contracte_durada FOREIGN KEY (mesos) REFERENCES DURADA(mesos)
