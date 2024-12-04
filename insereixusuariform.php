@@ -105,16 +105,7 @@ $result = $con->query($sql);
                     <div>
                       <input type="password" name = "contrasenya" placeholder="  Password" />
                     </div>
-                    <div> 
-                    <select name="nomOrg">
-                      <option value="" selected disabled>Seleccion Organizacion</option>
-                        <?php
-                        while ($row = mysqli_fetch_assoc($result)) {
-                          echo "<option value='" . $row['nom'] . "'>" . $row['nom'] . "</option>";
-                        }
-                        mysqli_close($con);
-                        ?>
-                      </select>                     
+                                       
                     </div>
                     <div>
                       <button type="submit" class="btn btn-primaryLogin">
