@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez -->
+<!-- @Author: Blanca Atienzar Martinez (HTML y CSS)-->
 <?php session_start() ; ?>
 
     <html>

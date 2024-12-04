@@ -1,8 +1,16 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();              
+$conn = Conexion::getConnection();   
+if (isset($_SESSION['success_msg'])) {
+    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+    unset($_SESSION['error_msg']);
+}           
 ?>
 
 <html>
@@ -71,7 +79,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -90,9 +98,8 @@ $conn = Conexion::getConnection();
             </h2>
             <form>
                 <div class="container">
+                <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
@@ -100,7 +107,7 @@ $conn = Conexion::getConnection();
             </form>
         </div>
         <div class="container">
-            <form action="servicesSaaSDeleteBD.php" method="POST">
+            <form action="servicesSaaSDeleteBD.php" method="POST" onsubmit="return validateForm()">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
@@ -123,9 +130,12 @@ $conn = Conexion::getConnection();
                         $resultadoContracte = mysqli_query($conn, $cadenaContracte);
 
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                            $value = $rowContracte['idConfig'] . '|' . $rowContracte['domini'] . '|' . $rowContracte['dataCreacio'] . '|' . $rowContracte['tipusMCMS'] . '|' . 
+                            $rowContracte['tipusCDN'] . '|' . $rowContracte['tipusSSL'] . '|' . $rowContracte['tipusSGBD'] . '|' . $rowContracte['tipusRam'] . '|' . $rowContracte['GBRam'] . '|' . $rowContracte['tipusDD'] . '|' . $rowContracte['GBDD'];
+
                             echo "<tr>
                                 <td>
-                                    <input type='checkbox' name='selectedRows[]' value='{$rowContracte['idConfig']}'>
+                                    <input type='checkbox' name='selectedRows[]' value='{$value}'>
                                 </td>
                                 <td>{$rowContracte['idConfig']}</td>
                                 <td>{$rowContracte['domini']}</td>
@@ -143,6 +153,16 @@ $conn = Conexion::getConnection();
                 </table>
                 <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Eliminar Seleccionados</button>
             </form>
+            <script>
+                function validateForm() {
+                    const checkboxes = document.querySelectorAll('input[name="selectedRows[]"]:checked');
+                    if (checkboxes.length === 0) {
+                        alert('Por favor, selecciona al menos un registro.');
+                        return false;
+                    }
+                    return true;
+                }
+            </script>
         </div>
     </section>
 

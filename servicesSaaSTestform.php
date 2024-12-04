@@ -1,8 +1,16 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();              
+$conn = Conexion::getConnection(); 
+if (isset($_SESSION['success_msg'])) {
+    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+    unset($_SESSION['error_msg']);
+}             
 ?>
 
 <html>
@@ -71,7 +79,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -90,9 +98,8 @@ $conn = Conexion::getConnection();
             </h2>
             <form>
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
@@ -100,214 +107,185 @@ $conn = Conexion::getConnection();
             </form>
             
                 <div class="card p-4" style="width: 100%;">
-
                     <div class="container d-flex justify-content-center align-items-center">
-                        <form action="" method="POST">
-                        <div class="form-row align-items-center">
-                        
-                            <div class="col-auto">
-                                <input type="text" class="form-control mb-2" id="testName" name="testName" placeholder="Nombre del nuevo Test" required>
+                        <form action="servicesSaaSTestBD.php" method="POST">
+                            <div class="form-row align-items-center">
+                                <div class="col-auto">
+                                    <input type="text" class="form-control mb-2" id="testName" name="testName" placeholder="Nombre del nuevo Test" required>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="text" class="form-control mb-2" id="testDescription" name="testDescription" placeholder="Descripción del Test" required>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary mb-2" name="createTest">Crear Test</button>
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <input type="text" class="form-control mb-2" id="testDescription" name="testDescription" placeholder="Descripción del Test" required>
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-primary mb-2" name="createTest">Crear Test</button>
-                            </div>
-                        
-                        </div>
                         </form>
                     </div>
-                    <div class="container d-flex justify-content-center align-items-center2">
-                    <form action="" method="POST">
-                        <div class="form-row align-items-center2">
-                            <div class="col-auto1">
-                                    <?php
-                                    $testOptions = [];
-                                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                        if (isset($_POST['noms'])) {
-                                            $test = $_POST['noms'];
-                                        } else {
-                                            $test = '';
-                                        }
-                                        if ($test !== '') {
-                                            $cadena = "SELECT * FROM TEST WHERE nom = '$test'";
-                                            $resultado = mysqli_query($conn, $cadena);
-                                            while ($row = $resultado->fetch_assoc()) {
-                                                $testOptions[] = $row;
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                
-                                    <select name="noms" id="noms" class="form-control" onchange="this.form.submit()">
-                                        <option value="">Selecciona Test a Eliminar</option>
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <form action="servicesSaaSTestBD.php" method="POST">
+                            <div class="form-row align-items-center2">
+                                <div class="col-auto1">
                                         <?php
-                                            $cadena = "SELECT DISTINCT nom FROM TEST";
-                                            $resultado = mysqli_query($conn, $cadena);
-                                            while ($row = $resultado->fetch_assoc()) {
-                                                $selected = '';
-                                                if (isset($test)) {
-                                                    if ($row['nom'] === $tests) {
-                                                        $selected = 'selected';
-                                                    }
-                                                } else {
-                                                    if ($row['nom'] === '') {
-                                                        $selected = 'selected';
-                                                    }
-                                                }
-                                                echo "<option value='" . $row['nom'] . "' $selected>" . $row['nom'] . "</option>";
+                                        $testOptions = [];
+                                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                            if (isset($_POST['noms'])) {
+                                                $testnom = $_POST['noms'];
+                                            } else {
+                                            $testnom = '';
                                             }
+                                            if ($testnom !== '') {
+                                                $cadena = "SELECT * FROM TEST WHERE nom = '$testnom'";
+                                                $resultado = mysqli_query($conn, $cadena);
+                                                while ($row = $resultado->fetch_assoc()) {
+                                                    $testOptions[] = $row;
+                                                }
+                                            }
+                                        }
                                         ?>
-                                    </select>
-                            </div>   
-                            <div class="col-auto1">
-                                <button type="submit" class="btn btn-primary mb-3" name="deleteTest">Eliminar Test</button>
+                                    
+                                        <select name="noms" id="noms" class="form-control" >
+                                            <option value="">Selecciona Test a Eliminar</option>
+                                            <?php
+                                                $cadena = "SELECT DISTINCT nom FROM TEST";
+                                                $resultado = mysqli_query($conn, $cadena);
+                                                while ($row = $resultado->fetch_assoc()) {
+                                                    $selected = '';
+                                                    if (isset($testnom)) {
+                                                        if ($row['nom'] === $testnom) {
+                                                            $selected = 'selected';
+                                                        }
+                                                    } else {
+                                                        if ($row['nom'] === '') {
+                                                            $selected = 'selected';
+                                                        }
+                                                    }
+                                                    echo "<option value='" . $row['nom'] . "' $selected>" . $row['nom'] . "</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                </div>   
+                                <div class="col-auto1">
+                                    <button type="submit" class="btn btn-primary mb-3" name="deleteTest">Eliminar Test</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                 </div>
-               
-                <?php
-                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createTest'])) {
-                        // Procesar creación de nuevo test
-                        $testName = $_POST['testName'];
-                        $testDescription = $_POST['testDescription'];
-                        $currentDate = date('Y-m-d H:i:s');
-
-                        // Verificar si el test ya existe
-                        $select_check_Query = "SELECT nom FROM TEST WHERE nom = '$testName'";
-                        $result_test = mysqli_query($conn, $select_check_Query);
-
-                        if (!$result_test){
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die("Error al verificar la existencia del usuario: " . mysqli_error($conn));
-                        }
-
-                        if(mysqli_num_rows($result_test) == 0) {
-                            // Insertar el nuevo test
-                            $insertQuery = "INSERT INTO TEST (nom, descripció, dataCreacio)
-                                VALUES ('$testName', '$testDescription', '$currentDate')";
-                            
-                            if(mysqli_query($conn, $insertQuery) == false) {
-                                $message = "Error al crear el test.";
-                                echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            };
-
-                            $message = "Test creat.";
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die($message);
-                        }else {
-                            $message = "Error. Test ja creat.";
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die($message);
-                        }
-                    }
-
-                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteTest'])) {
-                        // Procesar creación de nuevo test
-                        $testName = $_POST['testName'];
-
-                        // Verificar si el test ya existe
-                        $select_check_Query = "SELECT nom FROM TEST WHERE nom = '$testName'";
-                        $result_test = mysqli_query($conn, $select_check_Query);
-
-                        if (!$result_test){
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die("Error al verificar la existencia del usuario: " . mysqli_error($conn));
-                        }
-
-                        if(mysqli_num_rows($result_test) == 0) {
-                            // Insertar el nuevo test
-                            $insertQuery = "INSERT INTO TEST (nom, descripció, dataCreacio)
-                                VALUES ('$testName', '$testDescription', '$currentDate')";
-                            
-                            if(mysqli_query($conn, $insertQuery) == false) {
-                                $message = "Error al crear el test.";
-                                echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            };
-
-                            $message = "Test creat.";
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die($message);
-                        }else {
-                            $message = "Error. Test ja creat.";
-                            echo "<script type='text/javascript'>alert('$message'); window.location.href='servicesSaaSTestform.php';</script>";
-                            die($message);
-                        }
-                    }
-                ?>
-            </form>
+            
         </div>
         <div class="container">
-            <form action=" " method="POST">
-                <!-- Tabla para mostrar los datos de CONTRACTE -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID Configuración</th>
-                            <th>Nombre del Test</th>
-                            <th>Estado del Test</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
+            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm()">
+            
+                        <!-- Tabla para mostrar los datos de CONTRACTE -->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Seleccionar</th>
+                                    <th>ID Configuración</th>
+                                    <th>Nombre del Test</th>
+                                    <th>Estado del Test</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $cadenaContracte = "
+                                SELECT 
+                                    SAAS.idConfig, 
+                                    TEST.nom AS testNom,
+                                    ESTAT.estat AS testEstat
+                                FROM SAAS
+                                LEFT JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
+                                LEFT JOIN TEST ON ESTAT.nomT = TEST.nom
+                                ORDER BY SAAS.idConfig, TEST.nom
+                                ";
+                                
+                                $resultado = mysqli_query($conn, $cadenaContracte);
+                                
+                                if (!$resultado) {
+                                    die("Error al obtener datos: " . mysqli_error($conn));
+                                }
 
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateState'])) {
-                            // Procesar actualización de estado
-                            $idConfig = $_POST['idConfig'];
-                            $nomT = $_POST['nomT'];
-                            $newState = $_POST['newState'];
+                                while ($rowContracte = mysqli_fetch_assoc($resultado)) {
+                                    $value = $rowContracte['idConfig'] . '|' . $rowContracte['testNom'];
+                                    echo "<tr>
+                                        <td>
+                                            <input type='radio' name='selectedRow' value='{$value}'>
+                                        </td>
+                                        <td>{$rowContracte['idConfig']}</td>
+                                        <td>{$rowContracte['testNom']}</td>
+                                        <td>{$rowContracte['testEstat']}</td>
+                                    </tr>";
+                                }
+                                
+                                ?>
+                            </tbody>
+                        </table>
+                        <div class="container d-flex justify-content-center align-items-center">
+                            <div class="form-row align-items-center3">
+                                <div class="col-auto2">
+                                    <?php
+                                     $estatOptions = [];
+                                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                         if (isset($_POST['nomsestats'])) {
+                                             $testnom = $_POST['nomsestats'];
+                                         } else {
+                                         $testnom = '';
+                                         }
+                                         if ($testnom !== '') {
+                                             $cadena = "SELECT * FROM ESTAT WHERE estat = '$testnom'";
+                                             $resultado = mysqli_query($conn, $cadena);
+                                             while ($row = $resultado->fetch_assoc()) {
+                                                 $testOptions[] = $row;
+                                             }
+                                         }
+                                     }
+                                    ?>
+                                    
+                                    <select name="nomsestats" id="nomsestats" class="form-control">
+                                        <option value="">Selecciona un Estado</option>
+                                        <?php
+                                        $sql = "SELECT DISTINCT estat FROM ESTAT";
+                                        $resultado = mysqli_query($conn, $sql);
+                                        while ($row = $resultado->fetch_assoc()) {
+                                            $selected = '';
+                                            if (isset($testnom)) {
+                                                if ($row['estat'] === $testnom) {
+                                                    $selected = 'selected';
+                                                }
+                                            } else {
+                                                if ($row['estat'] === '') {
+                                                    $selected = 'selected';
+                                                }
+                                            }
+                                            echo "<option value='" . $row['estat'] . "' $selected>" . $row['estat'] . "</option>";
+                                        }
+                                        ?>
 
-                            $updateQuery = "
-                                UPDATE ESTAT
-                                SET estat = ?
-                                WHERE idConfigProducte = ? AND nomT = ?
-                            ";
-                            $stmt = $conn->prepare($updateQuery);
-                            $stmt->bind_param("sis", $newState, $idConfig, $nomT);
-
-                            if ($stmt->execute()) {
-                                echo "<div class='alert alert-success'>Estado actualizado correctamente</div>";
-                            } else {
-                                echo "<div class='alert alert-danger'>Error al actualizar: " . $stmt->error . "</div>";
-                            }
-
-                            $stmt->close();
-                        }
-
-                        $cadenaContracte = "
-                            SELECT 
-                                SAAS.idConfig, 
-                                TEST.nom AS testNom,
-                                ESTAT.estat AS testEstat
-                            FROM SAAS
-                            LEFT JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
-                            LEFT JOIN TEST ON ESTAT.nomT = TEST.nom
-                            ORDER BY SAAS.idConfig, TEST.nom
-                        ";
-                        
-                        $resultado = mysqli_query($conn, $cadenaContracte);
-                        
-                        if (!$resultado) {
-                            die("Error al obtener datos: " . mysqli_error($conn));
-                        }
-
-                        while ($rowContracte = mysqli_fetch_assoc($resultado)) {
-                            echo "<tr>
-                                <td>{$rowContracte['idConfig']}</td>
-                                <td>{$rowContracte['testNom']}</td>
-                                <td>{$rowContracte['testEstat']}</td>
-                            </tr>";
-                        }
-
-                        // Cerrar la conexión
-                        mysqli_close($conn);
-                        ?>
-                    </tbody>
-                </table>
-            </form>
+                                    </select>
+                                </div>   
+                                <div class="col-auto2">
+                                    <button type="submit" class="btn btn-primary mb-3" name="editEstat">Actualizar Estado Test</button>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+                <script>
+                function validateForm() {
+                    const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
+                    const selectedState = document.getElementById('nomsestats').value;
+                    if (!selectedRow) {
+                        alert('Por favor, selecciona un registro.');
+                        return false;
+                    }
+                    if (selectedState === '') {
+                        alert('Por favor, selecciona un estado.');
+                        return false;
+                    }
+                    return true;
+                }
+                </script>
+            
         </div>
     </section>
 

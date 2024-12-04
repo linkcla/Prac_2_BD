@@ -1,3 +1,5 @@
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
+
 <?php
 session_start();
 include "conexion.php";
@@ -36,19 +38,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'delete') {
         if ($error_ocurred) {
             // Revertir la transacción si hubo error
             mysqli_rollback($conn);
-            $_SESSION["error_msg"] = "Error al eliminar los registros seleccionados.";
+            $message = "Error al eliminar los registros seleccionados.";
+            $_SESSION["error_msg"] = $message;
+            header("Location: ./servicesSaaSDeleteform.php");
+            die($message);
         } else {
             // Confirmar la transacción si todo salió bien
             mysqli_commit($conn);
-            $_SESSION["success_msg"] = "Los registros seleccionados se eliminaron correctamente.";
+            $message = "Se ha eliminado correctamente";
+            $_SESSION["success_msg"] =  $message;
+            header("Location: ./servicesSaaSDeleteform.php");
+            die($message);
         }
     } else {
-        $_SESSION["error_msg"] = "No se seleccionaron registros para eliminar.";
+        $message = "No se seleccionaron registros para eliminar.";
+        $_SESSION["error_msg"] =   $message;
+        header("Location: ./servicesSaaSDeleteform.php");
+        die($message);
     }
 } else {
-    $_SESSION["error_msg"] = "Acción no válida.";
+    $message = "Acción no válida.";
+    $_SESSION["error_msg"] = $message;
+    header("Location: ./servicesSaaSDeleteform.php");
+    die($message);
+
 }
 
-// Redirigir siempre después de procesar
-header("Location: ./servicesSaaSDeleteform.php");
-exit();
+
+?>
+
