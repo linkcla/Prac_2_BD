@@ -1,8 +1,20 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();              
+$conn = Conexion::getConnection();  
+
+if (isset($_SESSION['success_msg'])) {
+    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+    unset($_SESSION['error_msg']);
+}
+
+
+
 ?>
 
 <html>
@@ -71,7 +83,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -90,9 +102,8 @@ $conn = Conexion::getConnection();
             </h2>
             <form>
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
@@ -100,11 +111,12 @@ $conn = Conexion::getConnection();
             </form>
         </div>
         <div class="container">
-        <form action=" " method="POST">
+            <form action="servicesSaaSEditform.php" method="POST" onsubmit="return validateForm()">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Seleccionar</th>
                             <th>ID Configuración</th>
                             <th>Dominio</th>
                             <th>Fecha Creación</th>
@@ -120,31 +132,7 @@ $conn = Conexion::getConnection();
                     </thead>
                     <tbody>
                         <?php
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                            // Procesar actualización de estado
-                            $idConfig = $_POST['idConfig'];
-                            $nomT = $_POST['nomT'];
-                            $newState = $_POST['newState'];
-
-                            $updateQuery = "
-                                UPDATE ESTAT
-                                SET estat = ?
-                                WHERE idConfigProducte = ? AND nomT = ?
-                            ";
-                            $stmt = $conn->prepare($updateQuery);
-                            $stmt->bind_param("sis", $newState, $idConfig, $nomT);
-
-                            if ($stmt->execute()) {
-                                echo "<div class='alert alert-success'>Estado actualizado correctamente</div>";
-                            } else {
-                                echo "<div class='alert alert-danger'>Error al actualizar: " . $stmt->error . "</div>";
-                            }
-
-                            $stmt->close();
-                        }
-
-                        $cadenaContracte = "
-                            SELECT 
+                        $cadenaContracte = "SELECT 
                                 SAAS.idConfig, 
                                 SAAS.domini, 
                                 SAAS.dataCreacio, 
@@ -160,17 +148,28 @@ $conn = Conexion::getConnection();
                             LEFT JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
                             LEFT JOIN TEST ON ESTAT.nomT = TEST.nom
                             GROUP BY SAAS.idConfig
-                            ORDER BY SAAS.idConfig
-                        ";
-                        
+                            ORDER BY SAAS.idConfig";
                         $resultadoContracte = mysqli_query($conn, $cadenaContracte);
-                        
-                        if (!$resultadoContracte) {
-                            die("Error al obtener datos: " . mysqli_error($conn));
-                        }
 
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                            $value = implode('|', [
+                                $rowContracte['idConfig'],
+                                $rowContracte['domini'],
+                                $rowContracte['dataCreacio'],
+                                $rowContracte['tipusMCMS'],
+                                $rowContracte['tipusCDN'],
+                                $rowContracte['tipusSSL'],
+                                $rowContracte['tipusSGBD'],
+                                $rowContracte['ram'],
+                                $rowContracte['disc'],
+                                $rowContracte['testNoms'],
+                                $rowContracte['testEstats']
+                            ]);
+
                             echo "<tr>
+                                <td>
+                                    <input type='radio' name='selectedRow' value='{$value}'>
+                                </td>
                                 <td>{$rowContracte['idConfig']}</td>
                                 <td>{$rowContracte['domini']}</td>
                                 <td>{$rowContracte['dataCreacio']}</td>
@@ -187,7 +186,18 @@ $conn = Conexion::getConnection();
                         ?>
                     </tbody>
                 </table>
+                <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Editar Seleccionado</button>
             </form>
+            <script>
+            function validateForm() {
+                const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
+                if (!selectedRow) {
+                    alert('Por favor, selecciona un producto SaaS.');
+                    return false;
+                }
+                return true;
+            }
+            </script>
         </div>
     </section>
 
@@ -216,3 +226,4 @@ $conn = Conexion::getConnection();
 </body>
 
 </html>
+

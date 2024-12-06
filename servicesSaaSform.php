@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
 include "conexion.php";

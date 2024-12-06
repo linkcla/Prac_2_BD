@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
 include "conexion.php";
@@ -72,7 +72,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesPaaSPersonalform.php">PaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
                             </div>                        
                         </div>
                     </div>
@@ -91,9 +91,8 @@ $conn = Conexion::getConnection();
             </h2>
             <form>    
                 <div class="container">
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Visualizar</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSEditform.php" >Editar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
@@ -103,7 +102,7 @@ $conn = Conexion::getConnection();
                      
     
         <div class="container">
-            <form action="servicesSaaSform.php" method="POST">
+            <form action=" " method="POST">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
