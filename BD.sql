@@ -42,7 +42,7 @@ CREATE TABLE TEST (
 );
 
 CREATE TABLE MODUL_CMS (
-    tipus ENUM('Sense modul', 'WordPress', 'Drupal', 'Joomla') PRIMARY KEY
+    tipus VARCHAR(16) PRIMARY KEY
 );
 
 CREATE TABLE CDN (
@@ -60,7 +60,7 @@ CREATE TABLE SIST_GESTIO_BD (
 );
 
 CREATE TABLE RAM (
-    tipus ENUM('DDR3', 'DDR4', 'DDR5'),
+    tipus VARCHAR(8),
     GB INT,
     preu DECIMAL(4, 2) NOT NULL,
     PRIMARY KEY (tipus, GB)
@@ -94,7 +94,7 @@ CREATE TABLE PERSONAL (
 
 CREATE TABLE USUARI (
     email VARCHAR(128) PRIMARY KEY,
-    nomOrg VARCHAR(128) NOT NULL,
+    nomOrg VARCHAR(128),
     CONSTRAINT fk_usuari_persona FOREIGN KEY (email) REFERENCES PERSONA(email),
     CONSTRAINT fk_usuari_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom)
 );
