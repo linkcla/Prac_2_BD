@@ -188,9 +188,7 @@ $conn = Conexion::getConnection();
 
     <!-- footer section -->
     <section class="container-fluid footer_section">
-        <p>
-            &copy; 2024 (UIB - EPS). Design by MPHB
-        </p>
+        <p>&copy; 2024 (UIB - EPS). Design by MPHB</p>
     </section>
     <!-- footer section -->
 
