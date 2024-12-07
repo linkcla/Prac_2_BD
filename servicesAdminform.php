@@ -33,7 +33,7 @@ if ($result->num_rows > 0) {
 // Obtener los datos de los usuarios que pertenecen a la misma organización
 $sql2 = "SELECT p.nom, p.cognom, u.email, g.nom AS nomG FROM USUARI u
         JOIN PERSONA p ON u.email = p.email
-        LEFT JOIN US_PERTANY_GRU upg ON u.email = upg.emailU
+        LEFT JOIN US_PERTANY_GRUP upg ON u.email = upg.emailU
         LEFT JOIN GRUP g ON upg.nomG = g.nom
         WHERE u.nomOrg = ?";
 $stmt2 = $conn->prepare($sql2);
