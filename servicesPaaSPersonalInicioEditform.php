@@ -157,7 +157,8 @@ $conn = Conexion::getConnection();
                         ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3" name="action" value="edit">Editar Seleccionado</button>
+                <button type="submit" class="btn btn-primary mt-3" name="action" value="edit">Editar PaaS Seleccionado</button>
+                <button type="button" class="btn btn-primary mt-3" onclick="location.href='servicesPaaSPersonalEditComponentesform.php'">Editar Precio Componentes</button>
             </form>
         </div>
     </section>
