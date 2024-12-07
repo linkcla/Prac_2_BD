@@ -7,8 +7,8 @@ if (isset($_POST['selectedRow'])) {
     $valorSeleccionat = $_POST['selectedRow'];
     list($nom, $adreca, $telefon) = explode("|", $valorSeleccionat);
 } else {
-    $nom = $_SESSION['nom'];
-    unset($_SESSION['nom']);
+    $nom = $_SESSION['nomOrg'];
+    unset($_SESSION['nomOrg']);
 }
 
 if (isset($_SESSION['success_msg'])) {
@@ -131,7 +131,7 @@ if (isset($_SESSION['error_msg'])) {
                     </thead>
                     <tbody>
                         <?php
-                        $_SESSION['nom'] = $nom;
+                        $_SESSION['nomOrg'] = $nom;
                         $cadenaUsuaris = "SELECT nom as Nom,
                                             cognom as Cognom,
                                             persona.email as email,
@@ -144,7 +144,7 @@ if (isset($_SESSION['error_msg'])) {
                                                 ON usuaris.email = us_pertany_grup.emailU
                                             JOIN priv_de_grup
                                                 ON us_pertany_grup.nomG = priv_de_grup.nomG
-                                        GROUP BY priv_de_grup.nomG";
+                                                GROUP BY persona.email, us_pertany_grup.nomG";
                         
                         $resultadoUsuaris = mysqli_query($conn, $cadenaUsuaris);
                         
@@ -153,6 +153,7 @@ if (isset($_SESSION['error_msg'])) {
                         }
                         
                         while ($rowUsuari = $resultadoUsuaris->fetch_assoc()) {
+                            
                             echo "<tr>
                                 <td>
                                     <input type='radio' name='selectedRow' id='emailUsuari' value='{$rowUsuari['email']}'>
@@ -168,10 +169,12 @@ if (isset($_SESSION['error_msg'])) {
                     </tbody>
                 </table>
                 <button type="button" class="btn btn-primary mt-3" id="botEliminar" name="action" value="delete">Eliminar de l'organització</button>
+                <button type="button" class="btn btn-primary mt-3" id="botEditarP" name="action" value="delete">Editar permisos</button>
         </form>
         <script>
             const form = document.getElementById('formulari');
             const botEliminar = document.getElementById('botEliminar');
+            const botEditarP = document.getElementById('botEditarP');
 
             // Función para verificar si se seleccionó un radio
             function isRadioSelected() {
@@ -187,6 +190,15 @@ if (isset($_SESSION['error_msg'])) {
             botEliminar.addEventListener('click', function() {
                 if (isRadioSelected()) {
                     form.action = 'eliminarUsDeOrg.php';
+                    form.submit();
+                } else {
+                    alert('Por favor, seleccione una organización para borrar.');
+                }
+            });
+            
+            botEditarP.addEventListener('click', function() {
+                if (isRadioSelected()) {
+                    form.action = 'editarPermUsDeOrgForm.php';
                     form.submit();
                 } else {
                     alert('Por favor, seleccione una organización para borrar.');
