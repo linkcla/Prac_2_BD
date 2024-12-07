@@ -134,7 +134,6 @@ if (isset($_SESSION['noMod'])) {
                         }
                         
                         while ($rowOrg = $resultadoOrg->fetch_assoc()) {
-                            echo "<input type='hidden' name='nomOrg' value='" . $rowOrg['nom'] . "'>";
                             $value = "{$rowOrg['nom']}|{$rowOrg['adreca']}|{$rowOrg['telefon']}";
                             echo "<tr>
                                 <td>

@@ -3,10 +3,12 @@ require_once "conexion.php";
 $conn = Conexion::getConnection(); 
 
 // Agafar els valors que s'han seleccionat.
-if (isset($_POST['nomOrg'])) {
-    $nom = $_POST['nomOrg'];
+if (isset($_POST['selectedRow'])) {
+    $valorSeleccionat = $_POST['selectedRow'];
+    list($nom, $adreca, $telefon) = explode("|", $valorSeleccionat);
 } else {
-    $nom = $_SESSION['nomOrg'];
+    $nom = $_SESSION['nom'];
+    unset($_SESSION['nom']);
 }
 
 if (isset($_SESSION['success_msg'])) {
@@ -113,7 +115,7 @@ if (isset($_SESSION['error_msg'])) {
     <section>
         
         <form id="formulari" action="" method="post">
-            <input type="hidden" name="nomOrg" value="<?php echo $nom; ?>">
+            
             <div class="container">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
@@ -129,6 +131,7 @@ if (isset($_SESSION['error_msg'])) {
                     </thead>
                     <tbody>
                         <?php
+                        $_SESSION['nom'] = $nom;
                         $cadenaUsuaris = "SELECT nom as Nom,
                                             cognom as Cognom,
                                             persona.email as email,
