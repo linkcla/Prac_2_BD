@@ -40,24 +40,28 @@ else
         // Guardam els permissos que te cada persona, si es personal tendrà tots els permisos
         if ($bool_es_usuari) {
             // Mirar si pertany a algun grup
-            $query = "SELECT nomOrg FROM usuari WHERE email = '{$locemail}'";
+            $query = "SELECT nomOrg, grup FROM usuari WHERE email = '{$locemail}'";
             $result = mysqli_query($conn, $query);
-            if (!$result || $result->fetch_assoc()['nomOrg'] == NULL) {
+            $datosUsuario = $result->fetch_assoc();
+            if (!$result || $datosUsuario['nomOrg'] == NULL) {
                 $msg = "El usuario no pertenece a ninguna organización, contacte con el administrador de tu organización para que te añada a un grupo.";
                 $_SESSION["error_msg"] = $msg;
                 header("Location: ./loginform.php");
                 die($msg);
             }
+            
+            $_SESSION["nomOrg"] = $datosUsuario['nomOrg'];
+            $_SESSION["grup"] = $datosUsuario['grup'];
 
             $cadena = "SELECT tipusPriv 
                        FROM priv_de_grup as pdg 
-                       JOIN us_pertany_grup as upg 
-                       ON pdg.nomG = upg.nomG and upg.emailU = '{$locemail}'";
+                       JOIN usuari 
+                       ON pdg.nomG = usuari.grup and usuari.email = '{$locemail}'";
             $result = mysqli_query($conn, $cadena);
             $_SESSION["permisos"] = array();
             if ($result && mysqli_num_rows($result) > 0){
                 while ($fila_aux = $result->fetch_assoc()) {
-                    $_SESSION["permisos"][] = $fila_aux;
+                    $_SESSION["permisos"][] = $fila_aux['tipusPriv'];
                 }
             }
             

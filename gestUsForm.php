@@ -110,6 +110,7 @@ if (isset($_SESSION['error_msg'])) {
                     <button type="submit" class="btn btn-primary" formaction="crearGrupForm.php">Crear grup</button>
                     <button type="submit" class="btn btn-primary" formaction="editarGrupForm.php">Editar grup</button>
                     <button type="submit" class="btn btn-primary" formaction="eliminarGrupForm.php">Eliminar grup</button>
+                    <button type="submit" class="btn btn-primary" formaction="afegirUsuarisForm.php">Afegir usuaris</button>
                 </div>
                 </div>
             </form>
