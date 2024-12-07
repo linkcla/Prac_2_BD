@@ -1,8 +1,14 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
-
 <?php session_start() ;
 require_once "conexion.php";
-$conn = Conexion::getConnection();   
+$conn = Conexion::getConnection(); 
+
+// Agafar els valors que s'han seleccionat.
+if (isset($_POST['nomOrg'])) {
+    $nom = $_POST['nomOrg'];
+} else {
+    $nom = $_SESSION['nomOrg'];
+}
+
 if (isset($_SESSION['success_msg'])) {
     echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
     unset($_SESSION['success_msg']);
@@ -11,12 +17,7 @@ if (isset($_SESSION['error_msg'])) {
     echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
     unset($_SESSION['error_msg']);
 }
-if (isset($_SESSION['noMod'])) {
-    echo "<div class='alert alert-warning' role='alert'>{$_SESSION['noMod']}</div>";
-    unset($_SESSION['noMod']);
-}           
 ?>
-
 <html>
 
 <head>
@@ -94,16 +95,15 @@ if (isset($_SESSION['noMod'])) {
     </div>
 
     <!-- about section -->
-
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Gestionar Organitzacións
+                Gestionant l'organizació: <?php echo $nom; ?>
             </h2>
             <form>
                 <div class="container">
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="crearOrgForm.php">Crear</button>
+                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
                 </div>
                 </div>
             </form>
@@ -111,7 +111,9 @@ if (isset($_SESSION['noMod'])) {
     </section>
 
     <section>
+        
         <form id="formulari" action="" method="post">
+            <input type="hidden" name="nomOrg" value="<?php echo $nom; ?>">
             <div class="container">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
@@ -119,45 +121,54 @@ if (isset($_SESSION['noMod'])) {
                         <tr>
                             <th>Selecionar</th>
                             <th>Nom</th>
-                            <th>Adreça</th>
-                            <th>Telèfon</th>
+                            <th>Cognom</th>
+                            <th>Email</th>
+                            <th>Grup</th>
+                            <th>Privilegis</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $cadenaOrg = "SELECT * FROM organitzacio";
+                        $cadenaUsuaris = "SELECT nom as Nom,
+                                            cognom as Cognom,
+                                            persona.email as email,
+                                            us_pertany_grup.nomG as Grup,
+                                            GROUP_CONCAT(priv_de_grup.tipusPriv SEPARATOR ', ') AS Privilegis
+                                        FROM (SELECT email FROM usuari WHERE nomOrg = '{$nom}') as usuaris
+                                            JOIN persona 
+                                                ON usuaris.email = persona.email 
+                                            JOIN us_pertany_grup
+                                                ON usuaris.email = us_pertany_grup.emailU
+                                            JOIN priv_de_grup
+                                                ON us_pertany_grup.nomG = priv_de_grup.nomG
+                                        GROUP BY priv_de_grup.nomG";
                         
-                        $resultadoOrg = mysqli_query($conn, $cadenaOrg);
+                        $resultadoUsuaris = mysqli_query($conn, $cadenaUsuaris);
                         
-                        if (!$resultadoOrg) {
+                        if (!$resultadoUsuaris) {
                             die("Error al obtener datos de las organizaciones: " . mysqli_error($conn));
                         }
                         
-                        while ($rowOrg = $resultadoOrg->fetch_assoc()) {
-                            echo "<input type='hidden' name='nomOrg' value='" . $rowOrg['nom'] . "'>";
-                            $value = "{$rowOrg['nom']}|{$rowOrg['adreca']}|{$rowOrg['telefon']}";
+                        while ($rowUsuari = $resultadoUsuaris->fetch_assoc()) {
                             echo "<tr>
                                 <td>
-                                    <input type='radio' name='selectedRow' value='{$value}'>
+                                    <input type='radio' name='selectedRow' id='emailUsuari' value='{$rowUsuari['email']}'>
                                 </td>
-                                <td>{$rowOrg['nom']}</td>
-                                <td>{$rowOrg['adreca']}</td>
-                                <td>{$rowOrg['telefon']}</td>
+                                <td>{$rowUsuari['Nom']}</td>
+                                <td>{$rowUsuari['Cognom']}</td>
+                                <td>{$rowUsuari['email']}</td>
+                                <td>{$rowUsuari['Grup']}</td>
+                                <td>{$rowUsuari['Privilegis']}</td>
                             </tr>";
                         }
                         ?>
                     </tbody>
                 </table>
-                <button type="button" class="btn btn-primary mt-3" id="botEditar" name="action" value="edit">Editar seleccionado</button>
-                <button type="button" class="btn btn-primary mt-3" id="botBorrar" name="action" value="delete">Borrar seleccionado</button>
-                <button type="button" class="btn btn-primary mt-3" id="botGestUs" name="action" value="gestUs">Gestionar usuaris</button></div>
+                <button type="button" class="btn btn-primary mt-3" id="botEliminar" name="action" value="delete">Eliminar de l'organització</button>
         </form>
-
         <script>
             const form = document.getElementById('formulari');
-            const botEditar = document.getElementById('botEditar');
-            const botBorrar = document.getElementById('botBorrar');
-            const botGestUs = document.getElementById('botGestUs');
+            const botEliminar = document.getElementById('botEliminar');
 
             // Función para verificar si se seleccionó un radio
             function isRadioSelected() {
@@ -170,33 +181,15 @@ if (isset($_SESSION['noMod'])) {
                 return false;  // Ningún radio está seleccionado
             }
 
-            // Cambiar la acción del formulario dependiendo del botón clicado
-            botEditar.addEventListener('click', function() {
+            botEliminar.addEventListener('click', function() {
                 if (isRadioSelected()) {
-                    form.action = 'editarOrgForm.php';
-                    form.submit();
-                } else {
-                    alert('Por favor, seleccione una organización para editar.');
-                }
-            });
-
-            botBorrar.addEventListener('click', function() {
-                if (isRadioSelected()) {
-                    form.action = 'eliminarOrg.php';
+                    form.action = 'eliminarUsDeOrg.php';
                     form.submit();
                 } else {
                     alert('Por favor, seleccione una organización para borrar.');
                 }
             });
 
-            botGestUs.addEventListener('click', function() {
-                if (isRadioSelected()) {
-                    form.action = 'gestUsForm.php';
-                    form.submit();
-                } else {
-                    alert('Por favor, seleccione una organización para gestionar usuarios.');
-                }
-            });
         </script>
     </section>
 
