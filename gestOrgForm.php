@@ -1,7 +1,8 @@
 <!-- Author: Marc -->
 
 <?php session_start() ;
-require_once "conexion.php";
+require_once "./src/organitzacio.php";
+
 $conn = Conexion::getConnection();   
 if (isset($_SESSION['success_msg'])) {
     echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
@@ -112,6 +113,7 @@ if (isset($_SESSION['noMod'])) {
 
     <section>
         <form id="formulari" action="" method="post">
+            <input type="hidden" name="accio" value="eliminar">
             <div class="container">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
@@ -125,14 +127,11 @@ if (isset($_SESSION['noMod'])) {
                     </thead>
                     <tbody>
                         <?php
-                        $cadenaOrg = "SELECT * FROM organitzacio";
                         
-                        $resultadoOrg = mysqli_query($conn, $cadenaOrg);
-                        
+                        $resultadoOrg = Organitzacio::getOrganitzacions();
                         if (!$resultadoOrg) {
-                            die("Error al obtener datos de las organizaciones: " . mysqli_error($conn));
+                            return;
                         }
-                        
                         while ($rowOrg = $resultadoOrg->fetch_assoc()) {
                             $value = "{$rowOrg['nom']}|{$rowOrg['adreca']}|{$rowOrg['telefon']}";
                             echo "<tr>
@@ -181,7 +180,7 @@ if (isset($_SESSION['noMod'])) {
 
             botBorrar.addEventListener('click', function() {
                 if (isRadioSelected()) {
-                    form.action = 'eliminarOrg.php';
+                    form.action = './src/vista/organitzacioVista.php';
                     form.submit();
                 } else {
                     alert('Por favor, seleccione una organización para borrar.');

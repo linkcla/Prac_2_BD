@@ -104,7 +104,8 @@ list($nom, $adreca, $telefon) = explode("|", $valorSeleccionat);
 
     <section>
         <div class="container">
-            <form action="editarOrg.php" method="post">
+            <form action="./src/vista/organitzacioVista.php" method="post">
+                <input type="hidden" id="accio" name="accio" value="editar">
                 <input type="hidden" name="nom" value="<?php echo $nom; ?>">
                 <input type="hidden" name="adrecaAnterior" value="<?php echo $adreca; ?>">
                 <input type="hidden" name="telefonAnterior" value="<?php echo $telefon; ?>">

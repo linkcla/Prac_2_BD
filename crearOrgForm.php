@@ -98,7 +98,8 @@ $conn = Conexion::getConnection();
 
     <section>
         <div class="container">
-            <form action="crearOrg.php" method="post">
+            <form action="./src/vista/organitzacioVista.php" method="post">
+                <input type="hidden" id="accio" name="accio" value="crear">
                 <br>
                 <h2>Insertar organizació</h2>
 
