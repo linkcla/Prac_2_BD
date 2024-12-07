@@ -135,16 +135,14 @@ if (isset($_SESSION['error_msg'])) {
                         $cadenaUsuaris = "SELECT nom as Nom,
                                             cognom as Cognom,
                                             persona.email as email,
-                                            us_pertany_grup.nomG as Grup,
+                                            usuaris.grup as Grup,
                                             GROUP_CONCAT(priv_de_grup.tipusPriv SEPARATOR ', ') AS Privilegis
-                                        FROM (SELECT email FROM usuari WHERE nomOrg = '{$nom}') as usuaris
+                                        FROM (SELECT email, grup FROM usuari WHERE nomOrg = '{$nom}') as usuaris
                                             JOIN persona 
                                                 ON usuaris.email = persona.email 
-                                            JOIN us_pertany_grup
-                                                ON usuaris.email = us_pertany_grup.emailU
                                             JOIN priv_de_grup
-                                                ON us_pertany_grup.nomG = priv_de_grup.nomG
-                                                GROUP BY persona.email, us_pertany_grup.nomG";
+                                                ON usuaris.grup = priv_de_grup.nomG
+                                                GROUP BY persona.email, usuaris.grup";
                         
                         $resultadoUsuaris = mysqli_query($conn, $cadenaUsuaris);
                         
