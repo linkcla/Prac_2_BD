@@ -11,10 +11,10 @@ $conn = Conexion::getConnection();
         $idConfig = $_POST['idConfig'];
 
         $dominio = $_POST['dominio'];
-        $sql = "SELECT domini FROM SAAS WHERE domini = '$dominio'";
+        $sql = "SELECT domini FROM SAAS WHERE domini = '$dominio' AND idConfig != '$idConfig'";
         $result = mysqli_query($conn, $sql);
 
-        if (mysqli_num_rows($result) > 0 && $dominio != $domini) {
+        if (mysqli_num_rows($result) > 0 ) {
             $msg = "El dominio ya existe. Por favor, elige otro ";
             $_SESSION["error_msg"] = $msg;
             header("Location: ./servicesSaaSViewform.php");
@@ -54,7 +54,7 @@ $conn = Conexion::getConnection();
             header("Location: ./servicesSaaSViewform.php");
             die($msg);
         }
-
+        
         // Si arriba aquí ha anat be.
         $msg = "Dades modificades correctament.";
         $_SESSION["success_msg"] = $msg;

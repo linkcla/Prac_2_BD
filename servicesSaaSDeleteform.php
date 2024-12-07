@@ -94,7 +94,7 @@ if (isset($_SESSION['error_msg'])) {
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Visualizar
+                Servicios SaaS - Eliminar
             </h2>
             <form>
                 <div class="container">
@@ -113,39 +113,22 @@ if (isset($_SESSION['error_msg'])) {
                     <thead>
                         <tr>
                             <th>Seleccionar</th>
-                            <th>ID Configuración</th>
-                            <th>Dominio</th>
-                            <th>Fecha Creación</th>
-                            <th>Modulo CMS</th>
-                            <th>CDN</th>
-                            <th>SSL</th>
-                            <th>SGBD</th>
-                            <th>RAM</th>
-                            <th>DD</th>
+                            <th>Test 
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $cadenaContracte = "SELECT * FROM SAAS";
-                        $resultadoContracte = mysqli_query($conn, $cadenaContracte);
+                        $cadenaTest = "SELECT nom FROM TEST";
+                        $resultadoContracte = mysqli_query($conn, $cadenaTest);
 
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
-                            $value = $rowContracte['idConfig'] . '|' . $rowContracte['domini'] . '|' . $rowContracte['dataCreacio'] . '|' . $rowContracte['tipusMCMS'] . '|' . 
-                            $rowContracte['tipusCDN'] . '|' . $rowContracte['tipusSSL'] . '|' . $rowContracte['tipusSGBD'] . '|' . $rowContracte['tipusRam'] . '|' . $rowContracte['GBRam'] . '|' . $rowContracte['tipusDD'] . '|' . $rowContracte['GBDD'];
+                            $value = $rowContracte['nom'];
 
                             echo "<tr>
                                 <td>
-                                    <input type='checkbox' name='selectedRows[]' value='{$value}'>
+                                    <input type='checkbox' name='selectedRows' value='{$value}'>
                                 </td>
-                                <td>{$rowContracte['idConfig']}</td>
-                                <td>{$rowContracte['domini']}</td>
-                                <td>{$rowContracte['dataCreacio']}</td>
-                                <td>{$rowContracte['tipusMCMS']}</td>
-                                <td>{$rowContracte['tipusCDN']}</td>
-                                <td>{$rowContracte['tipusSSL']}</td>
-                                <td>{$rowContracte['tipusSGBD']}</td>
-                                <td>{$rowContracte['tipusRam']} - {$rowContracte['GBRam']} GB</td>
-                                <td>{$rowContracte['tipusDD']} - {$rowContracte['GBDD']} GB</td>
+                                <td>{$rowContracte['nom']}</td>
                             </tr>";
                         }
                         ?>
@@ -164,6 +147,162 @@ if (isset($_SESSION['error_msg'])) {
                 }
             </script>
         </div>
+    
+        <div class="container">
+            <h2>Componentes SAAS</h2>
+            <!-- Tabla para tipusMCMS -->
+            <h3>tipusMCMS</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusMCMS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusMCMS FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusMCMS']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para tipusCDN -->
+            <h3>tipusCDN</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusCDN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusCDN FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusCDN']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para tipusSSL -->
+            <h3>tipusSSL</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusSSL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusSSL FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusSSL']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para tipusSGBD -->
+            <h3>tipusSGBD</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusSGBD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusSGBD FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusSGBD']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para tipusRam -->
+            <h3>tipusRam</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusRam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusRam FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusRam']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para GBRam -->
+            <h3>GBRam</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>GBRam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT GBRam FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['GBRam']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para tipusDD -->
+            <h3>tipusDD</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>tipusDD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT tipusDD FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['tipusDD']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Tabla para GBDD -->
+            <h3>GBDD</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>GBDD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT DISTINCT GBDD FROM SAAS";
+                    $result = mysqli_query($conn, $sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr><td>{$row['GBDD']}</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
     </section>
 
     <!-- end about section -->

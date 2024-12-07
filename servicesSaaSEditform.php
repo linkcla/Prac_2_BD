@@ -120,16 +120,15 @@ list(
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>
         </div>
        
         <div class="container">
-            <div class="row d-flex">
+            <div class="">
                 <!-- Columna izquierda: Formulario de selección -->
-                <div class="col-md-8">
+                <div class="">
                     <form action="servicesSaaSEditBD.php " method="POST" onsubmit="return validateForm()">
 
                         <!-- CMS -->
@@ -155,10 +154,11 @@ list(
                             ?>
 
                             <div class="form-group">
-                                <select name="tipo_cms" id="tipo_cms" class="form-control" >
-                                    <option value="">Selecciona Modulo CMS</option>
+                                <label for="cms">MODULOS CMS: </label>
+                                <select name="tipo_cms" id="tipo_cms"  class="form-control" >
+                                    <option value="<?php echo $tipusMCMS; ?>"><?php echo $tipusMCMS; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus FROM MODUL_CMS";
+                                    $cadena = "SELECT DISTINCT tipus FROM MODUL_CMS WHERE tipus NOT IN ('$tipusMCMS')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $selected = '';
@@ -204,10 +204,11 @@ list(
                             ?>
 
                             <div class="form-group">
+                                <label for="cdn">CDN: </label>
                                 <select name="tipo_cdn" id="tipo_cdn" class="form-control" >
-                                    <option value="">Selecciona Shared Content Delivery Network (CDN)</option>
+                                    <option value="<?php echo $tipusCDN; ?>"><?php echo $tipusCDN; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus FROM CDN";
+                                    $cadena = "SELECT DISTINCT tipus FROM CDN WHERE tipus NOT IN ('$tipusCDN')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $selected = '';
@@ -253,10 +254,11 @@ list(
                             ?>
 
                             <div class="form-group">
+                                <label for="ssl">CERTIFICAT SSL: </label>
                                 <select name="tipo_ssl" id="tipo_ssl" class="form-control" >
-                                    <option value="">Selecciona certificado SSL</option>
+                                    <option value="<?php echo $tipusSSL; ?>"><?php echo $tipusSSL; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus FROM C_SSL";
+                                    $cadena = "SELECT DISTINCT tipus FROM C_SSL WHERE tipus NOT IN ('$tipusSSL')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $selected = '';
@@ -300,10 +302,11 @@ list(
                             ?>
 
                             <div class="form-group">
+                                <label for="sgbd">SISTEMA DE GESTION DE BASE DE DATOS: </label>
                                 <select name="tipo_sgbd" id="tipo_sgbd" class="form-control" >
-                                    <option value="">Selecciona Sistema de gestión de bases de datos</option>
+                                    <option value="<?php echo $tipusSGBD; ?>"><?php echo $tipusSGBD; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus FROM SIST_GESTIO_BD";
+                                    $cadena = "SELECT DISTINCT tipus FROM SIST_GESTIO_BD WHERE tipus NOT IN ('$tipusSGBD')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $selected = '';
@@ -345,21 +348,18 @@ list(
                                     while ($row = $resultado->fetch_assoc()) {
                                         $ramOptions[] = $row;
                                     }
-
-                                    $cadena = "SELECT preu FROM RAM WHERE tipus = '$tipoRam' AND GB = '$gbRam'";
-                                    $resultado = mysqli_query($conn, $cadena);
-                                    if ($row = $resultado->fetch_assoc()) {
-                                        $precioRam = $row['preu'];
-                                    }
                                 }
                             }
+                            list($tipusram, $GBram) = explode(' - ', $ram);
+                            $tipusGBram =$tipusram . '|' . $GBram;
                             ?>
-
                             <div class="form-group">
+                                <label for="ram">RAM: </label>
                                 <select name="tipo_gb_ram" id="tipo_gb_ram" class="form-control" >
-                                    <option value="">Selecciona Tipo y GB de RAM</option>
+                                    
+                                    <option value="<?php echo $tipusGBram; ?>"><?php echo $ram; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus, GB FROM RAM";
+                                    $cadena = "SELECT DISTINCT tipus, GB FROM RAM WHERE tipus NOT IN ('$tipusram') AND GB NOT IN ('$GBram')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $value = $row['tipus'] . '|' . $row['GB'];
@@ -394,21 +394,18 @@ list(
                                     while ($row = $resultado->fetch_assoc()) {
                                         $discDurOptions[] = $row;
                                     }
-
-                                    $cadena = "SELECT preu FROM DISC_DUR WHERE tipus = '$tipoDiscDur' AND GB = '$gbDiscDur'";
-                                    $resultado = mysqli_query($conn, $cadena);
-                                    if ($row = $resultado->fetch_assoc()) {
-                                        $precioDiscDur = $row['preu'];
-                                    }
                                 }
                             }
+                            list($tipusdd, $GBdd) = explode(' - ', $disc);
+                            $tipusGBdd =$tipusdd . '|' . $GBdd;
                             ?>
 
                             <div class="form-group">
+                                <label for="dd">DISC DUR: </label>
                                 <select name="tipo_gb_disc_dur" id="tipo_gb_disc_dur" class="form-control" >
-                                    <option value="">Selecciona Tipo y GB de DISC DUR</option>
+                                    <option value="<?php echo $tipusGBdd; ?>"><?php echo $disc; ?></option>
                                     <?php
-                                    $cadena = "SELECT DISTINCT tipus, GB FROM DISC_DUR";
+                                    $cadena = "SELECT DISTINCT tipus, GB FROM DISC_DUR WHERE tipus NOT IN ('$tipusdd') AND GB NOT IN ('$GBdd')";
                                     $resultado = mysqli_query($conn, $cadena);
                                     while ($row = $resultado->fetch_assoc()) {
                                         $value = $row['tipus'] . '|' . $row['GB'];
@@ -427,69 +424,19 @@ list(
                         <fieldset>
                             <div class="form-group1">
                                     <label for="dominio">Dominio: </label>
-                                    <input name="dominio" placeholder="  miejemplo.com" type="text" required />
+                                    <input name="dominio" placeholder="  miejemplo.com" value="<?php echo $domini; ?>"  type="text" required />
                             </div>
                         </fieldset>
 
-                        <!-- añadir más componentes -->
                         
-                        
-
                         <div class="container">
                             <!-- Campos ocultos para pasar los valores -->
-                            <input type="hidden" name="idConfig" value="<?php echo htmlspecialchars($idConfig); ?>">
-
-
+                            <input type="hidden" name="idConfig" value="<?php echo ($idConfig); ?>">
                             <button type="submit" class="btn btn-primary" name="crearbut">Guardar Productos</button>
                         </div>
                     </form>
-                    <script>
-                        function validateForm() {
-                            const tipoCms = document.getElementById('tipo_cms').value;
-                            const tipoCdn = document.getElementById('tipo_cdn').value;
-                            const tipoSsl = document.getElementById('tipo_ssl').value;
-                            const tipoSgbd = document.getElementById('tipo_sgbd').value;
-                            const tipoGbRam = document.getElementById('tipo_gb_ram').value;
-                            const tipoGbDiscDur = document.getElementById('tipo_gb_disc_dur').value;
-
-                            if (tipoCms === '' || tipoCdn === '' || tipoSsl === '' || tipoSgbd === '' || tipoGbRam === '' || tipoGbDiscDur === '') {
-                                alert('Por favor, selecciona una opción en todos los menús desplegables.');
-                                return false;
-                            }
-                            return true;
-                        }
-                    </script>
                 </div>
-                <!-- Columna derecha: Resumen de selección -->
-                <div class="col-md-4">
-                    <div class="sticky-top">
-                        <h4 class="text-center">Producto actual</h4>
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                CMS: <?php echo $tipusMCMS ?>
-                            </li>
-                            <li class="list-group-item">
-                                CDN: <?php echo $tipusCDN?>
-                            </li>
-                            <li class="list-group-item">
-                                SSL: <?php echo $tipusSSL?>
-                            </li>
-                            <li class="list-group-item">
-                                SGBD: <?php echo $tipusSGBD?>
-                            </li>
-                            <li class="list-group-item">
-                                RAM: <?php echo $ram?>
-                            </li>
-                            <li class="list-group-item">
-                                DISC DUR: <?php echo $disc?>
-                            </li>
-                            <li class="list-group-item">
-                                DOMINIO: <?php echo $domini?>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </div>
+                
             </div>
         </div>
 

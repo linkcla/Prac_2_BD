@@ -24,6 +24,17 @@ $conn = Conexion::getConnection();
                                 header("Location: ./servicesSaaSTestform.php");
                                 die($message);
                             }
+                            
+                            // Persona que ha creado el test
+                            $emailCreador = $_SESSION["email"];
+                            $insert_query_saas = "INSERT INTO PERSONAL_REALITZA_TEST (emailP, nomT) VALUES ('$emailCreador', '$testName');";
+                            $result_saas = mysqli_query($conn, $insert_query_saas);
+                            if (!$result_saas) {
+                                $msg = "Error al intentar crear el test, no se ha podido añadir la persona que lo ha creado";
+                                $_SESSION["error_msg"] = $msg;
+                                header("Location: ./servicesSaaSCreateform.php");
+                                die($msg);
+                            }
 
                             $message = "Test creat.";
                             $_SESSION["success_msg"] = $message;
@@ -51,6 +62,14 @@ $conn = Conexion::getConnection();
                     
                         if(mysqli_num_rows($result_test) != 0 && mysqli_num_rows($result_estat) == 0) {
                             // Eliminar el  test
+                            $deleteQuery = "DELETE FROM PERSONAL_REALITZA_TEST WHERE nomT = '$testName'";
+                            if(mysqli_query($conn, $deleteQuery) == false) {
+                                $message = "Error al eliminar el test.";
+                                $_SESSION["error_msg"] = $message;
+                                header("Location: ./servicesSaaSTestform.php");
+                                die($message);
+                            }
+
                             $deleteQuery = "DELETE FROM TEST WHERE nom = '$testName'";
                             if(mysqli_query($conn, $deleteQuery) == false) {
                                 $message = "Error al eliminar el test.";
@@ -90,6 +109,63 @@ $conn = Conexion::getConnection();
                             die($message);
                         };
                         $message = "Estado actualizado.";
+                        $_SESSION["success_msg"] = $message;
+                        header("Location: ./servicesSaaSTestform.php");
+                        die($message);
+                    }
+
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['elimarTestProd'])) {
+                        
+                        list($idConfig, $testNom) = explode('|', $_POST['selectedRow']);
+                        $deleteQuery = "DELETE FROM ESTAT WHERE idConfigProducte = '$idConfig' AND nomT = '$testNom'";
+                        if (!mysqli_query($conn, $deleteQuery)) {
+                            $message = "Error al eliminar el producto de estat.";
+                            $_SESSION["error_msg"] = $message;
+                            header("Location: ./servicesSaaSViewform.php");
+                            die($message);
+                        }
+                        $message = "Test eliminado del producto.";
+                        $_SESSION["success_msg"] = $message;
+                        header("Location: ./servicesSaaSTestform.php");
+                        die($message);
+                    }
+
+
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['añadirEstadoTesT'])) {
+                        // Procesar creación de nuevo test
+                        $idConfig = $_POST['idProd'];
+                        $testName = $_POST['noms']; 
+                        
+                        // Comprobar que el id es correcto
+                        $selectQueryProducte = "SELECT IdConfig FROM PRODUCTE WHERE idConfig='$idConfig';";
+                        $result= mysqli_query($conn, $selectQueryProducte);
+                        if(mysqli_num_rows($result) == 0) {
+                            $message = "Error al añadir el test. El id no es correcto.";
+                            $_SESSION["error_msg"] = $message;
+                            header("Location: ./servicesSaaSTestform.php");
+                            die($message);
+                        }
+
+                        // Verificar si el test ya esta añadido
+                        $selectQueryEstat = "SELECT estat FROM ESTAT WHERE idConfigProducte='$idConfig' AND nomT='$testName';";
+                        $result= mysqli_query($conn, $selectQueryEstat);
+                        if(mysqli_num_rows($result) > 0) {
+                            $message = "Error al añadir el test. El producto ya tiene el test asignado.";
+                            $_SESSION["error_msg"] = $message;
+                            header("Location: ./servicesSaaSTestform.php");
+                            die($message);
+                        }
+
+                        $insertQueryEstat = "INSERT INTO ESTAT (estat, nomT, idConfigProducte) VALUES ('Pendent', '$testName', '$idConfig');";
+                        $result= mysqli_query($conn, $insertQueryEstat);
+                        if(!$result) {
+                            $message = "Error al añadir el test.";
+                            $_SESSION["error_msg"] = $message;
+                            header("Location: ./servicesSaaSTestform.php");
+                            die($message);
+                        }
+                    
+                        $message = "Test asignado correctamente.";
                         $_SESSION["success_msg"] = $message;
                         header("Location: ./servicesSaaSTestform.php");
                         die($message);

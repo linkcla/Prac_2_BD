@@ -101,7 +101,6 @@ if (isset($_SESSION['error_msg'])) {
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>
@@ -123,7 +122,7 @@ if (isset($_SESSION['error_msg'])) {
                         </form>
                     </div>
                     <div class="container d-flex justify-content-center align-items-center">
-                        <form action="servicesSaaSTestBD.php" method="POST">
+                        <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm1()">
                             <div class="form-row align-items-center2">
                                 <div class="col-auto1">
                                         <?php
@@ -170,12 +169,22 @@ if (isset($_SESSION['error_msg'])) {
                                 </div>
                             </div>
                         </form>
+                        <script>
+                            function validateForm1() {
+                            const selectElement = document.getElementById('noms');
+                            if (selectElement.value === '') {
+                                alert('Por favor, selecciona un test para eliminar.');
+                                return false;
+                            }
+                            return true;
+                            }
+                        </script>
                     </div>
                 </div>
             
         </div>
         <div class="container">
-            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm()">
+            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm(event)">
             
                         <!-- Tabla para mostrar los datos de CONTRACTE -->
                         <table class="table table-striped">
@@ -195,8 +204,8 @@ if (isset($_SESSION['error_msg'])) {
                                     TEST.nom AS testNom,
                                     ESTAT.estat AS testEstat
                                 FROM SAAS
-                                LEFT JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
-                                LEFT JOIN TEST ON ESTAT.nomT = TEST.nom
+                                INNER JOIN ESTAT ON SAAS.idConfig = ESTAT.idConfigProducte
+                                INNER JOIN TEST ON ESTAT.nomT = TEST.nom
                                 ORDER BY SAAS.idConfig, TEST.nom
                                 ";
                                 
@@ -210,7 +219,7 @@ if (isset($_SESSION['error_msg'])) {
                                     $value = $rowContracte['idConfig'] . '|' . $rowContracte['testNom'];
                                     echo "<tr>
                                         <td>
-                                            <input type='radio' name='selectedRow' value='{$value}'>
+                                            <input type='radio' id='selectedRow' name='selectedRow' value='{$value}'>
                                         </td>
                                         <td>{$rowContracte['idConfig']}</td>
                                         <td>{$rowContracte['testNom']}</td>
@@ -242,7 +251,7 @@ if (isset($_SESSION['error_msg'])) {
                                      }
                                     ?>
                                     
-                                    <select name="nomsestats" id="nomsestats" class="form-control">
+                                    <select name="nomsestats" id="estat" class="form-control">
                                         <option value="">Selecciona un Estado</option>
                                         <?php
                                         $sql = "SELECT DISTINCT estat FROM ESTAT";
@@ -266,26 +275,97 @@ if (isset($_SESSION['error_msg'])) {
                                 </div>   
                                 <div class="col-auto2">
                                     <button type="submit" class="btn btn-primary mb-3" name="editEstat">Actualizar Estado Test</button>
+                                    <button type="submit" class="btn btn-primary mb-3" name="elimarTestProd">Eliminar Test del Producto</button>
                                 </div>
                             </div>
                         </div>
                 </form>
                 <script>
                 function validateForm() {
-                    const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
-                    const selectedState = document.getElementById('nomsestats').value;
-                    if (!selectedRow) {
-                        alert('Por favor, selecciona un registro.');
-                        return false;
-                    }
-                    if (selectedState === '') {
-                        alert('Por favor, selecciona un estado.');
-                        return false;
+                    const testSelect = document.getElementById('input[name="selectedRow"]:checked');
+                    const estatSelect = document.getElementById('estat');
+                    const buttonClicked = event.submitter.name;
+
+                    if (buttonClicked === 'editEstat') {
+                        if (!selectedRow || estatSelect.value === '') {
+                            alert('Por favor, selecciona un producto y un estado.');
+                            return false;
+                        }
+                    } else if (buttonClicked === 'elimarTestProd') {
+                        if (!selectedRow) {
+                            alert('Por favor, selecciona un producto.');
+                            return false;
+                        }
                     }
                     return true;
                 }
                 </script>
             
+        </div>
+        <div class="card p-4" style="width: 100%;">
+            <div class="container d-flex justify-content-center align-items-center ">
+            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm2()">
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <input type="text" class="form-control mb-2" id="idProd" name="idProd" placeholder="Id del producto" required>
+                    </div>
+                    <div class="col-auto">
+                        <?php
+                        $testOptions = [];
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                            if (isset($_POST['noms'])) {
+                                $testnom = $_POST['noms'];
+                            } else {
+                                $testnom = '';
+                            }
+                            if ($testnom !== '') {
+                                $cadena = "SELECT * FROM TEST WHERE nom = '$testnom'";
+                                $resultado = mysqli_query($conn, $cadena);
+                                while ($row = $resultado->fetch_assoc()) {
+                                    $testOptions[] = $row;
+                                }
+                            }
+                        }
+                        ?>
+
+                        <select name="noms" id="nomsIns" class="form-control">
+                            <option value="">Selecciona Test a Añadir</option>
+                            <?php
+                            $cadena = "SELECT DISTINCT nom FROM TEST";
+                            $resultado = mysqli_query($conn, $cadena);
+                            while ($row = $resultado->fetch_assoc()) {
+                                $selected = '';
+                                if (isset($testnom)) {
+                                    if ($row['nom'] === $testnom) {
+                                        $selected = 'selected';
+                                    }
+                                } else {
+                                    if ($row['nom'] === '') {
+                                        $selected = 'selected';
+                                    }
+                                }
+                                echo "<option value='" . $row['nom'] . "' $selected>" . $row['nom'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>   
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3" name="añadirEstadoTesT">Añadir Test a un Producto</button>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+            function validateForm2() {
+                const testSelect = document.getElementById('nomsIns');
+                if (testSelect.value === '') {
+                    alert('Por favor, selecciona un test para añadir.');
+                    return false;
+                }
+                return true;
+            }
+            </script>
+            </div>
         </div>
     </section>
 
