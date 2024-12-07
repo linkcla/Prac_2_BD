@@ -1,5 +1,5 @@
 <!-- @Author: Hai Zi Bibiloni Trobat -->
-
+ 
 <?php session_start();
 include "conexion.php";
 $conn = Conexion::getConnection();  
@@ -23,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $original = $result->fetch_assoc();
     } else {
         $_SESSION["error_msg"] = "Usuario no encontrado.";
-        header("Location: servicesAdminform.php");
+        header("Location: servicesUsuariform.php");
         exit();
     }
 
     // Comprobar si los datos han cambiado
     if ($nom === $original['nom'] && $cognom === $original['cognom'] && $contrasenya === $original['contrasenya']) {
         $_SESSION["info_msg"] = "No s'ha actualitzat res, mateixes dades.";
-        header("Location: servicesAdminform.php");
+        header("Location: servicesUsuariform.php");
         exit();
     }
 
@@ -57,11 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     }
 
     $_SESSION["success_msg"] = "Usuario actualizado correctamente.";
-    header("Location: servicesAdminform.php");
+    header("Location: servicesUsuariform.php");
     exit();
 } else {
     $_SESSION["error_msg"] = "No se ha podido actualizar el usuario.";
-    header("Location: servicesAdminform.php");
+    header("Location: servicesUsuariform.php");
     exit();
 }
 ?>

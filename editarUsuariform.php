@@ -1,4 +1,4 @@
-<!-- @Author: Hai Zi Bibiloni Trobat -->
+<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
 
 <?php session_start() ;
 include "conexion.php";
@@ -6,16 +6,15 @@ $conn = Conexion::getConnection();
 
 if (!isset($_POST['email'])) {
     $_SESSION["error_msg"] = "No se ha seleccionado ningún usuario.";
-    header("Location: servicesAdminform.php");
+    header("Location: servicesUsuariform.php");
     exit();
 }
 
 $email = $_POST['email'];
 
 // Obtener los datos del usuario seleccionado
-$sql = "SELECT p.nom, p.cognom, p.contrasenya, u.email, u.nomOrg, g.nomG FROM USUARI u
+$sql = "SELECT p.nom, p.cognom, p.contrasenya, u.email, u.nomOrg, u.grup AS nomG FROM USUARI u
         JOIN PERSONA p ON u.email = p.email
-        LEFT JOIN US_PERTANY_GRU g ON u.email = g.emailU
         WHERE u.email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
@@ -26,7 +25,7 @@ if ($result->num_rows > 0) {
     $usuario = $result->fetch_assoc();
 } else {
     $_SESSION["error_msg"] = "Usuario no encontrado.";
-    header("Location: servicesAdminform.php");
+    header("Location: servicesUsuariform.php");
     exit();
 }
 
