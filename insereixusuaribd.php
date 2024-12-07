@@ -11,6 +11,7 @@
     $email = $_POST['email'];
     //$contrasenya = hash('sha256', $_POST['contrasenya']);
     $contrasenya = $_POST['contrasenya'];
+    //$grup = $_POST['grup'];
     //$nomOrg = $_POST['nomOrg'];
 
     include "conexion.php";
@@ -29,7 +30,7 @@
     //}    
 
     // Verificar si el usuari existeix
-    $sql_check_p = "SELECT email, nom, cognom, contrasenya FROM PERSONA WHERE email = '$email'";
+    $sql_check_p = "SELECT email FROM PERSONA WHERE email = '$email'";
     $result_p = mysqli_query($con, $sql_check_p);
 
     if (!$result_p || mysqli_num_rows($result_p) == 0) 
@@ -44,7 +45,7 @@
         }
 
         // Insertar persona a la taula USUARI
-        $cadena_usuari = "INSERT INTO USUARI (email, nomOrg) VALUES ('$email', NULL)";
+        $cadena_usuari = "INSERT INTO USUARI (email, nomOrg, grup) VALUES ('$email', NULL, NULL)";
         if(mysqli_query($con, $cadena_usuari) == false) {
             $message = "Error al crear l'usuari.";
             echo "<script type='text/javascript'>alert('$message'); window.location.href='insereixusuariform.php';</script>";
