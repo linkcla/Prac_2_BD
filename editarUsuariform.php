@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Hai Zi Bibiloni Trobat -->
 
 <?php session_start() ;
 include "conexion.php";
@@ -145,19 +145,7 @@ if ($result->num_rows > 0) {
                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">Mostrar</button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="nomOrg">Nom organització:</label>
-                            <input type="text" class="form-control" id="nomOrg" name="nomOrg" value="<?php echo $usuario['nomOrg']; ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nomG">Grup:</label>
-                            <select class="form-control form-control-lg" id="nomG" name="nomG" required>
-                                <?php foreach ($grupos as $grupo): ?>
-                                    <option value="<?php echo htmlspecialchars($grupo); ?>" <?php echo ($grupo == $usuario['nomG']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($grupo); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                        </div>                        
                         <button type="submit" class="btn btn-primary">Actualizar</button>
                     </form>
                 </div>
