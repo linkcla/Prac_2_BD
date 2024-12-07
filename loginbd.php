@@ -39,9 +39,19 @@ else
 
         // Guardam els permissos que te cada persona, si es personal tendrà tots els permisos
         if ($bool_es_usuari) {
+            // Mirar si pertany a algun grup
+            $query = "SELECT nomOrg FROM usuari WHERE email = '{$locemail}'";
+            $result = mysqli_query($conn, $query);
+            if (!$result || $result->fetch_assoc()['nomOrg'] == NULL) {
+                $msg = "El usuario no pertenece a ninguna organización, contacte con el administrador de tu organización para que te añada a un grupo.";
+                $_SESSION["error_msg"] = $msg;
+                header("Location: ./loginform.php");
+                die($msg);
+            }
+
             $cadena = "SELECT tipusPriv 
                        FROM priv_de_grup as pdg 
-                       JOIN us_pertany_gru as upg 
+                       JOIN us_pertany_grup as upg 
                        ON pdg.nomG = upg.nomG and upg.emailU = '{$locemail}'";
             $result = mysqli_query($conn, $cadena);
             $_SESSION["permisos"] = array();
