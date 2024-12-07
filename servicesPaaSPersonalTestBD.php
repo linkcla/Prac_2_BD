@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcionTest = $_POST['descripcion_test'];
         $fechaCreacion = date('Y-m-d');
         $idConfigProducte = $_POST['idConfigProducte'];
+        $emailP = $_SESSION['email']; // Obtener el email del personal desde la sesión
 
         // Verificar si todos los campos están rellenados
         if (empty($nombreTest) || empty($descripcionTest) || empty($idConfigProducte)) {
@@ -37,17 +38,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (mysqli_num_rows($result) > 0) {
                         $_SESSION["error_msg"] = "El producto PaaS seleccionado ya tiene un test asociado.";
                     } else {
+                        // Iniciar transacción
+                        mysqli_begin_transaction($conn);
+
                         // Insertar nuevo test
                         $query = "INSERT INTO TEST (nom, descripcio, dataCreacio) VALUES ('$nombreTest', '$descripcionTest', '$fechaCreacion')";
                         if (mysqli_query($conn, $query)) {
                             // Insertar estado inicial del test
                             $query = "INSERT INTO ESTAT (estat, nomT, idConfigProducte) VALUES ('Pendent', '$nombreTest', $idConfigProducte)";
                             if (mysqli_query($conn, $query)) {
-                                $_SESSION["success_msg"] = "Test creado exitosamente.";
+                                // Insertar registro en PERSONAL_REALITZA_TEST
+                                $query = "INSERT INTO PERSONAL_REALITZA_TEST (emailP, nomT) VALUES ('$emailP', '$nombreTest')";
+                                if (mysqli_query($conn, $query)) {
+                                    mysqli_commit($conn);
+                                    $_SESSION["success_msg"] = "Test creado exitosamente.";
+                                } else {
+                                    mysqli_rollback($conn);
+                                    $_SESSION["error_msg"] = "Error al registrar la realización del test.";
+                                }
                             } else {
+                                mysqli_rollback($conn);
                                 $_SESSION["error_msg"] = "Error al crear el estado del test.";
                             }
                         } else {
+                            mysqli_rollback($conn);
                             $_SESSION["error_msg"] = "Error al crear el test.";
                         }
                     }
@@ -68,14 +82,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['eliminar_test'])) {
         $nombreTest = $_POST['nombre_test_seleccionado'];
 
-        // Eliminar test
-        $query = "DELETE FROM ESTAT WHERE nomT = '$nombreTest'";
-        mysqli_query($conn, $query);
+        // Iniciar transacción
+        mysqli_begin_transaction($conn);
 
+        // Eliminar registros de PERSONAL_REALITZA_TEST
+        $query = "DELETE FROM PERSONAL_REALITZA_TEST WHERE nomT = '$nombreTest'";
+        if (!mysqli_query($conn, $query)) {
+            mysqli_rollback($conn);
+            $_SESSION["error_msg"] = "Error al eliminar los registros de PERSONAL_REALITZA_TEST.";
+            header("Location: servicesPaaSPersonalTestform.php");
+            exit();
+        }
+
+        // Eliminar registros de ESTAT
+        $query = "DELETE FROM ESTAT WHERE nomT = '$nombreTest'";
+        if (!mysqli_query($conn, $query)) {
+            mysqli_rollback($conn);
+            $_SESSION["error_msg"] = "Error al eliminar los registros de ESTAT.";
+            header("Location: servicesPaaSPersonalTestform.php");
+            exit();
+        }
+
+        // Eliminar registros de TEST
         $query = "DELETE FROM TEST WHERE nom = '$nombreTest'";
         if (mysqli_query($conn, $query)) {
+            mysqli_commit($conn);
             $_SESSION["success_msg"] = "Test eliminado exitosamente.";
         } else {
+            mysqli_rollback($conn);
             $_SESSION["error_msg"] = "Error al eliminar el test.";
         }
     }
