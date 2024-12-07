@@ -8,7 +8,7 @@ session_start();
 require_once "conexion.php";
 $conn = Conexion::getConnection();
 
-$_SESSION['nomOrg'] = $_POST['nomOrg'];
+
 // Agafar l'email de l'usuari a eliminar
 $email = $_POST['selectedRow'];
 
@@ -23,8 +23,8 @@ if (!$result) {
     die($msg);
 }
 
-// Actualitzar els permisos del grup/s al que pertanyia l'usuari
-$query = "DELETE FROM us_pertany_grup WHERE emailU = '{$email}'";
+// Actualitzar els permisos del grup al que pertanyia l'usuari
+$query = "UPDATE usuari SET grup = NULL WHERE email = '{$email}'";
 $result = mysqli_query($conn, $query);
 if (!$result) {
     $msg = "Error al intentar eliminar els permisos de l'usuari";
