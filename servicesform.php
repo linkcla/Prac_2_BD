@@ -152,12 +152,12 @@
             <div class="about-detail">
               <div class="about_img-container">
                 <div class="about_img-box">
-                  <a href="servicesPaaSPersonalform.php"><img src="images/work3.png" alt="" /></a>
+                  <a href="servicesPaaSPersonalInicioEditform.php"><img src="images/work3.png" alt="" /></a>
                 </div>
               </div>
               <div class="card_detail-ox">
                 <h4>
-                  <a href="servicesPaaSPersonalform.php">Servicios PaaS</a>
+                  <a href="servicesPaaSPersonalInicioEditform.php">Servicios PaaS</a>
                 </h4>
                 
               </div>
