@@ -1,10 +1,8 @@
-<!-- Author: Marc -->
-<?php
-session_start();
-require_once "conexion.php";
-$conn = Conexion::getConnection();
+<!-- @Author: Marc -->
 
-$email = $_POST['selectedRow'];
+<?php session_start();
+include "conexion.php";
+$conn = Conexion::getConnection();
 ?>
 
 <html>
@@ -71,10 +69,10 @@ $email = $_POST['selectedRow'];
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSfPersonalorm.php">PaaS</a>
-                            </div>  
+                            </div>
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>                       
+                            </div>
                         </div>
                     </div>
                 </nav>
@@ -92,9 +90,7 @@ $email = $_POST['selectedRow'];
             </h2>
             <form>
                 <div class="container">
-                <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="gestUsForm.php">Tornar arrera</button>
-                </div>
+                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
                 </div>
             </form>
         </div>
@@ -102,53 +98,36 @@ $email = $_POST['selectedRow'];
 
     <section>
         <div class="container">
-            <form id="formulari" action="editarOrg.php" method="post">
-                <?php
-                    $select = "SELECT nom FROM grup";
-                    $resultGrups = mySQLi_query($conn, $select);
-                    if (!$resultGrups) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
+            <form action="crearGrupAmbPermisos.php" method="post">
+                <br>
+                <h2>Crear un grup</h2>
 
-                    $select = "SELECT grup FROM usuari WHERE email = '$email'";
-                    $resultGrupUsuari = mySQLi_query($conn, $select);
-                    if (!$resultGrupUsuari) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
-                    $grupUsuari = mySQLi_fetch_assoc($resultGrupUsuari)['grup'];
-                ?>
-                
-
-                <h2><?php echo "Editant el grup de l'usuari amb email: $email"; ?></h2>
                 <div class="form-group">
-                    <input type="hidden" name="email" value="<?php echo $email; ?>">
-                    <label for="adreca">Grup:</label>
-                    <select class="form-control" id="grup" name="grup">
-                        <?php
-                        while ($fila = mySQLi_fetch_assoc($resultGrups)) {
-                            $grup = $fila['nom'];
-                            // Si el grupo es el mismo que el del usuario, lo seleccionamos
-                            $selected = ($grup == $grupUsuari) ? 'selected' : '';
-                            echo "<option value='$grup' $selected>$grup</option>";
-                        }
-                        ?>
-                    </select>
+                    <label for="nom">Nom del grup:</label>
+                    <input type="text" id="nom" name="nom" class="form-control" required placeholder="Ej. Administradors">
                 </div>
 
-                <button type="button" class="btn btn-primary mt-3" id="botRealitzarCaviG" name="action" value="delete">Realitzar canvis</button>
+                <div class="form-group">
+                    <label for="privilegis">Privilegis:</label>
+                    <?php
+                    $select = "SELECT tipus FROM PRIVILEGI";
+                    $resultPrivilegis = mySQLi_query($conn, $select);
+                    if (!$resultPrivilegis) {
+                        die('Error: ' . mySQLi_error($conn));
+                    }
+                    while ($fila = mySQLi_fetch_assoc($resultPrivilegis)) {
+                        $privilegi = $fila['tipus'];
+                        echo "<div class='form-check'>
+                                <input class='form-check-input' type='checkbox' name='privilegis[]' value='$privilegi' id='$privilegi'>
+                                <label class='form-check-label' for='$privilegi'>$privilegi</label>
+                              </div>";
+                    }
+                    ?>
+                </div>
+
+                <br>
+                <button type="submit" class="btn btn-primary">Crear</button>
             </form>
-            <script>
-            const form = document.getElementById('formulari');
-            const realitzarCaviG = document.getElementById('botRealitzarCaviG');
-
-            botRealitzarCaviG.addEventListener('click', function() {
-                form.action = 'canviarGrupUsuari.php';
-                form.submit();
-            });
-
-            </script>
         </div>
     </section>
 

@@ -1,10 +1,39 @@
-<!-- Author: Marc -->
-<?php
-session_start();
-require_once "conexion.php";
+<!-- @Author: Marc -->
+
+<?php session_start();
+include "conexion.php";
 $conn = Conexion::getConnection();
 
-$email = $_POST['selectedRow'];
+// Mostrar mnensajes 
+if (isset($_SESSION['error_msg'])) {
+    echo "<script>alert('{$_SESSION['error_msg']}')</script>";
+    unset($_SESSION['error_msg']);
+}
+if (isset($_SESSION['success_msg'])) {
+    echo "<script>alert('{$_SESSION['success_msg']}')</script>";
+    unset($_SESSION['success_msg']);
+}
+
+// Obtener todos los grupos disponibles
+$selectGrups = "SELECT nom FROM GRUP";
+$resultGrups = mysqli_query($conn, $selectGrups);
+
+// Verificar si se ha seleccionado un grupo
+$nomGrup = isset($_GET['nom']) ? $_GET['nom'] : '';
+
+// Obtener los privilegios actuales del grupo seleccionado
+$privilegisActuals = [];
+if ($nomGrup) {
+    $selectPrivilegisActuals = "SELECT tipusPriv FROM PRIV_DE_GRUP WHERE nomG = '$nomGrup'";
+    $resultPrivilegisActuals = mysqli_query($conn, $selectPrivilegisActuals);
+    while ($fila = mysqli_fetch_assoc($resultPrivilegisActuals)) {
+        $privilegisActuals[] = $fila['tipusPriv'];
+    }
+}
+
+// Obtener todos los privilegios disponibles
+$selectPrivilegis = "SELECT tipus FROM PRIVILEGI";
+$resultPrivilegis = mysqli_query($conn, $selectPrivilegis);
 ?>
 
 <html>
@@ -71,10 +100,10 @@ $email = $_POST['selectedRow'];
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSfPersonalorm.php">PaaS</a>
-                            </div>  
+                            </div>
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>                       
+                            </div>
                         </div>
                     </div>
                 </nav>
@@ -92,9 +121,7 @@ $email = $_POST['selectedRow'];
             </h2>
             <form>
                 <div class="container">
-                <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="gestUsForm.php">Tornar arrera</button>
-                </div>
+                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
                 </div>
             </form>
         </div>
@@ -102,53 +129,46 @@ $email = $_POST['selectedRow'];
 
     <section>
         <div class="container">
-            <form id="formulari" action="editarOrg.php" method="post">
-                <?php
-                    $select = "SELECT nom FROM grup";
-                    $resultGrups = mySQLi_query($conn, $select);
-                    if (!$resultGrups) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
-
-                    $select = "SELECT grup FROM usuari WHERE email = '$email'";
-                    $resultGrupUsuari = mySQLi_query($conn, $select);
-                    if (!$resultGrupUsuari) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
-                    $grupUsuari = mySQLi_fetch_assoc($resultGrupUsuari)['grup'];
-                ?>
-                
-
-                <h2><?php echo "Editant el grup de l'usuari amb email: $email"; ?></h2>
+            <form method="get" action="editarGrupForm.php">
                 <div class="form-group">
-                    <input type="hidden" name="email" value="<?php echo $email; ?>">
-                    <label for="adreca">Grup:</label>
-                    <select class="form-control" id="grup" name="grup">
+                    <label for="nom">Seleccionar grup:</label>
+                    <select class="form-control" id="nom" name="nom" onchange="this.form.submit()">
+                        <option value="">Selecciona un grup</option>
                         <?php
-                        while ($fila = mySQLi_fetch_assoc($resultGrups)) {
-                            $grup = $fila['nom'];
-                            // Si el grupo es el mismo que el del usuario, lo seleccionamos
-                            $selected = ($grup == $grupUsuari) ? 'selected' : '';
-                            echo "<option value='$grup' $selected>$grup</option>";
+                        while ($fila = mysqli_fetch_assoc($resultGrups)) {
+                            $selected = ($fila['nom'] == $nomGrup) ? 'selected' : '';
+                            echo "<option value='{$fila['nom']}' $selected>{$fila['nom']}</option>";
                         }
                         ?>
                     </select>
                 </div>
-
-                <button type="button" class="btn btn-primary mt-3" id="botRealitzarCaviG" name="action" value="delete">Realitzar canvis</button>
             </form>
-            <script>
-            const form = document.getElementById('formulari');
-            const realitzarCaviG = document.getElementById('botRealitzarCaviG');
 
-            botRealitzarCaviG.addEventListener('click', function() {
-                form.action = 'canviarGrupUsuari.php';
-                form.submit();
-            });
+            <?php if ($nomGrup): ?>
+            <form action="editarGrupAmbPermisos.php" method="post">
+                <br>
+                <h2>Editant el grup: <?php echo $nomGrup; ?></h2>
 
-            </script>
+                <input type="hidden" name="nom" value="<?php echo $nomGrup; ?>">
+
+                <div class="form-group">
+                    <label for="privilegis">Privilegis:</label>
+                    <?php
+                    while ($fila = mysqli_fetch_assoc($resultPrivilegis)) {
+                        $privilegi = $fila['tipus'];
+                        $checked = in_array($privilegi, $privilegisActuals) ? 'checked' : '';
+                        echo "<div class='form-check'>
+                                <input class='form-check-input' type='checkbox' name='privilegis[]' value='$privilegi' id='$privilegi' $checked>
+                                <label class='form-check-label' for='$privilegi'>$privilegi</label>
+                              </div>";
+                    }
+                    ?>
+                </div>
+
+                <br>
+                <button type="submit" class="btn btn-primary">Guardar canvis</button>
+            </form>
+            <?php endif; ?>
         </div>
     </section>
 

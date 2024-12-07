@@ -1,10 +1,22 @@
-<!-- Author: Marc -->
-<?php
-session_start();
-require_once "conexion.php";
+<!-- @Author: Marc -->
+
+<?php session_start();
+include "conexion.php";
 $conn = Conexion::getConnection();
 
-$email = $_POST['selectedRow'];
+// Verificar si hay un mensaje de error o éxito
+if (isset($_SESSION['success_msg'])) {
+    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+    unset($_SESSION['error_msg']);
+}
+
+// Obtener todos los grupos disponibles
+$selectGrups = "SELECT nom FROM GRUP";
+$resultGrups = mysqli_query($conn, $selectGrups);
 ?>
 
 <html>
@@ -71,10 +83,10 @@ $email = $_POST['selectedRow'];
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSfPersonalorm.php">PaaS</a>
-                            </div>  
+                            </div>
                             <div class="overlay-content">
                                 <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>                       
+                            </div>
                         </div>
                     </div>
                 </nav>
@@ -92,9 +104,7 @@ $email = $_POST['selectedRow'];
             </h2>
             <form>
                 <div class="container">
-                <div class="container">
                     <button type="submit" class="btn btn-primary" formaction="gestUsForm.php">Tornar arrera</button>
-                </div>
                 </div>
             </form>
         </div>
@@ -102,53 +112,25 @@ $email = $_POST['selectedRow'];
 
     <section>
         <div class="container">
-            <form id="formulari" action="editarOrg.php" method="post">
-                <?php
-                    $select = "SELECT nom FROM grup";
-                    $resultGrups = mySQLi_query($conn, $select);
-                    if (!$resultGrups) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
+            <form action="eliminarGrup.php" method="post">
+                <br>
+                <h2>Eliminar grup</h2>
 
-                    $select = "SELECT grup FROM usuari WHERE email = '$email'";
-                    $resultGrupUsuari = mySQLi_query($conn, $select);
-                    if (!$resultGrupUsuari) {
-                        // no debería pasar nunca
-                        die('Error: ' . mySQLi_error($conn));
-                    }
-                    $grupUsuari = mySQLi_fetch_assoc($resultGrupUsuari)['grup'];
-                ?>
-                
-
-                <h2><?php echo "Editant el grup de l'usuari amb email: $email"; ?></h2>
                 <div class="form-group">
-                    <input type="hidden" name="email" value="<?php echo $email; ?>">
-                    <label for="adreca">Grup:</label>
-                    <select class="form-control" id="grup" name="grup">
+                    <label for="grup">Seleccionar grup:</label>
+                    <select class="form-control" id="grup" name="grup" required>
+                        <option value="">Selecciona un grup</option>
                         <?php
-                        while ($fila = mySQLi_fetch_assoc($resultGrups)) {
-                            $grup = $fila['nom'];
-                            // Si el grupo es el mismo que el del usuario, lo seleccionamos
-                            $selected = ($grup == $grupUsuari) ? 'selected' : '';
-                            echo "<option value='$grup' $selected>$grup</option>";
+                        while ($fila = mysqli_fetch_assoc($resultGrups)) {
+                            echo "<option value='{$fila['nom']}'>{$fila['nom']}</option>";
                         }
                         ?>
                     </select>
                 </div>
 
-                <button type="button" class="btn btn-primary mt-3" id="botRealitzarCaviG" name="action" value="delete">Realitzar canvis</button>
+                <br>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
             </form>
-            <script>
-            const form = document.getElementById('formulari');
-            const realitzarCaviG = document.getElementById('botRealitzarCaviG');
-
-            botRealitzarCaviG.addEventListener('click', function() {
-                form.action = 'canviarGrupUsuari.php';
-                form.submit();
-            });
-
-            </script>
         </div>
     </section>
 
