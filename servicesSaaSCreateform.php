@@ -102,7 +102,6 @@ if (isset($_SESSION['error_msg'])) {
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>
@@ -409,6 +408,35 @@ if (isset($_SESSION['error_msg'])) {
                                 }
                                 ?>
                             </select>
+                        </div>
+                    </fieldset>
+
+                    <!-- TEST -->
+                    <fieldset>
+                        <div class="form-group ">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Seleccionar</th>
+                                        <th>Test 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $cadenaTest = "SELECT nom FROM TEST";
+                                    $resultadoContracte = mysqli_query($conn, $cadenaTest);
+                                    while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                                        $value = $rowContracte['nom'];
+                                        echo "<tr>
+                                            <td>
+                                                <input type='checkbox' name='selectedRowstest[]' value='{$value}'>
+                                            </td>
+                                            <td>{$rowContracte['nom']}</td>
+                                        </tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
                         </div>
                     </fieldset>
                     

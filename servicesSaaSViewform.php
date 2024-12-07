@@ -98,20 +98,19 @@ if (isset($_SESSION['error_msg'])) {
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios SaaS - Visualizar
+                Servicios SaaS - Personal
             </h2>
             <form>
                 <div class="container">
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>
         </div>
         <div class="container">
-            <form action="servicesSaaSEditform.php" method="POST" onsubmit="return validateForm()">
+            <form id="formulari" action=" " method="POST">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
@@ -186,17 +185,44 @@ if (isset($_SESSION['error_msg'])) {
                         ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3" name="action" value="delete">Editar Seleccionado</button>
+                <button type="button" class="btn btn-primary mt-3" id="botEditar" name="action" value="editar">Editar Seleccionado</button>
+                <button type="button" class="btn btn-primary mt-3" id="botBorrar" name="action" value="delete">Eliminar Seleccionado</button>
+
             </form>
             <script>
-            function validateForm() {
-                const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
-                if (!selectedRow) {
-                    alert('Por favor, selecciona un producto SaaS.');
-                    return false;
+                const form = document.getElementById('formulari');
+                const botEditar = document.getElementById('botEditar');
+                const botBorrar = document.getElementById('botBorrar');
+
+                // Función para verificar si se seleccionó un radio
+                function isRadioSelected() {
+                    const radios = document.querySelectorAll('input[name="selectedRow"]');
+                    for (let i = 0; i < radios.length; i++) {
+                        if (radios[i].checked) {
+                            return true;  // Si al menos uno está seleccionado
+                        }
+                    }
+                    return false;  // Ningún radio está seleccionado
                 }
-                return true;
-            }
+
+                // Cambiar la acción del formulario dependiendo del botón clicado
+                botEditar.addEventListener('click', function() {
+                    if (isRadioSelected()) {
+                        form.action = 'servicesSaaSEditform.php';
+                        form.submit();
+                    } else {
+                        alert('Por favor, seleccione una organización para editar.');
+                    }
+                });
+
+                botBorrar.addEventListener('click', function() {
+                    if (isRadioSelected()) {
+                        form.action = 'servicesSaaSDeleteBD.php';
+                        form.submit();
+                    } else {
+                        alert('Por favor, seleccione una organización para borrar.');
+                    }
+                });
             </script>
         </div>
     </section>

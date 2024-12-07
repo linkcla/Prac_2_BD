@@ -87,14 +87,13 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout">
         <div class="container">        
             <h2 class="text-uppercase" >
-                Servicios SaaS - Personal
+                Servicios SaaS - Contratos
             </h2>
             <form>    
                 <div class="container">
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
                 </div>
             </form>

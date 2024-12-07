@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Hai Zi Bibiloni Trobat -->
 
 <?php session_start() ;
 include "conexion.php";
@@ -147,8 +147,7 @@ while ($row = $result2->fetch_assoc()) {
             <form id="editForm" action="editarUsuariform.php" method="post" class="d-inline">
                 <button type="submit" id="editarBtn" class="btn btn-primary mx-2" disabled>Editar</button>
                 <input type="hidden" id="selectedEmailEdit" name="email" value="">
-            </form>
-            <a href="crearUsuariform.php" class="btn btn-primary mx-2 d-inline">Crear</a>
+            </form>            
         </div>
 <div class="mt-4"> <!-- Añadido div con clase mt-4 para margen superior -->
     <table class="table table-bordered">
