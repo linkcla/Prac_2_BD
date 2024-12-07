@@ -1,3 +1,4 @@
+<!-- Author: Marc -->
 <?php session_start() ;
 require_once "conexion.php";
 $conn = Conexion::getConnection(); 

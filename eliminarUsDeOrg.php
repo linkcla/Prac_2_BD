@@ -1,3 +1,4 @@
+<!-- Author: Marc -->
 <!-- 
     Aqui poden accedir el Personal i l'usuari que tengui pertanyi al grup d'administrador en la seva organització.
     Descripció: Aquest fitxer s'encarrega d'eliminar un usuari d'una organització.
