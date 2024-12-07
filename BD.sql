@@ -11,10 +11,6 @@ CREATE TABLE PERSONA (
     contrasenya VARCHAR(64) NOT NULL
 );
 
-CREATE TABLE GRUP (
-    nom VARCHAR(128) PRIMARY KEY
-);
-
 CREATE TABLE PRIVILEGI (
     tipus ENUM('Visualizar', 'Borrar', 'Crear', 'Editar') PRIMARY KEY
 );
@@ -86,6 +82,12 @@ CREATE TABLE SO (
 );
 
 -- Taules amb FK
+CREATE TABLE GRUP (
+    nom VARCHAR(128) PRIMARY KEY
+    nomOrg VARCHAR(128),
+    CONSTRAINT fk_grup_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom) ON DELETE CASCADE
+);
+
 CREATE TABLE PERSONAL (
     email VARCHAR(128) PRIMARY KEY,
     dni VARCHAR(9) NOT NULL,
@@ -158,8 +160,8 @@ CREATE TABLE PRIV_DE_GRUP (
     tipusPriv ENUM('Visualizar', 'Borrar', 'Crear', 'Editar'),
     nomG VARCHAR(128),
     PRIMARY KEY (tipusPriv, nomG),
-    CONSTRAINT fk_priv_de_grup_privilegi FOREIGN KEY (tipusPriv) REFERENCES PRIVILEGI(tipus),
-    CONSTRAINT fk_priv_de_grup_grup FOREIGN KEY (nomG) REFERENCES GRUP(nom)
+    CONSTRAINT fk_priv_de_grup_privilegi FOREIGN KEY (tipusPriv) REFERENCES PRIVILEGI(tipus) ON DELETE CASCADE,
+    CONSTRAINT fk_priv_de_grup_grup FOREIGN KEY (nomG) REFERENCES GRUP(nom) ON DELETE CASCADE
 );
 
 
