@@ -83,9 +83,10 @@ CREATE TABLE SO (
 
 -- Taules amb FK
 CREATE TABLE GRUP (
-    nom VARCHAR(128) PRIMARY KEY
-    nomOrg VARCHAR(128) NOT NULL,
-    CONSTRAINT fk_grup_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom) ON DELETE CASCADE
+    nom VARCHAR(128),
+    nomOrg VARCHAR(128),
+    CONSTRAINT fk_grup_organitzacio FOREIGN KEY (nomOrg) REFERENCES ORGANITZACIO(nom) ON DELETE CASCADE,
+    PRIMARY KEY (nom, nomOrg)
 );
 
 CREATE TABLE PERSONAL (
@@ -159,9 +160,10 @@ CREATE TABLE PAAS (
 CREATE TABLE PRIV_DE_GRUP (
     tipusPriv ENUM('Visualizar', 'Borrar', 'Crear', 'Editar'),
     nomG VARCHAR(128),
+    nomOrg VARCHAR(128),
     PRIMARY KEY (tipusPriv, nomG),
-    CONSTRAINT fk_priv_de_grup_privilegi FOREIGN KEY (tipusPriv) REFERENCES PRIVILEGI(tipus) ON DELETE CASCADE,
-    CONSTRAINT fk_priv_de_grup_grup FOREIGN KEY (nomG) REFERENCES GRUP(nom) ON DELETE CASCADE
+    CONSTRAINT fk_priv_de_grup_privilegi FOREIGN KEY (tipusPriv) REFERENCES PRIVILEGI(tipus),
+    CONSTRAINT fk_priv_de_grup_grup FOREIGN KEY (nomG, nomOrg) REFERENCES GRUP(nom, nomOrg) ON DELETE CASCADE
 );
 
 
