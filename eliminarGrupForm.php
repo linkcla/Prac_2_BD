@@ -112,7 +112,8 @@ $resultGrups = mysqli_query($conn, $selectGrups);
 
     <section>
         <div class="container">
-            <form action="eliminarGrup.php" method="post">
+            <form action="./src/vista/grupVista.php" method="post">
+                <input type="hidden" name="accio" value="eliminar">
                 <br>
                 <h2>Eliminar grup</h2>
 

@@ -11,6 +11,7 @@ if (isset($_POST['selectedRow'])) {
     $nom = $_SESSION['nomOrg'];
     unset($_SESSION['nomOrg']);
 }
+$_SESSION['nomOrg'] = $nom;
 
 if (isset($_SESSION['success_msg'])) {
     echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
@@ -137,8 +138,8 @@ if (isset($_SESSION['error_msg'])) {
                     <tbody>
                         <?php
                         $_SESSION['nomOrg'] = $nom;
-                        $cadenaUsuaris = "SELECT nom as Nom,
-                                            cognom as Cognom,
+                        $cadenaUsuaris = "SELECT persona.nom as Nom,
+                                            persona.cognom as Cognom,
                                             persona.email as email,
                                             usuaris.grup as Grup,
                                             GROUP_CONCAT(priv_de_grup.tipusPriv SEPARATOR ', ') AS Privilegis

@@ -145,7 +145,8 @@ $resultPrivilegis = mysqli_query($conn, $selectPrivilegis);
             </form>
 
             <?php if ($nomGrup): ?>
-            <form action="editarGrupAmbPermisos.php" method="post">
+            <form action="./src/vista/grupVista.php" method="post">
+                <input type="hidden" name="accio" value="editar">
                 <br>
                 <h2>Editant el grup: <?php echo $nomGrup; ?></h2>
 

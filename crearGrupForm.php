@@ -98,7 +98,8 @@ $conn = Conexion::getConnection();
 
     <section>
         <div class="container">
-            <form action="crearGrupAmbPermisos.php" method="post">
+            <form action="./src/vista/grupVista.php" method="post">
+                <input type="hidden" name="accio" value="crear">
                 <br>
                 <h2>Crear un grup</h2>
 
