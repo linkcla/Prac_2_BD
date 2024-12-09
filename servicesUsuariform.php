@@ -94,7 +94,10 @@ if ($result->num_rows > 0) {
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSform.php">PaaS</a>
-                            </div>                        
+                            </div>   
+                            <div class="overlay-content">
+                                <a href="servicesUsuariform.php">Usuari</a>
+                            </div>                      
                         </div>
                     </div>
                 </nav>
