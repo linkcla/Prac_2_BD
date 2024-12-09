@@ -3,7 +3,49 @@
 <?php 
 session_start();
 include "conexion.php";
+include "PaaSFuncionalidades.php";
+
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn); // Instanciar la clase PaaSFuncionalidades
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['crear_test'])) {
+        $nombreTest = $_POST['nombre_test'];
+        $descripcionTest = $_POST['descripcion_test'];
+        $idConfigProducte = $_POST['idConfigProducte'];
+        $emailP = $_SESSION['email']; // Asumiendo que el email del usuario está almacenado en la sesión
+
+        $resultado = $paasFuncionalidades->createTest($nombreTest, $descripcionTest, $idConfigProducte, $emailP);
+
+        if ($resultado) {
+            $_SESSION['success_msg'] = "Test creado exitosamente.";
+        } else {
+            $_SESSION['error_msg'] = "Error al crear el test.";
+        }
+    } elseif (isset($_POST['actualizar_estado'])) {
+        $nombreTest = $_POST['nombre_test_seleccionado'];
+        $nuevoEstado = $_POST['nuevo_estado'];
+
+        $paasFuncionalidades->updateTestStatus($nombreTest, $nuevoEstado);
+
+        if (isset($_SESSION['success_msg'])) {
+            $_SESSION['success_msg'] = "Estado del test actualizado exitosamente.";
+        } else {
+            $_SESSION['error_msg'] = "Error al actualizar el estado del test.";
+        }
+    } elseif (isset($_POST['eliminar_test'])) {
+        $nombreTest = $_POST['nombre_test_seleccionado'];
+        $paasFuncionalidades->deleteTest($nombreTest);
+
+        if (isset($_SESSION['success_msg'])) {
+            $_SESSION['success_msg'] = "Test eliminado exitosamente.";
+        } else {
+            $_SESSION['error_msg'] = "Error al eliminar el test.";
+        }
+    }
+    header("Location: servicesPaaSPersonalTestform.php");
+    exit();
+}
 ?>
 
 <html>
@@ -66,13 +108,13 @@ $conn = Conexion::getConnection();
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSViewform.php">SaaS</a>
+                                <a href="servicesSaaSPersonalform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                                <a href="gestOrg.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -84,7 +126,7 @@ $conn = Conexion::getConnection();
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
+    <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
                 Servicios PaaS - Crear Test
@@ -113,7 +155,7 @@ $conn = Conexion::getConnection();
                     <button type="submit" class="btn btn-primary" formaction="servicesPaaSPersonalTestform.php">Test</button>
                 </div>
             </form>
-            <form method="POST" action="servicesPaaSPersonalTestBD.php">
+            <form method="POST" action="">
                 <div class="form-group">
                     <label for="nombre_test">Nombre del Test</label>
                     <input type="text" class="form-control" id="nombre_test" name="nombre_test" required>
@@ -136,51 +178,50 @@ $conn = Conexion::getConnection();
                 </div>
                 <button type="submit" class="btn btn-primary" name="crear_test">Crear Test</button>
             </form>
-        </div>
 
-        <div class="container mt-5">
-            <h2 class="text-uppercase">
-                Tests Existentes
-            </h2>
-            <form method="POST" action="servicesPaaSPersonalTestBD.php">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Seleccionar</th>
-                            <th>Nombre del Test</th>
-                            <th>ID Producto PaaS</th>
-                            <th>Fecha de Creación</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $query = "SELECT T.nom, T.dataCreacio, E.estat, E.idConfigProducte FROM TEST T LEFT JOIN ESTAT E ON T.nom = E.nomT";
-                        $result = mysqli_query($conn, $query);
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<tr>";
-                            echo "<td><input type='radio' name='nombre_test_seleccionado' value='{$row['nom']}' required></td>";
-                            echo "<td>{$row['nom']}</td>";
-                            echo "<td>{$row['idConfigProducte']}</td>";
-                            echo "<td>{$row['dataCreacio']}</td>";
-                            echo "<td>{$row['estat']}</td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-                <div class="form-group">
-                    <label for="nuevo_estado">Nuevo Estado</label>
-                    <select class="form-control" id="nuevo_estado" name="nuevo_estado" required>
-                        <option value="Pendent">Pendent</option>
-                        <option value="Aprovat">Aprovat</option>
-                        <option value="Fallat">Fallat</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" name="actualizar_estado">Actualizar Estado</button>
-                <button type="submit" class="btn btn-danger" name="eliminar_test">Eliminar Test</button>
-            </form>
-        </div>
+            <div class="container mt-5">
+                <h2 class="text-uppercase">
+                    Tests Existentes
+                </h2>
+                <form method="POST" action="">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Seleccionar</th>
+                                <th>Nombre del Test</th>
+                                <th>ID Producto PaaS</th>
+                                <th>Fecha de Creación</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $query = "SELECT T.nom, T.dataCreacio, E.estat, E.idConfigProducte FROM TEST T LEFT JOIN ESTAT E ON T.nom = E.nomT";
+                            $result = mysqli_query($conn, $query);
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<tr>";
+                                echo "<td><input type='radio' name='nombre_test_seleccionado' value='{$row['nom']}' required></td>";
+                                echo "<td>{$row['nom']}</td>";
+                                echo "<td>{$row['idConfigProducte']}</td>";
+                                echo "<td>{$row['dataCreacio']}</td>";
+                                echo "<td>{$row['estat']}</td>";
+                                echo "</tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <div class="form-group">
+                        <label for="nuevo_estado">Nuevo Estado</label>
+                        <select class="form-control" id="nuevo_estado" name="nuevo_estado" required>
+                            <option value="Pendent">Pendent</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="actualizar_estado">Actualizar Estado</button>
+                    <button type="submit" class="btn btn-danger" name="eliminar_test">Eliminar Test</button>
+                </form>
+            </div>
     </section>
 
     <!-- end about section -->

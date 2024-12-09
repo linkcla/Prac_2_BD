@@ -267,12 +267,12 @@ class PaaSFuncionalidades {
                 }
             } else {
                 mysqli_rollback($this->conn);
-                $_SESSION["error_msg"] = "Error al insertar el estado del test.";
+                $_SESSION["error_msg"] = "Error al crear el estado del test.";
                 return false;
             }
         } else {
             mysqli_rollback($this->conn);
-            $_SESSION["error_msg"] = "Error al insertar el test.";
+            $_SESSION["error_msg"] = "Error al crear el test.";
             return false;
         }
     }
@@ -280,9 +280,44 @@ class PaaSFuncionalidades {
     public function updateTestStatus($nombreTest, $nuevoEstado) {
         $query = "UPDATE ESTAT SET estat = '$nuevoEstado' WHERE nomT = '$nombreTest'";
         if (mysqli_query($this->conn, $query)) {
-            $_SESSION["success_msg"] = "Estado del test actualizado correctamente.";
+            $_SESSION["success_msg"] = "Estado del test actualizado exitosamente.";
+            return true;
         } else {
-            $_SESSION["error_msg"] = "Error al actualizar el estado del test: " . mysqli_error($this->conn);
+            $_SESSION["error_msg"] = "Error al actualizar el estado del test.";
+            return false;
+        }
+    }
+
+    public function deleteTest($nombreTest) {
+        // Iniciar transacción
+        mysqli_begin_transaction($this->conn);
+
+        // Eliminar registros de PERSONAL_REALITZA_TEST
+        $query = "DELETE FROM PERSONAL_REALITZA_TEST WHERE nomT = '$nombreTest'";
+        if (!mysqli_query($this->conn, $query)) {
+            mysqli_rollback($this->conn);
+            $_SESSION["error_msg"] = "Error al eliminar los registros de PERSONAL_REALITZA_TEST.";
+            return false;
+        }
+
+        // Eliminar registros de ESTAT
+        $query = "DELETE FROM ESTAT WHERE nomT = '$nombreTest'";
+        if (!mysqli_query($this->conn, $query)) {
+            mysqli_rollback($this->conn);
+            $_SESSION["error_msg"] = "Error al eliminar los registros de ESTAT.";
+            return false;
+        }
+
+        // Eliminar registros de TEST
+        $query = "DELETE FROM TEST WHERE nom = '$nombreTest'";
+        if (mysqli_query($this->conn, $query)) {
+            mysqli_commit($this->conn);
+            $_SESSION["success_msg"] = "Test eliminado exitosamente.";
+            return true;
+        } else {
+            mysqli_rollback($this->conn);
+            $_SESSION["error_msg"] = "Error al eliminar el test.";
+            return false;
         }
     }
 }

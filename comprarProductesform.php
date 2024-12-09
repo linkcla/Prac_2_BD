@@ -33,14 +33,6 @@ if ($result->num_rows > 0) {
     $privilegios = "";
 }
 
-// Verificar si el usuario tiene el privilegio de "Crear"
-if (strpos($privilegios, 'Crear') === false) {
-    $_SESSION["error_msg"] = "No tienes privilegios para acceder a esta página.";
-    //header("Location: servicesform.php");
-    header("Location: comprarProductesform.php");
-    exit();
-}
-
 // Obtener los datos de las tablas correspondientes
 $tipusMCMS = $conn->query("SELECT tipus FROM MODUL_CMS")->fetch_all(MYSQLI_ASSOC);
 $tipusCDN = $conn->query("SELECT tipus, preu FROM CDN")->fetch_all(MYSQLI_ASSOC);
@@ -110,20 +102,8 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                             <div class="overlay-content">
                                 <a href="loginform.php">Home</a>
                             </div>
-                            <div class="overlay-content">
-                                <a href="servicesform.php">Services</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesSaaSform.php">SaaS</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesPaaSform.php">PaaS</a>
-                            </div>   
-                            <div class="overlay-content">
-                                <a href="comprarProductesform.php">PaaS</a>
-                            </div>       
-                            <div class="overlay-content">
-                                <a href="servicesUsuariform.php">Usuari</a>
+                            <div class="overlay-content">   
+                                <a href="servicesUsuariform.php">Perfil</a>
                             </div>              
                         </div>
                     </div>
@@ -157,7 +137,7 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
 
         <!-- Tabla de productos SaaS -->
 <div class="mt-4">
-    <h3 class="text-uppercase">Productos SaaS</h3>
+    <h1>Productos SaaS</h1>
     <form action="comprarProductesSaaS.php" method="POST" id="productFormSaaS" onsubmit="return validateForm('productFormSaaS')">
     <table class="table table-bordered">
         <thead>
@@ -251,7 +231,7 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
 
 <!-- Tabla de productos PaaS -->
 <div class="mt-4">
-    <h3 class="text-uppercase">Productos PaaS</h3>
+    <h1>Productos PaaS</h1>
     <form action="comprarProductesPaaS.php" method="POST" id="productFormPaaS" onsubmit="return validateForm('productFormPaaS')">
     <table class="table table-bordered">
         <thead>

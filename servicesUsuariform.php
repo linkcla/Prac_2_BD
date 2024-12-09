@@ -85,16 +85,7 @@ if ($result->num_rows > 0) {
                         <div id="myNav" class="overlay">
                             <div class="overlay-content">
                                 <a href="loginform.php">Home</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesform.php">Services</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesSaaSform.php">SaaS</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesPaaSform.php">PaaS</a>
-                            </div>   
+                            </div>                            
                             <div class="overlay-content">
                                 <a href="servicesUsuariform.php">Usuari</a>
                             </div>                      
@@ -108,7 +99,7 @@ if ($result->num_rows > 0) {
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout " style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
             <?php echo htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognom']); ?> 

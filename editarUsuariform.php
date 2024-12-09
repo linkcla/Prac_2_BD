@@ -94,16 +94,7 @@ if ($result->num_rows > 0) {
                         <div id="myNav" class="overlay">
                             <div class="overlay-content">
                                 <a href="loginform.php">Home</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesform.php">Services</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesSaaSform.php">SaaS</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesPaaSform.php">PaaS</a>
-                            </div>                        
+                            </div>                                                                            
                         </div>
                     </div>
                 </nav>
@@ -121,12 +112,13 @@ if ($result->num_rows > 0) {
             </h2>
             
         </div>
-    
-        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;" >
+
+        <br>
+        <div class="container d-flex justify-content-center align-items-center"  >
             <div class="row d-flex justify-content-center">
                 <!-- Columna izquierda: Formulario de selección -->
                 <div class="col-md-8">
-                <form action="editarUsuari.php" method="POST" onsubmit="return confirmUpdate()">
+                    <form action="editarUsuari.php" method="POST" onsubmit="return confirmUpdate()">
                         <input type="hidden" name="email" value="<?php echo $usuario['email']; ?>">
                         <div class="form-group">
                             <label for="nom">Nom:</label>
@@ -148,10 +140,8 @@ if ($result->num_rows > 0) {
                         <button type="submit" class="btn btn-primary">Actualizar</button>
                     </form>
                 </div>
-                <!-- Columna derecha: Resumen de selección -->
-                <div class="col-md-4">
-                    <div class="sticky-top">
-                       
+            </div>                       
+        </div>
     </section>
 
     <!-- end about section -->

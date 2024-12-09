@@ -123,6 +123,11 @@ $permisos = $_SESSION['permisos'];
             <?php else: ?>
                 <p>No tens permisos per visualitzar els productes contractats.</p>
             <?php endif; ?>
+            <?php 
+                if (in_array('Crear', $permisos)) {
+                    echo '<a href="comprarProductesform.php" class="btn btn-primary">Contratar producte</a>';
+                }
+            ?>
         </div>
     </section>
 
