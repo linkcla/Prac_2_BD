@@ -2,7 +2,18 @@
 
 <?php session_start() ;
 include "conexion.php";
+include_once "PaaSFuncionalidades.php"; 
+
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
+
+// Manejar la solicitud POST para eliminar PaaS
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_paas') {
+    $selectedRows = isset($_POST['selectedRows']) ? $_POST['selectedRows'] : null;
+    $paasFuncionalidades->deletePaaS($selectedRows);
+    header("Location: servicesPaaSPersonalDeletePaasform.php"); // Redirigir después de procesar
+    exit();
+}
 ?>
 
 <html>
@@ -114,7 +125,9 @@ $conn = Conexion::getConnection();
             </form>
         </div>
         <div class="container">
-            <form action="servicesPaaSPersonalDeletePaaSBD.php" method="POST">
+            <form action="servicesPaaSPersonalDeletePaaSform.php" method="POST">
+                <input type="hidden" name="action" value="delete_paas">
+
                 <!-- Tabla para mostrar los datos del contrato -->
                 <table class="table table-striped">
                     <thead>
@@ -158,7 +171,7 @@ $conn = Conexion::getConnection();
                     </tbody>
                 </table>
                 
-                <button type="submit" class="btn btn-danger mt-3" name="action" value="delete">Eliminar Seleccionados</button>
+                <button type="submit" class="btn btn-danger mt-3" name="action" value="delete_paas">Eliminar Seleccionados</button>
             </form>
         </div>
     </section>
