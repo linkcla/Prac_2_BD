@@ -107,7 +107,8 @@ if (isset($_SESSION['error_msg'])) {
             
                 <div class="card p-4" style="width: 100%;">
                     <div class="container d-flex justify-content-center align-items-center">
-                        <form action="servicesSaaSTestBD.php" method="POST">
+                        <form action="./src/vista/testVista.php" method="POST">
+                        <input type="hidden" name="accio" value="crearS">
                             <div class="form-row align-items-center">
                                 <div class="col-auto">
                                     <input type="text" class="form-control mb-2" id="testName" name="testName" placeholder="Nombre del nuevo Test" required>
@@ -122,7 +123,8 @@ if (isset($_SESSION['error_msg'])) {
                         </form>
                     </div>
                     <div class="container d-flex justify-content-center align-items-center">
-                        <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm1()">
+                        <form action="./src/vista/testVista.php" method="POST" onsubmit="return validateForm1()">
+                        <input type="hidden" name="accio" value="eliminarS">
                             <div class="form-row align-items-center2">
                                 <div class="col-auto1">
                                         <?php
