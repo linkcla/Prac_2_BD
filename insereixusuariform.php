@@ -108,9 +108,7 @@ $result = $con->query($sql);
                                        
                     </div>
                     <div>
-                      <button type="submit" class="btn btn-primaryLogin">
-                        <a href="loginform.php">Insert</a>
-                      </button>
+                      <button type="submit" class="btn btn-primaryLogin">Insert</button>
                     </div>
                   </div>
                 </div>
