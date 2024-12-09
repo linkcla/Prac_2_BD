@@ -1,7 +1,22 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
 
 <?php
-include "servicesPaaSPersonalEditComponentesBD.php";
+session_start();
+include "conexion.php";
+include_once "PaaSFuncionalidades.php"; 
+
+$conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
+    $tipo = $_POST['component'];
+    $nombre = $_POST['nombre'];
+    $gb_componente = $_POST['gb_componente'];
+    $precio = $_POST['precio'];
+
+    // Llamar al método updatePrecio() de la clase PaaSFuncionalidades
+    $paasFuncionalidades->updatePrecio($tipo, $nombre, $gb_componente, $precio);
+}
 ?>
 
 <html>
@@ -126,7 +141,7 @@ include "servicesPaaSPersonalEditComponentesBD.php";
                         <select name="nombre" id="nombre" class="form-control" onchange="this.form.submit()">
                             <option value="">Selecciona Nombre</option>
                             <?php
-                            $componentes = $editComponentes->getComponentesByTipo($_POST['component']);
+                            $componentes = $paasFuncionalidades->getComponentesByTipo($_POST['component']);
                             $nombres = array_unique(array_column($componentes, 'nombre'));
                             foreach ($nombres as $nombre) {
                                 $selected = isset($_POST['nombre']) && $_POST['nombre'] == $nombre ? 'selected' : '';
