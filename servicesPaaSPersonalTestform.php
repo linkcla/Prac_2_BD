@@ -6,14 +6,14 @@ include "conexion.php";
 include "PaaSFuncionalidades.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn); // Instanciar la clase PaaSFuncionalidades
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['crear_test'])) {
         $nombreTest = $_POST['nombre_test'];
         $descripcionTest = $_POST['descripcion_test'];
         $idConfigProducte = $_POST['idConfigProducte'];
-        $emailP = $_SESSION['email']; // Asumiendo que el email del usuario está almacenado en la sesión
+        $emailP = $_SESSION['email']; 
 
         $resultado = $paasFuncionalidades->createTest($nombreTest, $descripcionTest, $idConfigProducte, $emailP);
 
@@ -214,8 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="nuevo_estado">Nuevo Estado</label>
                         <select class="form-control" id="nuevo_estado" name="nuevo_estado" required>
                             <option value="Pendent">Pendent</option>
-                            <option value="En Proceso">En Proceso</option>
-                            <option value="Completado">Completado</option>
+                            <option value="Aprovat">Aprovat</option>
+                            <option value="Fallat">Fallat</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary" name="actualizar_estado">Actualizar Estado</button>

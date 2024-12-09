@@ -10,7 +10,7 @@ class PaaSFuncionalidades {
         $this->conn = $conn;
     }
 
-    // Funciones de delete_paas
+    // FUNCIONES DE DELETE_PAAS
     public function deletePaaS($selectedRows) {
         if ($selectedRows && is_array($selectedRows)) {
             $error_ocurred = false;
@@ -68,7 +68,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // Funciones de delete_stock_componentes
+    // FUNCIONES DE DELETE_STOCK_COMPONENTES
     public function deleteStockComponentes($selectedRam, $selectedDiscDur, $selectedCpu, $selectedSo) {
         if (empty($selectedRam) && empty($selectedDiscDur) && empty($selectedCpu) && empty($selectedSo)) {
             $_SESSION["warning_msg"] = "Debes seleccionar al menos un componente.";
@@ -141,7 +141,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // Funciones de edit_stock_componentes
+    // FUNCIONES DE EDIT_STOCK_COMPONENTES
     public function getComponentesByTipo($tipo) {
         $componentes = [];
         $query = "";
@@ -209,7 +209,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // Funciones de test_management
+    // FUNCIONES DE TEST_MANAGEMENT
     public function createTest($nombreTest, $descripcionTest, $idConfigProducte, $emailP) {
         $fechaCreacion = date('Y-m-d');
 
