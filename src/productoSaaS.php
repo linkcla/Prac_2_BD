@@ -142,5 +142,50 @@ class SaaS {
         return true;
     }
 
+    public static function actualizarEstado($idConfig, $testNom, $estatName) {
+        $conn = Conexion::getConnection();
+
+        $update_check_estat_Query = "UPDATE ESTAT SET estat = '$estatName' WHERE idConfigProducte = '$idConfig' AND nomT = '$testNom'";
+        if(mysqli_query($conn, $update_check_estat_Query) == false) {
+            $_SESSION["error_msg"] = "Error al actualizar el estado.";
+            return false;
+        };
+        $_SESSION["success_msg"] = "Estado actualizado.";
+        return true;        
+    }
+
+    public static function eliminarTestProducto($idConfig, $testNom) {
+        $conn = Conexion::getConnection();
+
+        $deleteQuery = "DELETE FROM ESTAT WHERE idConfigProducte = '$idConfig' AND nomT = '$testNom'";
+        if (!mysqli_query($conn, $deleteQuery)) {
+            $_SESSION["error_msg"] = "Error al eliminar el producto de estat.";
+            return false;
+        }
+        $_SESSION["success_msg"] = "Test eliminado del producto.";
+        return true;
+    }
+
+    public static function añadirTestProducto($idConfig, $testName) {
+        $conn = Conexion::getConnection();
+
+        $selectQueryEstat = "SELECT estat FROM ESTAT WHERE idConfigProducte='$idConfig' AND nomT='$testName';";
+        $result= mysqli_query($conn, $selectQueryEstat);
+        if(mysqli_num_rows($result) > 0) {
+            $_SESSION["error_msg"] = "Error al añadir el test. El producto ya tiene el test asignado.";
+            return false;
+        }
+
+        $insertQueryEstat = "INSERT INTO ESTAT (estat, nomT, idConfigProducte) VALUES ('Pendent', '$testName', '$idConfig');";
+        $result= mysqli_query($conn, $insertQueryEstat);
+        if(!$result) {
+            $_SESSION["error_msg"] = "Error al añadir el test.";
+            return false;
+        }
+                    
+        $_SESSION["success_msg"] = "Test asignado correctamente.";
+        return true;
+    }
+
 }
 ?>

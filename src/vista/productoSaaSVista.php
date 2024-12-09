@@ -15,6 +15,15 @@ switch ($accion) {
     case 'eliminar':
         eliminarSaaS();
         break;
+    case 'actualizar':
+        actualizarEstadoSaaS();
+        break;
+    case 'eliminarTest':
+        eliminarTestSaaS();
+        break;
+    case 'añadirTest':
+        añadirTestSaaS();
+        break;
 }
 
 
@@ -95,6 +104,33 @@ function eliminarSaaS() {
     $res = SaaS::eliminar($idConfig);
 
     header("Location: ./../../servicesSaaSViewform.php");
+    exit();
+}
+
+function actualizarEstadoSaaS() {
+    list($idConfig, $testNom) = explode('|', $_POST['selectedRow']);
+    $estatName = $_POST['nomsestats'];  
+
+    $res = SaaS::actualizarEstado($idConfig, $testNom, $estatName);
+
+    header("Location: ./../../servicesSaaSTestform.php");
+    exit();
+}
+
+function eliminarTestSaaS(){
+    list($idConfig, $testNom) = explode('|', $_POST['selectedRow']);
+    $res = SaaS::eliminarTestProducto($idConfig, $testNom);
+
+    header("Location: ./../../servicesSaaSTestform.php");
+    exit();
+}
+function añadirTestSaaS(){
+    $idConfig = $_POST['idConfigs'];
+    $testNom = $_POST['noms']; 
+   
+    $res = SaaS::añadirTestProducto($idConfig, $testNom);
+
+    header("Location: ./../../servicesSaaSTestform.php");
     exit();
 }
 

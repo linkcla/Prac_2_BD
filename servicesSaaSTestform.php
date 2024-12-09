@@ -184,7 +184,9 @@ if (isset($_SESSION['error_msg'])) {
             
         </div>
         <div class="container">
-            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm(event)">
+            <form action="./src/vista/productoSaaSVista.php" method="POST" onsubmit="return validateForm(event)">
+                <input type="hidden" name="accio" id="accio" value="">
+            
             
                         <!-- Tabla para mostrar los datos de CONTRACTE -->
                         <table class="table table-striped">
@@ -290,11 +292,15 @@ if (isset($_SESSION['error_msg'])) {
                         if (!selectedRow || estatSelect.value === '') {
                             alert('Por favor, selecciona un producto y un estado.');
                             return false;
+                        }else{
+                            document.getElementById('accio').value = 'actualizar';
                         }
                     } else if (buttonClicked === 'elimarTestProd') {
                         if (!selectedRow) {
                             alert('Por favor, selecciona un producto.');
                             return false;
+                        }else{
+                            document.getElementById('accio').value = 'eliminarTest';
                         }
                     }
                     return true;
@@ -304,7 +310,8 @@ if (isset($_SESSION['error_msg'])) {
         </div>
         <div class="card p-4" style="width: 100%;">
             <div class="container d-flex justify-content-center align-items-center ">
-            <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm2()">
+            <form action="./src/vista/productoSaaSVista.php" method="POST" onsubmit="return validateForm2()">
+                <input type="hidden" name="accio" value="añadirTest">
                 <div class="form-row">
                     <div class="col-auto">
                     <?php
