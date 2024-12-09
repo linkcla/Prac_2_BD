@@ -106,11 +106,13 @@ if (isset($_SESSION['error_msg'])) {
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSComponentesform.php">Componentes SaaS</button>
                 </div>
             </form>
         </div>
         <div class="container">
             <form id="formulari" action=" " method="POST">
+                <input type="hidden" name="accio" value="eliminar">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
@@ -185,45 +187,45 @@ if (isset($_SESSION['error_msg'])) {
                         ?>
                     </tbody>
                 </table>
-                <button type="button" class="btn btn-primary mt-3" id="botEditar" name="action" value="editar">Editar Seleccionado</button>
-                <button type="button" class="btn btn-primary mt-3" id="botBorrar" name="action" value="delete">Eliminar Seleccionado</button>
+                <button type="button" class="btn btn-primary mt-3" id="botEditar" name="actionEd" value="editar">Editar Seleccionado</button>
+                <button type="button" class="btn btn-primary mt-3" id="botBorrar" name="actionDe" value="delete">Eliminar Seleccionado</button>
 
             </form>
-            <script>
-                const form = document.getElementById('formulari');
-                const botEditar = document.getElementById('botEditar');
-                const botBorrar = document.getElementById('botBorrar');
+                <script>
+                    const form = document.getElementById('formulari');
+                    const botEditar = document.getElementById('botEditar');
+                    const botBorrar = document.getElementById('botBorrar');
 
-                // Función para verificar si se seleccionó un radio
-                function isRadioSelected() {
-                    const radios = document.querySelectorAll('input[name="selectedRow"]');
-                    for (let i = 0; i < radios.length; i++) {
-                        if (radios[i].checked) {
-                            return true;  // Si al menos uno está seleccionado
+                    // Función para verificar si se seleccionó un radio
+                    function isRadioSelected() {
+                        const radios = document.querySelectorAll('input[name="selectedRow"]');
+                        for (let i = 0; i < radios.length; i++) {
+                            if (radios[i].checked) {
+                                return true;  // Si al menos uno está seleccionado
+                            }
                         }
+                        return false;  // Ningún radio está seleccionado
                     }
-                    return false;  // Ningún radio está seleccionado
-                }
 
-                // Cambiar la acción del formulario dependiendo del botón clicado
-                botEditar.addEventListener('click', function() {
-                    if (isRadioSelected()) {
-                        form.action = 'servicesSaaSEditform.php';
-                        form.submit();
-                    } else {
-                        alert('Por favor, seleccione una organización para editar.');
-                    }
-                });
+                    // Cambiar la acción del formulario dependiendo del botón clicado
+                    botEditar.addEventListener('click', function() {
+                        if (isRadioSelected()) {
+                            form.action = 'servicesSaaSEditform.php';
+                            form.submit();
+                        } else {
+                            alert('Por favor, seleccione una organización para editar.');
+                        }
+                    });
 
-                botBorrar.addEventListener('click', function() {
-                    if (isRadioSelected()) {
-                        form.action = 'servicesSaaSDeleteBD.php';
-                        form.submit();
-                    } else {
-                        alert('Por favor, seleccione una organización para borrar.');
-                    }
-                });
-            </script>
+                    botBorrar.addEventListener('click', function() {
+                        if (isRadioSelected()) {
+                            form.action = './src/vista/productoSaaSVista.php';
+                            form.submit();
+                        } else {
+                            alert('Por favor, seleccione una organización para borrar.');
+                        }
+                    });
+                </script>
         </div>
     </section>
 

@@ -129,8 +129,8 @@ list(
             <div class="">
                 <!-- Columna izquierda: Formulario de selección -->
                 <div class="">
-                    <form action="servicesSaaSEditBD.php " method="POST" onsubmit="return validateForm()">
-
+                    <form action="./src/vista/productoSaaSVista.php" method="POST" onsubmit="return validateForm()">
+                        <input type="hidden" id="accio" name="accio" value="editar">
                         <!-- CMS -->
                         <fieldset>
                             <?php

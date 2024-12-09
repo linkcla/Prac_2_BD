@@ -110,8 +110,8 @@ if (isset($_SESSION['error_msg'])) {
             <div class="row d-flex">
                 <!-- Columna izquierda: Formulario de selección -->
                 <div class="col-md-8">
-                    <form action="servicesSaaSCreateBD.php " method="POST" onsubmit="return validateForm()">
-
+                    <form action="./src/vista/productoSaaSVista.php" method="POST" onsubmit="return validateForm()">
+                    <input type="hidden" id="accio" name="accio" value="crear">
                     <!-- NOM Y DESCRPCION -->
                     <fieldset>
                         <div class="form-group">
@@ -472,13 +472,6 @@ if (isset($_SESSION['error_msg'])) {
                 </script>
                                 
 
-                </div>
-
-                <!-- Columna derecha: Resumen de selección -->
-                <div class="col-md-4">
-                    <div class="container">
-                        <button type="submit" class="btn btn-primary" name="newMod">Nuevos Modulos</button>
-                    </div>
                 </div>
             </div>
         </div>

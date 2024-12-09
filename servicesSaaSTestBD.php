@@ -133,19 +133,10 @@ $conn = Conexion::getConnection();
 
                     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['añadirEstadoTesT'])) {
                         // Procesar creación de nuevo test
-                        $idConfig = $_POST['idProd'];
+                        $idConfig = $_POST['idConfigs'];
                         $testName = $_POST['noms']; 
                         
-                        // Comprobar que el id es correcto
-                        $selectQueryProducte = "SELECT IdConfig FROM PRODUCTE WHERE idConfig='$idConfig';";
-                        $result= mysqli_query($conn, $selectQueryProducte);
-                        if(mysqli_num_rows($result) == 0) {
-                            $message = "Error al añadir el test. El id no es correcto.";
-                            $_SESSION["error_msg"] = $message;
-                            header("Location: ./servicesSaaSTestform.php");
-                            die($message);
-                        }
-
+                        
                         // Verificar si el test ya esta añadido
                         $selectQueryEstat = "SELECT estat FROM ESTAT WHERE idConfigProducte='$idConfig' AND nomT='$testName';";
                         $result= mysqli_query($conn, $selectQueryEstat);

@@ -305,9 +305,46 @@ if (isset($_SESSION['error_msg'])) {
         <div class="card p-4" style="width: 100%;">
             <div class="container d-flex justify-content-center align-items-center ">
             <form action="servicesSaaSTestBD.php" method="POST" onsubmit="return validateForm2()">
-                <div class="form-row align-items-center">
+                <div class="form-row">
                     <div class="col-auto">
-                        <input type="text" class="form-control mb-2" id="idProd" name="idProd" placeholder="Id del producto" required>
+                    <?php
+                        $testOptions = [];
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                            if (isset($_POST['noms'])) {
+                                $testnom = $_POST['noms'];
+                            } else {
+                                $testnom = '';
+                            }
+                            if ($testnom !== '') {
+                                $cadena = "SELECT * FROM SAAS WHERE nom = '$testnom'";
+                                $resultado = mysqli_query($conn, $cadena);
+                                while ($row = $resultado->fetch_assoc()) {
+                                    $testOptions[] = $row;
+                                }
+                            }
+                        }
+                        ?>
+
+                        <select name="idConfigs" id="idConfigs" class="form-control">
+                            <option value="">Selecciona el producto</option>
+                            <?php
+                            $cadena = "SELECT idConfig FROM SAAS";
+                            $resultado = mysqli_query($conn, $cadena);
+                            while ($row = $resultado->fetch_assoc()) {
+                                $selected = '';
+                                if (isset($testnom)) {
+                                    if ($row['idConfig'] === $testnom) {
+                                        $selected = 'selected';
+                                    }
+                                } else {
+                                    if ($row['idConfig'] === '') {
+                                        $selected = 'selected';
+                                    }
+                                }
+                                echo "<option value='" . $row['idConfig'] . "' $selected>" . $row['idConfig'] . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="col-auto">
                         <?php
@@ -358,8 +395,12 @@ if (isset($_SESSION['error_msg'])) {
             <script>
             function validateForm2() {
                 const testSelect = document.getElementById('nomsIns');
+                const prodSelect = document.getElementById('idConfigs');
                 if (testSelect.value === '') {
                     alert('Por favor, selecciona un test para añadir.');
+                    return false;
+                } else if (prodSelect.value === '') {
+                    alert('Por favor, selecciona un producto al que añadir el test.');
                     return false;
                 }
                 return true;
