@@ -33,7 +33,7 @@ CREATE TABLE PRODUCTE (
 
 CREATE TABLE TEST (
     nom VARCHAR(128) PRIMARY KEY,
-    descripció TEXT NOT NULL,
+    descripcio TEXT NOT NULL,
     dataCreacio DATE NOT NULL
 );
 
