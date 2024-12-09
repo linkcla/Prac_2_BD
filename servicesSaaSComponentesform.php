@@ -194,10 +194,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaSPersonalform.php">PaaS</a>
+                                <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
                                 <a href="gestOrgform.php">Gestionar Organitzacións</a>
@@ -219,11 +219,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
             </h2>
             <form>
                 <div class="container">
-                <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Inicio</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSPersonalform.php">Contratos SaaS</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSCreateform.php">Crear</button>
-                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSDeleteform.php">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSViewform.php">Atras</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSContratosform.php">Contratos SaaS</button>
                     <button type="submit" class="btn btn-primary" formaction="servicesSaaSTestform.php">Test</button>
+                    <button type="submit" class="btn btn-primary" formaction="servicesSaaSComponentesform.php">Componentes SaaS</button>
                 </div>
             </form>
         </div>
