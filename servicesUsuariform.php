@@ -129,88 +129,43 @@ if ($result->num_rows > 0) {
         ?>
         <div class="text-center mt-4">
             <form id="deleteForm" action="borrarUsuari.php" method="post" onsubmit="return confirmDelete()" class="d-inline">
-                <button type="submit" id="borrarBtn" class="btn btn-primary mx-2" disabled>Borrar</button>
-                <input type="hidden" id="selectedEmail" name="email" value="">
+                <button type="submit" id="borrarBtn" class="btn btn-primary mx-2">Borrar</button>
+                <input type="hidden" id="selectedEmail" name="email" value="<?php echo $email; ?>">
             </form>
             <form id="editForm" action="editarUsuariform.php" method="post" class="d-inline">
-                <button type="submit" id="editarBtn" class="btn btn-primary mx-2" disabled>Editar</button>
-                <input type="hidden" id="selectedEmailEdit" name="email" value="">
+                <button type="submit" id="editarBtn" class="btn btn-primary mx-2">Editar</button>
+                <input type="hidden" id="selectedEmailEdit" name="email" value="<?php echo $email; ?>">
             </form>
                </div>
-            <div class="mt-4"> <!-- Añadido div con clase mt-4 para margen superior -->
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th></th> <!-- Columna para el radio button -->
-                            <th>Nom</th>
-                            <th>Cognom</th>
-                            <th>Email</th>
-                            <th>Organització</th>
-                            <th>Grup</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="radio" name="email" value="<?php echo htmlspecialchars($usuario['email']); ?>" onclick="selectUser('<?php echo htmlspecialchars($usuario['email']); ?>')">
-                            </td>
-                            <td><?php echo htmlspecialchars($usuario['nom']); ?></td>
-                            <td><?php echo htmlspecialchars($usuario['cognom']); ?></td>
-                            <td><?php echo htmlspecialchars($usuario['email']); ?></td>
-                            <td><?php echo htmlspecialchars($usuario['nomOrg']); ?></td>
-                            <td><?php echo htmlspecialchars($usuario['nomG']); ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </form>
-        </div>
-    <script>
-        function enableButtons() {
-            document.getElementById('borrarBtn').disabled = false;
-            document.getElementById('editarBtn').disabled = false;
-        }
-
-        function confirmDelete() {
-            return confirm("¿Estás seguro de que deseas eliminar este usuario?");
-        }
-
-        function checkSelection() {
-            const radios = document.getElementsByName('email');
-            for (let i = 0; i < radios.length; i++) {
-                if (radios[i].checked) {
-                    return true;
-                }
-            }
-            alert('Por favor, selecciona un usuario.');
-            return false;
-        }
-        
-        function selectUser(email) {
-            document.getElementById('selectedEmail').value = email;
-            document.getElementById('selectedEmailEdit').value = email;
-            enableButtons();
-        }
-       
-        function editUser() {
-            const form = document.getElementById('adminForm');
-            form.action = 'editarUsuariform.php';
-            form.submit();
-        }
-        
-    </script>  
-        <div class="container">
-            <div class="row d-flex">
-                <!-- Columna izquierda: Formulario de selección -->
-                <div class="col-md-8">
-                    <form action="servicesSaaSform.php" method="POST">                    
-                    <!-- añadir más componentes -->                    
-                    </form>
+                <div class="mt-4">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Cognom</th>
+                                <th>Email</th>
+                                <th>Organització</th>
+                                <th>Grup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><?php echo ($usuario['nom']); ?></td>
+                                <td><?php echo ($usuario['cognom']); ?></td>
+                                <td><?php echo ($usuario['email']); ?></td>
+                                <td><?php echo ($usuario['nomOrg']); ?></td>
+                                <td><?php echo ($usuario['nomG']); ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <!-- Columna derecha: Resumen de selección -->
-                <div class="col-md-4">
-                    <div class="sticky-top">
-                       
+            </form>
+        </div>
+        <script>
+            function confirmDelete() {
+                return confirm("Estas segur de que vols eliminarel teu compte?\nDeixaras de pertanyer a l'organització i a la plataforma.");
+            }
+        </script>             
     </section>
 
     <!-- end about section -->

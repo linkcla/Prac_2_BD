@@ -79,14 +79,14 @@ $resultGrups = mysqli_query($conn, $selectGrups);
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaSfPersonalorm.php">PaaS</a>
-                            </div>
+                                <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
+                            </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                            </div>                       
                         </div>
                     </div>
                 </nav>

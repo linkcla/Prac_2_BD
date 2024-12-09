@@ -62,7 +62,10 @@ $permisos = $_SESSION['permisos'];
                         </span>
                     </a>
 
+                    
+                    
                     <div class="navbar-collapse" id="">
+                    
 
                         <div class="custom_menu-btn">
                             <button onclick="openNav()">
@@ -89,6 +92,7 @@ $permisos = $_SESSION['permisos'];
             <h2 class="text-uppercase">
                 Benvingut, <?php echo $_SESSION['nom']; ?>
             </h2>
+           <a href="servicesUsuariform.php" class="btn btn-primary mb-3">Editar perfil</a>
             <?php if (in_array('Visualizar', $permisos)): ?>
                 <h3>Productes contratats per l'organització: <?php echo $nomOrg; ?></h3>
                 <table class="table table-bordered">

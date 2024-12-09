@@ -83,7 +83,7 @@ if (isset($_SESSION['error_msg'])) {
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>

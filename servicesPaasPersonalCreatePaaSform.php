@@ -157,11 +157,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
-                            </div>
+                            </div>  
+                            <div class="overlay-content">
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                            </div>                       
                         </div>
                     </div>
                 </nav>
@@ -352,7 +355,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <span class="float-right"><?php echo $precioCpu ? "€$precioCpu" : ""; ?></span>
                             </li>
                             <li class="list-group-item">
-                                Sistema Operativo: <?php echo $nomSo ?? "No seleccionado"; ?>
+                                Sistema Operativo: <?php echo $nomSo ? "$nomSo" : "No seleccionado"; ?>
                                 <span class="float-right"><?php echo $precioSo ? "€$precioSo" : ""; ?></span>
                             </li>
                             <!-- Mostrar el precio total de los componentes seleccionados -->

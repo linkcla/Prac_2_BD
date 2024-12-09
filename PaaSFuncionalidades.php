@@ -198,7 +198,7 @@ class PaaSFuncionalidades {
             case 'SO':
                 $query = "UPDATE SO SET preu = $precio WHERE nom = '$nombre'";
                 break;
-        }xml_error_string
+        }
 
         if (mysqli_query($this->conn, $query)) {
             $_SESSION["success_msg"] = "Precio actualizado correctamente.";

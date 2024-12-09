@@ -79,7 +79,7 @@ if (isset($_SESSION['error_msg'])) {
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -188,8 +188,6 @@ if (isset($_SESSION['error_msg'])) {
         <div class="container">
             <form action="./src/vista/productoSaaSVista.php" method="POST" onsubmit="return validateForm(event)">
                 <input type="hidden" name="accio" id="accio" value="">
-            
-            
                         <!-- Tabla para mostrar los datos de CONTRACTE -->
                         <table class="table table-striped">
                             <thead>
@@ -237,44 +235,11 @@ if (isset($_SESSION['error_msg'])) {
                         <div class="container d-flex justify-content-center align-items-center">
                             <div class="form-row align-items-center3">
                                 <div class="col-auto2">
-                                    <?php
-                                     $estatOptions = [];
-                                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                         if (isset($_POST['nomsestats'])) {
-                                             $testnom = $_POST['nomsestats'];
-                                         } else {
-                                         $testnom = '';
-                                         }
-                                         if ($testnom !== '') {
-                                             $cadena = "SELECT * FROM ESTAT WHERE estat = '$testnom'";
-                                             $resultado = mysqli_query($conn, $cadena);
-                                             while ($row = $resultado->fetch_assoc()) {
-                                                 $testOptions[] = $row;
-                                             }
-                                         }
-                                     }
-                                    ?>
-                                    
                                     <select name="nomsestats" id="estat" class="form-control">
                                         <option value="">Selecciona un Estado</option>
-                                        <?php
-                                        $sql = "SELECT DISTINCT estat FROM ESTAT";
-                                        $resultado = mysqli_query($conn, $sql);
-                                        while ($row = $resultado->fetch_assoc()) {
-                                            $selected = '';
-                                            if (isset($testnom)) {
-                                                if ($row['estat'] === $testnom) {
-                                                    $selected = 'selected';
-                                                }
-                                            } else {
-                                                if ($row['estat'] === '') {
-                                                    $selected = 'selected';
-                                                }
-                                            }
-                                            echo "<option value='" . $row['estat'] . "' $selected>" . $row['estat'] . "</option>";
-                                        }
-                                        ?>
-
+                                        <option value="Pendent">Pendent</option>
+                                        <option value="Aprovat">Aprovat</option>
+                                        <option value="Fallat">Fallat</option>
                                     </select>
                                 </div>   
                                 <div class="col-auto2">
@@ -285,8 +250,8 @@ if (isset($_SESSION['error_msg'])) {
                         </div>
                 </form>
                 <script>
-                function validateForm() {
-                    const testSelect = document.getElementById('input[name="selectedRow"]:checked');
+                function validateForm(event) {
+                    const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
                     const estatSelect = document.getElementById('estat');
                     const buttonClicked = event.submitter.name;
 
@@ -294,14 +259,15 @@ if (isset($_SESSION['error_msg'])) {
                         if (!selectedRow || estatSelect.value === '') {
                             alert('Por favor, selecciona un producto y un estado.');
                             return false;
-                        }else{
+                        } else {
                             document.getElementById('accio').value = 'actualizar';
                         }
-                    } else if (buttonClicked === 'elimarTestProd') {
+                    } 
+                    if (buttonClicked === 'elimarTestProd') {
                         if (!selectedRow) {
                             alert('Por favor, selecciona un producto.');
                             return false;
-                        }else{
+                        } else {
                             document.getElementById('accio').value = 'eliminarTest';
                         }
                     }

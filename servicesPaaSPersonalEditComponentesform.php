@@ -73,14 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
-                            </div>
+                            </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                            </div>                       
                         </div>
                     </div>
                 </nav>
@@ -164,10 +164,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
                             <select name="gb_componente" id="gb_componente" class="form-control">
                                 <option value="">Selecciona Especificación</option>
                                 <?php
+                                $valor = "cores";
+                                if ($_POST['component'] === 'RAM' || $_POST['component'] === 'DISC_DUR') {
+                                    $valor = "GB";
+                                }
                                 foreach ($componentes as $componente) {
                                     if ($componente['nombre'] === $_POST['nombre']) {
                                         $selected = isset($_POST['gb_componente']) && $_POST['gb_componente'] == $componente['gb_componente'] ? 'selected' : '';
-                                        echo "<option value='{$componente['gb_componente']}' $selected>{$componente['gb_componente']}</option>";
+                                        echo "<option value='{$componente['gb_componente']}' $selected>{$componente['gb_componente']} {$valor}</option>";
                                     }
                                 }
                                 ?>

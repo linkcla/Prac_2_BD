@@ -177,7 +177,7 @@ if ($result->num_rows > 0) {
         }
 
         function confirmUpdate() {
-            return confirm('¿Estás seguro de que deseas actualizar los datos del usuario?');
+            return confirm('Estàs segur de que vols actualitzar les dades del teu usuari?');
         }
 
         function togglePassword() {

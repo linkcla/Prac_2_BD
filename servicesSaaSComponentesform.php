@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_cms'])) {
-    $tipo = $_POST['tipo'];
+    $tipo = $_POST['tipo1'];
 
     if ($tipo) {
         $query = "INSERT INTO MODUL_CMS (tipus) VALUES ('$tipo')";
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>

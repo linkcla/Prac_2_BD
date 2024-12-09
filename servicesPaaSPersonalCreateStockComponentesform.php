@@ -151,13 +151,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>

@@ -70,10 +70,10 @@ $conn = Conexion::getConnection();
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
-                            </div>
+                            </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgform.php">Gestionar Organitzacións</a>
-                            </div>                        
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                            </div>                       
                         </div>
                     </div>
                 </nav>

@@ -1,6 +1,13 @@
 <!-- @Author: Blanca Atienzar Martinez -->
 
-<?php session_start() ?>
+<?php 
+session_start();
+if ($_SESSION['esUsuari']) {
+    header("Location: iniciUsuariForm.php");
+    exit();
+}
+
+?>
 <html>
   <head>
     <!-- Basic -->
@@ -67,8 +74,16 @@
                 <div class="overlay-content">
                   <a href="servicesform.php">Services</a>
                 </div>
+
+                
                 <div class="overlay-content">
-                  <a href="servicesUsuariform.php">Usuari</a>
+                  <div class="about_card-container layout_padding2-top">
+                  <?php
+                      if ($_SESSION['esUsuari']) {
+                        echo '<a href="servicesUsuariform.php">Usuari</a>';
+                      }
+                  ?>
+                  </div>
                 </div>
               </div>
             </div>
@@ -175,12 +190,12 @@
                 <div class="about-detail">
                   <div class="about_img-container">
                     <div class="about_img-box">
-                      <a href="gestOrg.php"><img src="images/work1.png" alt="" /></a>
+                      <a href="gestOrgForm.php"><img src="images/work1.png" alt="" /></a>
                     </div>
                   </div>
                   <div class="card_detail-ox">
                     <h4>
-                      <a href="servicesPaaSform.php">Gestionar Organitzacións</a>
+                      <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                     </h4>
                     
                   </div>
