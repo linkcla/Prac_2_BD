@@ -3,7 +3,22 @@
 <?php
 session_start();
 include "conexion.php";
+include_once "PaaSFuncionalidades.php"; 
+
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
+
+// Manejar la solicitud POST para eliminar componentes de stock
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_components') {
+    $selectedRam = isset($_POST['selectedRam']) ? $_POST['selectedRam'] : [];
+    $selectedDiscDur = isset($_POST['selectedDiscDur']) ? $_POST['selectedDiscDur'] : [];
+    $selectedCpu = isset($_POST['selectedCpu']) ? $_POST['selectedCpu'] : [];
+    $selectedSo = isset($_POST['selectedSo']) ? $_POST['selectedSo'] : [];
+
+    $paasFuncionalidades->deleteStockComponentes($selectedRam, $selectedDiscDur, $selectedCpu, $selectedSo);
+    header("Location: servicesPaaSPersonalDeleteStockComponentesform.php"); // Redirigir después de procesar
+    exit();
+}
 ?>
 
 <html>
@@ -121,7 +136,7 @@ $conn = Conexion::getConnection();
             </form>
         </div>
         <div class="container">
-            <form action="servicesPaaSPersonalDeleteStockComponentesBD.php" method="POST">
+            <form action="servicesPaaSPersonalDeleteStockComponentesform.php" method="POST">
                 <!-- Tabla para mostrar los datos de la RAM -->
                 <h3>RAM</h3>
                 <table class="table table-striped">
