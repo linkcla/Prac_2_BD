@@ -28,8 +28,12 @@ if (isset($_GET['idConfig'])) {
     $ddGBResult = mysqli_query($conn, $ddGBQuery);
 
     // Obtener opciones de CPU
-    $cpuQuery = "SELECT model, nNuclis FROM CPU";
+    $cpuQuery = "SELECT DISTINCT model FROM CPU";
     $cpuResult = mysqli_query($conn, $cpuQuery);
+
+    // Obtener opciones de cantidad de CPU
+    $cpuNucliQuery = "SELECT model, nNuclis FROM CPU";
+    $cpuNucliResult = mysqli_query($conn, $cpuNucliQuery);
 
     // Obtener opciones de Sistema Operativo
     $soQuery = "SELECT * FROM SO";
@@ -221,11 +225,11 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                     <label for="nNuclis">Número de Núcleos</label>
                     <select class="form-control" id="nNuclis" name="nNuclis">
                         <?php 
-                        mysqli_data_seek($cpuResult, 0);
-                        while ($rowCPU = mysqli_fetch_assoc($cpuResult)) { 
-                            if ($rowCPU['model'] == $selectedModelCPU) {
-                                $selected = ($rowCPU['nNuclis'] == $paas['nNuclis']) ? 'selected' : '';
-                                echo "<option value='{$rowCPU['nNuclis']}' $selected>{$rowCPU['nNuclis']}</option>";
+                        mysqli_data_seek($cpuNucliResult, 0);
+                        while ($rowNucliCPU = mysqli_fetch_assoc($cpuNucliResult)) { 
+                            if ($rowNucliCPU['model'] == $selectedModelCPU) {
+                                $selected = ($rowNucliCPU['nNuclis'] == $paas['nNuclis']) ? 'selected' : '';
+                                echo "<option value='{$rowNucliCPU['nNuclis']}' $selected>{$rowNucliCPU['nNuclis']}</option>";
                             }
                         }
                         ?>
