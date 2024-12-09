@@ -73,7 +73,7 @@ $result = $con->query($sql);
     <!-- end header section -->
 
     <!-- slider section -->
-    <section class="contact_section layout_padding">
+    <section class="contact_section layout_padding" style="min-height: calc(100vh - 200px);">
       <div class="container d-flex justify-content-center">
         <h2 class="text-uppercase">
           INSERT USER

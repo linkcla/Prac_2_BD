@@ -95,12 +95,14 @@ if ($_SESSION['esUsuari']) {
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout" style="min-height: calc(100vh - 200px);">
       <div class="container">
         <h2 class="text-uppercase">
           Nuestros Servicios
         </h2>
+        <a href="servicesPersonalForm.php" class="btn btn-primary">Editar perfil</a>
       </div>
+
 
       <div class="container">
         <div class="about_card-container layout_padding2-top">

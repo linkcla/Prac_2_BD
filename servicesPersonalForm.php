@@ -14,16 +14,13 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Obtener el nombre de la organización del usuario
-$sql = "SELECT p.nom, p.cognom, p.contrasenya, u.email, u.nomOrg, u.grup AS nomG FROM USUARI u
-        JOIN PERSONA p ON u.email = p.email
-        WHERE u.email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+$sql = "SELECT p.email, p.nom, p.cognom, p.contrasenya, personal.dni FROM PERSONA as p
+        JOIN personal ON p.email = personal.email";
+$result = mysqli_query($conn, $sql);
 
 if ($result->num_rows > 0) {
     $usuario = $result->fetch_assoc();
+    
 } else {
     $_SESSION["error_msg"] = "Usuario no encontrado.";
     header("Location: loginform.php");
@@ -108,10 +105,10 @@ if ($result->num_rows > 0) {
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-            <?php echo htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognom']); ?> 
+            <?php echo ($usuario['nom']) . ' ' . ($usuario['cognom']); ?> 
             </h2>
             <?php
         if (isset($_SESSION['success_msg'])) {
@@ -132,7 +129,7 @@ if ($result->num_rows > 0) {
                 <button type="submit" id="borrarBtn" class="btn btn-primary mx-2">Borrar</button>
                 <input type="hidden" id="selectedEmail" name="email" value="<?php echo $email; ?>">
             </form>
-            <form id="editForm" action="editarUsuariform.php" method="post" class="d-inline">
+            <form id="editForm" action="editarPersonalForm.php" method="post" class="d-inline">
                 <button type="submit" id="editarBtn" class="btn btn-primary mx-2">Editar</button>
                 <input type="hidden" id="selectedEmailEdit" name="email" value="<?php echo $email; ?>">
             </form>
@@ -144,8 +141,7 @@ if ($result->num_rows > 0) {
                                 <th>Nom</th>
                                 <th>Cognom</th>
                                 <th>Email</th>
-                                <th>Organització</th>
-                                <th>Grup</th>
+                                <th>DNI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,8 +149,7 @@ if ($result->num_rows > 0) {
                                 <td><?php echo ($usuario['nom']); ?></td>
                                 <td><?php echo ($usuario['cognom']); ?></td>
                                 <td><?php echo ($usuario['email']); ?></td>
-                                <td><?php echo ($usuario['nomOrg']); ?></td>
-                                <td><?php echo ($usuario['nomG']); ?></td>
+                                <td><?php echo ($usuario['dni']); ?></td>
                             </tr>
                         </tbody>
                     </table>

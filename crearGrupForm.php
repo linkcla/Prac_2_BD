@@ -83,7 +83,7 @@ $conn = Conexion::getConnection();
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
                 Gestionar Organitzacións

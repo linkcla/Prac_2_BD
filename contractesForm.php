@@ -4,13 +4,8 @@
 include "conexion.php";
 $conn = Conexion::getConnection();
 
-// Obtener todos los usuarios que no pertenecen a ninguna organización
-$selectUsuaris = "SELECT email FROM USUARI WHERE nomOrg IS NULL";
-$resultUsuaris = mysqli_query($conn, $selectUsuaris);
-
-// Obtener todos los grupos disponibles
-$selectGrups = "SELECT nom FROM GRUP";
-$resultGrups = mysqli_query($conn, $selectGrups);
+$nomOrg = $_SESSION['nomOrg'];
+$permisos = $_SESSION['permisos'];
 ?>
 
 <html>
@@ -42,6 +37,17 @@ $resultGrups = mysqli_query($conn, $selectGrups);
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="css/responsive.css" rel="stylesheet" />
+    <style>
+        .table th.id-column, .table td.id-column {
+            width: 15%;
+        }
+        .table th.name-column, .table td.name-column {
+            width: 20%;
+        }
+        .table th.description-column, .table td.description-column {
+            width: 65%;
+        }
+    </style>
 </head>
 
 <body>
@@ -49,14 +55,17 @@ $resultGrups = mysqli_query($conn, $selectGrups);
         <!-- header section strats -->
         <header class="header_section">
             <div class="container-fluid">
-                <nav class="navbar navbar-expand-lg custom_nav-container"  style="min-height: calc(100vh - 200px);">
+                <nav class="navbar navbar-expand-lg custom_nav-container">
                     <a class="navbar-brand" href="loginform.php">
                         <span>
                             MPHB
                         </span>
                     </a>
 
+                    
+
                     <div class="navbar-collapse" id="">
+                    
 
                         <div class="custom_menu-btn">
                             <button onclick="openNav()">
@@ -69,20 +78,9 @@ $resultGrups = mysqli_query($conn, $selectGrups);
                             <div class="overlay-content">
                                 <a href="loginform.php">Home</a>
                             </div>
-                            <div class="overlay-content">
-                                <a href="servicesform.php">Services</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="servicesPaaSfPersonalorm.php">PaaS</a>
-                            </div>
-                            <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
-                            </div>
                         </div>
                     </div>
+                    
                 </nav>
             </div>
         </header>
@@ -90,55 +88,44 @@ $resultGrups = mysqli_query($conn, $selectGrups);
     </div>
 
     <!-- about section -->
-
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h2 class="text-uppercase">
-                Afegir Usuaris a l'Organització
+                Benvingut, <?php echo $_SESSION['nom']; ?>
+                <button type="submit" class="btn btn-primary mb-3" name="editEstat">Actualizar Estado Test</button>
             </h2>
-            <form>
-                <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <form action="afegirUsuaris.php" method="post">
-                <div class="form-group">
-                    <label for="usuari">Seleccionar usuari:</label>
-                    <select class="form-control" id="usuari" name="usuari" required>
-                        <option value="">Selecciona un usuari</option>
+            <?php if (in_array('Visualizar', $permisos)): ?>
+                <h3>Productes contratats per l'organització: <?php echo $nomOrg; ?></h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="id-column">ID Config</th>
+                            <th class="name-column">Nom del Producte</th>
+                            <th class="description-column">Descripció</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <?php
-                        while ($fila = mysqli_fetch_assoc($resultUsuaris)) {
-                            echo "<option value='{$fila['email']}'>{$fila['email']}</option>";
+                        $query = "SELECT p.idConfig, p.nom, p.descripcio
+                                  FROM CONTRACTE c 
+                                  JOIN PRODUCTE p ON c.idConfigProducte = p.idConfig 
+                                  WHERE c.nom = '$nomOrg'";
+                        $result = mysqli_query($conn, $query);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>
+                                    <td>{$row['idConfig']}</td>
+                                    <td>{$row['nom']}</td>
+                                    <td>{$row['descripcio']}</td>
+                                  </tr>";
                         }
                         ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="grup">Seleccionar grup:</label>
-                    <select class="form-control" id="grup" name="grup" required>
-                        <option value="">Selecciona un grup</option>
-                        <?php
-                        while ($fila = mysqli_fetch_assoc($resultGrups)) {
-                            echo "<option value='{$fila['nom']}'>{$fila['nom']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-
-                <br>
-                <button type="submit" class="btn btn-primary">Afegir Usuari</button>
-            </form>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>No tens permisos per visualitzar els productes contractats.</p>
+            <?php endif; ?>
         </div>
     </section>
-
-    <!-- end about section -->
-
 
     <!-- footer section -->
     <section class="container-fluid footer_section">
@@ -147,9 +134,6 @@ $resultGrups = mysqli_query($conn, $selectGrups);
         </p>
     </section>
     <!-- footer section -->
-
-    <!--script type="text/javascript" src="js/jquery-3.4.1.min.js"></script-->
-    <!--script type="text/javascript" src="js/bootstrap.js"></script-->
 
     <script>
         function openNav() {

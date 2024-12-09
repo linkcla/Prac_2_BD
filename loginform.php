@@ -44,6 +44,13 @@ $conn = Conexion::getConnection();
 
   <body>
     <?php
+      if (isset($_SESSION['success_msg'])) {
+        echo '
+          <div class="alert alert-success alert-dismissible fade show" role="alert">'
+          . $_SESSION["success_msg"] .
+          '</div>';
+        unset($_SESSION['success_msg']);
+      } 
       if(isset($_SESSION['error_msg'])) {
         echo '
           <div class="alert alert-danger alert-dismissible fade show" role="alert">'
@@ -92,7 +99,7 @@ $conn = Conexion::getConnection();
        
       <!-- slider section -->
       
-    <section class="contact_section layout_padding">
+    <section class="contact_section layout_padding"  style="min-height: calc(100vh - 200px);">
       <div class="container d-flex justify-content-center">
         <h2 class="text-uppercase">
           Login
