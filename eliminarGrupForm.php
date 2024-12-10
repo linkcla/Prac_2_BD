@@ -85,7 +85,7 @@ $resultGrups = mysqli_query($conn, $selectGrups);
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacions</a>
                             </div>                       
                         </div>
                     </div>
@@ -100,7 +100,7 @@ $resultGrups = mysqli_query($conn, $selectGrups);
     <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Gestionar Organitzacións
+                Gestionar Organitzacions
             </h2>
             <form>
                 <div class="container">
@@ -108,9 +108,6 @@ $resultGrups = mysqli_query($conn, $selectGrups);
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
         <div class="container">
             <form action="./src/vista/grupVista.php" method="post">
                 <input type="hidden" name="accio" value="eliminar">

@@ -115,11 +115,7 @@ if (isset($_SESSION['error_msg'])) {
                 </div>
                 </div>
             </form>
-        </div>
-    </section>
-
-    <section>
-        
+        </div>        
         <form id="formulari" action="" method="post">
             
             <div class="container">

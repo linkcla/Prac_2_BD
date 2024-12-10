@@ -71,7 +71,7 @@ $conn = Conexion::getConnection();
                                 <a href="servicesPaaSfPersonalorm.php">PaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>
                         </div>
                     </div>
@@ -86,17 +86,14 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Gestionar Organitzacións
+                Gestionar Organitzacions
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
+                    <button type="submit" class="btn btn-primary" formaction="gestUsForm.php">Tornar arrera</button>
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
         <div class="container">
             <form action="./src/vista/grupVista.php" method="post">
                 <input type="hidden" name="accio" value="crear">

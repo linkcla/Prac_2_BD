@@ -100,9 +100,6 @@ list($nom, $adreca, $telefon) = explode("|", $valorSeleccionat);
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
         <div class="container">
             <form action="./src/vista/organitzacioVista.php" method="post">
                 <input type="hidden" id="accio" name="accio" value="editar">

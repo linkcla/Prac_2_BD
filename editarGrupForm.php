@@ -102,7 +102,7 @@ $resultPrivilegis = mysqli_query($conn, $selectPrivilegis);
                                 <a href="servicesPaaSfPersonalorm.php">PaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacions</a>
                             </div>
                         </div>
                     </div>
@@ -117,17 +117,14 @@ $resultPrivilegis = mysqli_query($conn, $selectPrivilegis);
     <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Gestionar Organitzacións
+                Gestionar Organitzacions
             </h2>
             <form>
                 <div class="container">
-                    <button type="submit" class="btn btn-primary" formaction="gestOrgForm.php">Tornar arrera</button>
+                    <button type="submit" class="btn btn-primary" formaction="gestUsForm.php">Tornar arrera</button>
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
         <div class="container">
             <form method="get" action="editarGrupForm.php">
                 <div class="form-group">
