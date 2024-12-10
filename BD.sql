@@ -108,6 +108,7 @@ CREATE TABLE CONTRACTE (
     idContracte INT AUTO_INCREMENT PRIMARY KEY,
     dataInici DATE NOT NULL,
     estat ENUM('Actiu', 'Finalitzat', 'Cancel·lat') NOT NULL,
+    domini VARCHAR(128) NOT NULL,
     nom VARCHAR(128) NOT NULL,
     emailU VARCHAR(128) NOT NULL,
     idConfigProducte INT NOT NULL,
@@ -119,8 +120,7 @@ CREATE TABLE CONTRACTE (
 );
 
 CREATE TABLE SAAS (
-    idConfig INT AUTO_INCREMENT PRIMARY KEY,
-    domini VARCHAR(128) NOT NULL,
+    idConfig INT AUTO_INCREMENT PRIMARY KEY,    
     dataCreacio DATE NOT NULL,
     tipusMCMS VARCHAR(16) NOT NULL,
     tipusCDN ENUM('Bàsic', 'Protegit', 'Avançat') NOT NULL,
