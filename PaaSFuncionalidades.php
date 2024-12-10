@@ -34,6 +34,51 @@ class PaaSFuncionalidades {
         }
     }
 
+    //----------------------------------FUNCIONES DE CREATE_STOCK_COMPONENTES-----------------------------------
+    function crearNuevoComponente($conn, $component, $tipo, $gb, $nNuclis, $precio) {
+        $query = "";
+        $existsQuery = "";
+    
+        switch ($component) {
+            case 'RAM':
+                if ($gb) {
+                    $existsQuery = "SELECT * FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
+                    $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
+                }
+                break;
+            case 'DISC_DUR':
+                if ($gb) {
+                    $existsQuery = "SELECT * FROM DISC_DUR WHERE tipus = '$tipo' AND GB = $gb";
+                    $query = "INSERT INTO DISC_DUR (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
+                }
+                break;
+            case 'CPU':
+                if ($nNuclis) {
+                    $existsQuery = "SELECT * FROM CPU WHERE model = '$tipo' AND nNuclis = '$nNuclis'";
+                    $query = "INSERT INTO CPU (model, nNuclis, preu) VALUES ('$tipo', '$nNuclis', $precio)";
+                }
+                break;
+            case 'SO':
+                $existsQuery = "SELECT * FROM SO WHERE nom = '$tipo'";
+                $query = "INSERT INTO SO (nom, preu) VALUES ('$tipo', $precio)";
+                break;
+        }
+    
+        if ($existsQuery) {
+            $existsResult = mysqli_query($conn, $existsQuery);
+            if (mysqli_num_rows($existsResult) > 0) {
+                echo "<div class='alert alert-danger' role='alert'>El componente ya existe.</div>";
+            } else {
+                if (mysqli_query($conn, $query)) {
+                    echo "<div class='alert alert-success' role='alert'>Componente añadido exitosamente.</div>";
+                } else {
+                    echo "<p>Error al añadir el componente: " . mysqli_error($conn) . "</p>";
+                }
+            }
+        }
+    }
+    
+
     //---------------------------------------FUNCIONES DE DELETE_PAAS---------------------------------------
     public function deletePaaS($selectedRows) {
         if ($selectedRows && is_array($selectedRows)) {
