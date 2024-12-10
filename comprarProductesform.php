@@ -1,4 +1,5 @@
 <!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Hai Zi Bibiloni Trobat (PHP y funcionalidad) -->
 
 <?php session_start() ;
 include "conexion.php";
@@ -150,6 +151,7 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                 <th>GB RAM </th>
                 <th>Tipus DD</th>
                 <th>GB DD</th>
+                <th>Domini</th>
                 <th>Preu (€)</th>
             </tr>
         </thead>
@@ -220,6 +222,9 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                     </select>
                 </td>
                 <td>
+                    <input type="text" name="domini" class="form-control" placeholder="Ej: hola.com">
+                </td>
+                <td>
                     <input type="text" name="precio" class="form-control" id="precioTotalSaaS" readonly>
                 </td>
             </tr>           
@@ -237,6 +242,7 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
         <thead>
             <tr>
                 <th>IP</th>
+                <th>nº IP</th>
                 <th>Tipus RAM</th>
                 <th>GB RAM </th>
                 <th>Tipus DD</th>
@@ -255,6 +261,9 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                         <option value="IPv4">IPv4</option>
                         <option value="IPv6">IPv6</option>
                     </select>
+                </td>
+                <td>
+                    <input type="text" name="nip" class="form-control" placeholder="">
                 </td>
                 <td>
                     <select name="tipusRAM" class="form-control" onchange="calculatePricePaaS()" onclick="showOptions(this)">

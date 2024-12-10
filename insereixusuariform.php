@@ -3,10 +3,7 @@
  
 <?php 
 include "conexion.php";
-
 $con = Conexion::getConnection();
-$sql = "SELECT nom FROM ORGANITZACIO";
-$result = $con->query($sql);
 ?>
 
 <html>

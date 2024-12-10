@@ -272,7 +272,7 @@ if (isset($_SESSION['error_msg'])) {
                         }
                     }
                     return true;
-                }+
+                }
                 </script>
             
         </div>
