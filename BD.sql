@@ -200,15 +200,50 @@ CREATE TABLE ESTAT (
     CONSTRAINT fk_estat_producte FOREIGN KEY (idConfigProducte) REFERENCES PRODUCTE(idConfig)
 );
 
--- TAULA RELACIONADA AMB EL HISTORIAL INCREMENTAL
+-- TAULES RELACIONADA AMB EL HISTORIAL INCREMENTAL
 CREATE TABLE AUDITORIA (
     id INT AUTO_INCREMENT PRIMARY KEY,
     taula VARCHAR(128) NOT NULL,
     operacio ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
     dades_anteriors TEXT,
     dades_noves TEXT,
-    data DATETIME DEFAULT CURRENT_TIMESTAMP
+    dia_hora_minut DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE HISTORIAL (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dia DATE NOT NULL,
+    canvis_realitzats TEXT NOT NULL,
+    numero_canvis INT NOT NULL
+);
+
+-- EVENT PER REALITZAR L'HISTORIAL DE CANVIS
+DELIMITER $$
+
+CREATE EVENT consolidar_a_historial
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+    -- Consolidar los datos del día
+    INSERT INTO HISTORIAL (dia, canvis_realitzats, numero_canvis)
+    SELECT
+        DATE(dia_hora_minut) AS dia,
+        GROUP_CONCAT(CONCAT(
+            'Taula: ', taula, ', Operació: ', operacio, 
+            ', Dades anteriors: ', COALESCE(dades_anteriors, 'N/A'),
+            ', Dades noves: ', COALESCE(dades_noves, 'N/A')
+        ) SEPARATOR ' #-# ') AS canvis_realitzats,
+        COUNT(*) AS numero_canvis
+    FROM AUDITORIA
+    GROUP BY DATE(dia_hora_minut);
+
+    -- Limpiar la tabla AUDITORIA
+    DELETE FROM AUDITORIA;
+END$$
+
+DELIMITER ;
+
+
 
 -- TRIGGERS PARA REALIZAR LA EL HISTORIAL DE CAMBIOS
 
