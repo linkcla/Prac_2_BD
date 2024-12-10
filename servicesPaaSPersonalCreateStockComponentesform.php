@@ -2,7 +2,10 @@
 
 <?php session_start() ;
 include "conexion.php";
+include "PaaSFuncionalidades.php"; // Incluye el archivo que contiene la clase PaaSFuncionalidades
+
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn); // Crea una instancia de PaaSFuncionalidades
 
 // Obtener tipos de RAM desde la base de datos
 $ramTypesQuery = "SELECT DISTINCT tipus FROM RAM";
@@ -27,49 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_numeric($precio) || $precio < 0 || $precio > 999.99) {
                 echo "<div class='alert alert-danger' role='alert'>El precio debe ser un número entre 0 y 999.99</div>";
             } else {
-                $query = "";
-                $existsQuery = "";
-
-                // Construir las consultas SQL según el tipo de componente
-                switch ($component) {
-                    case 'RAM':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
-                            $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
-                        }
-                        break;
-                    case 'DISC_DUR':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM DISC_DUR WHERE tipus = '$tipo' AND GB = $gb";
-                            $query = "INSERT INTO DISC_DUR (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
-                        }
-                        break;
-                    case 'CPU':
-                        if ($nNuclis) {
-                            $existsQuery = "SELECT * FROM CPU WHERE model = '$tipo' AND nNuclis = '$nNuclis'";
-                            $query = "INSERT INTO CPU (model, nNuclis, preu) VALUES ('$tipo', '$nNuclis', $precio)";
-                        }
-                        break;
-                    case 'SO':
-                        $existsQuery = "SELECT * FROM SO WHERE nom = '$tipo'";
-                        $query = "INSERT INTO SO (nom, preu) VALUES ('$tipo', $precio)";
-                        break;
-                }
-
-                // Verificar si el componente ya existe en la base de datos
-                if ($existsQuery) {
-                    $existsResult = mysqli_query($conn, $existsQuery);
-                    if (mysqli_num_rows($existsResult) > 0) {
-                        echo "<div class='alert alert-danger' role='alert'>El componente ya existe.</div>";
-                    } else {
-                        // Insertar el nuevo componente en la base de datos 
-                        if (mysqli_query($conn, $query)) {
-                            echo "<div class='alert alert-success' role='alert'>Componente añadido exitosamente.</div>";
-                        } else {
-                            echo "<p>Error al añadir el componente: " . mysqli_error($conn) . "</p>";
-                        }
-                    }
-                }
+                // Llama al método crearNuevoComponente de la instancia de PaaSFuncionalidades
+                $paasFuncionalidades->crearNuevoComponente($conn, $component, $tipo, $gb, $nNuclis, $precio);
             }
         } else {
             // Error: Todos los campos son obligatorios.
