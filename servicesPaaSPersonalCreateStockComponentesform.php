@@ -307,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </fieldset>
                 <?php endif; ?>
 
-                <button type="submit" class="btn btn-primary">Añadir Componente</button>
+                <button type="submit" class="btn btn-primary custom-btn">Añadir Componente</button>
             </form>
         </div>
 

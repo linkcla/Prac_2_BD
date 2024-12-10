@@ -115,17 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearRAM'])) {
             <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaaSPersonalCreateStockComponentesform.php'">Componentes</button>
         </div>
 
-
+        <!-- Sección para crear una nueva RAM -->
         <div class="container form-container">
-            <h2 class="text-uppercase" style="margin-top: 40px; font-size: 36px;">
-                Crear Nueva RAM
+            <h2 class="text-uppercase" style="margin-top: 30px; font-size: 34px;">
+                Añadir Nuevo Tipo de RAM
             </h2>
             <form method="POST" action="servicesPaaSPersonalCreateform.php">
                 <div class="form-group">
-                    <label for="tipo">Tipo de RAM:</label>
-                    <input type="text" class="form-control mx-auto" id="tipo" name="tipo" required style="width: 40%;" >
+                    <input type="text" class="form-control mx-auto" id="tipo" name="tipo" placeholder="Ej: DDR9" required style="width: 40%;" >
                 </div>
-                <button type="submit" class="btn btn-primary custom-btn" name="crearRAM">Crear RAM</button>
+                <button type="submit" class="btn btn-primary custom-btn" name="crearRAM">Añadir</button>
             </form>
             <?php
             if ($resultado) {

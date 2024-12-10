@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
                         <label for="precio">Precio</label>
                         <input type="text" name="precio" id="precio" class="form-control" placeholder="Max: 999.99">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="update_precio">Actualizar Precio</button>
+                    <button type="submit" class="btn btn-primary custom-btn" name="update_precio">Actualizar Precio</button>
                 </form>
             <?php endif; ?>
         </div>
