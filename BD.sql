@@ -211,8 +211,7 @@ CREATE TABLE AUDITORIA (
 );
 
 CREATE TABLE HISTORIAL (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dia DATE NOT NULL,
+    dia DATE PRIMARY KEY,
     canvis_realitzats TEXT NOT NULL,
     numero_canvis INT NOT NULL
 );
@@ -220,11 +219,15 @@ CREATE TABLE HISTORIAL (
 -- EVENT PER REALITZAR L'HISTORIAL DE CANVIS
 DELIMITER $$
 
-CREATE EVENT consolidar_a_historial
+CREATE EVENT IF NOT EXISTS export_auditoria_to_historial
 ON SCHEDULE EVERY 1 DAY
 DO
 BEGIN
-    -- Consolidar los datos del día
+    -- Insertar a la taula HISTORIAL els canvis realitzats a la taula
+    -- ON DUPLICATE KEY serveix per actualitzar la fila si ja existeix
+    -- la informació del dia actual. Això pot passar si l'event s'executa 
+    -- durant el día ja que a la taula trobará informacio del dia actual i 
+    -- del dia anterior.
     INSERT INTO HISTORIAL (dia, canvis_realitzats, numero_canvis)
     SELECT
         DATE(dia_hora_minut) AS dia,
@@ -235,13 +238,17 @@ BEGIN
         ) SEPARATOR ' #-# ') AS canvis_realitzats,
         COUNT(*) AS numero_canvis
     FROM AUDITORIA
-    GROUP BY DATE(dia_hora_minut);
+    GROUP BY DATE(dia_hora_minut)
+    ON DUPLICATE KEY UPDATE 
+        canvis_realitzats = CONCAT(canvis_realitzats, ' #-# ', VALUES(canvis_realitzats)),
+        numero_canvis = numero_canvis + VALUES(numero_canvis);
 
-    -- Limpiar la tabla AUDITORIA
+    -- Vaciar la tabla AUDITORIA después de exportar los datos
     DELETE FROM AUDITORIA;
 END$$
 
 DELIMITER ;
+
 
 
 
