@@ -199,3 +199,373 @@ CREATE TABLE ESTAT (
     CONSTRAINT fk_estat_test FOREIGN KEY (nomT) REFERENCES TEST(nom),
     CONSTRAINT fk_estat_producte FOREIGN KEY (idConfigProducte) REFERENCES PRODUCTE(idConfig)
 );
+
+-- TAULA RELACIONADA AMB EL HISTORIAL INCREMENTAL
+CREATE TABLE AUDITORIA (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    taula VARCHAR(128) NOT NULL,
+    operacio ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    dades_anteriors TEXT,
+    dades_noves TEXT,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TRIGGERS PARA REALIZAR LA EL HISTORIAL DE CAMBIOS
+
+DELIMITER $$
+-- Trigger para la tabla PERSONA
+CREATE TRIGGER auditar_insert_persona
+AFTER INSERT ON PERSONA
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PERSONA', 'INSERT', CONCAT('nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email, ', contrasenya=', NEW.contrasenya));
+END$$
+
+CREATE TRIGGER auditar_update_persona
+AFTER UPDATE ON PERSONA
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PERSONA', 'UPDATE', CONCAT('nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email, ', contrasenya=', OLD.contrasenya),
+            CONCAT('nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email, ', contrasenya=', NEW.contrasenya));
+END$$
+
+CREATE TRIGGER auditar_delete_persona
+AFTER DELETE ON PERSONA
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PERSONA', 'DELETE', CONCAT('nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email, ', contrasenya=', OLD.contrasenya));
+END$$
+
+-- Trigger para la tabla PERSONAL
+CREATE TRIGGER auditar_insert_personal
+AFTER INSERT ON PERSONAL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PERSONAL', 'INSERT', CONCAT('email=', NEW.email, ', dni=', NEW.dni));
+END$$
+
+CREATE TRIGGER auditar_update_personal
+AFTER UPDATE ON PERSONAL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PERSONAL', 'UPDATE', CONCAT('email=', OLD.email, ', dni=', OLD.dni),
+            CONCAT('email=', NEW.email, ', dni=', NEW.dni));
+END$$
+
+CREATE TRIGGER auditar_delete_personal
+AFTER DELETE ON PERSONAL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PERSONAL', 'DELETE', CONCAT('email=', OLD.email, ', dni=', OLD.dni));
+END$$
+
+-- Trigger para la tabla USUARI
+CREATE TRIGGER auditar_insert_usuari
+AFTER INSERT ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('USUARI', 'INSERT', CONCAT('email=', NEW.email, ', nomOrg=', NEW.nomOrg, ', grup=', NEW.grup));
+END$$
+
+CREATE TRIGGER auditar_update_usuari
+AFTER UPDATE ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('USUARI', 'UPDATE', CONCAT('email=', OLD.email, ', nomOrg=', OLD.nomOrg, ', grup=', OLD.grup),
+            CONCAT('email=', NEW.email, ', nomOrg=', NEW.nomOrg, ', grup=', NEW.grup));
+END$$
+
+CREATE TRIGGER auditar_delete_usuari
+AFTER DELETE ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('USUARI', 'DELETE', CONCAT('email=', OLD.email, ', nomOrg=', OLD.nomOrg, ', grup=', OLD.grup));
+END$$
+
+-- Trigger para la tabla GRUP
+CREATE TRIGGER auditar_insert_grup
+AFTER INSERT ON GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('GRUP', 'INSERT', CONCAT('nom=', NEW.nom, ', nomOrg=', NEW.nomOrg));
+END$$
+
+CREATE TRIGGER auditar_update_grup
+AFTER UPDATE ON GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('GRUP', 'UPDATE', CONCAT('nom=', OLD.nom, ', nomOrg=', OLD.nomOrg),
+            CONCAT('nom=', NEW.nom, ', nomOrg=', NEW.nomOrg));
+END$$
+
+CREATE TRIGGER auditar_delete_grup
+AFTER DELETE ON GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('GRUP', 'DELETE', CONCAT('nom=', OLD.nom, ', nomOrg=', OLD.nomOrg));
+END$$
+
+-- Trigger para la tabla PRIVILEGI. Con el ENUM no se puede hacer un UPDATE. no hace falta hacer su trigger.
+CREATE TRIGGER auditar_insert_privilegi
+AFTER INSERT ON PRIVILEGI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PRIVILEGI', 'INSERT', CONCAT('tipus=', NEW.tipus));
+END$$
+
+CREATE TRIGGER auditar_delete_privilegi
+AFTER DELETE ON PRIVILEGI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PRIVILEGI', 'DELETE', CONCAT('tipus=', OLD.tipus));
+END$$
+
+-- Trigger para la tabla ORGANITZACIO
+CREATE TRIGGER auditar_insert_organitzacio
+AFTER INSERT ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('ORGANITZACIO', 'INSERT', CONCAT('nom=', NEW.nom, ', adreca=', NEW.adreca, ', telefon=', NEW.telefon));
+END$$
+
+CREATE TRIGGER auditar_update_organitzacio
+AFTER UPDATE ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('ORGANITZACIO', 'UPDATE', CONCAT('nom=', OLD.nom, ', adreca=', OLD.adreca, ', telefon=', OLD.telefon),
+            CONCAT('nom=', NEW.nom, ', adreca=', NEW.adreca, ', telefon=', NEW.telefon));
+END$$
+
+CREATE TRIGGER auditar_delete_organitzacio
+AFTER DELETE ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('ORGANITZACIO', 'DELETE', CONCAT('nom=', OLD.nom, ', adreca=', OLD.adreca, ', telefon=', OLD.telefon));
+END$$
+
+---------------------------------------------------------------------------------------------------------------------------- HASTA AQUÍ REVISADO
+
+-- Trigger para INSERT en la tabla CONTRACTE
+CREATE TRIGGER auditar_insert_contracte
+AFTER INSERT ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('CONTRACTE', 'INSERT', CONCAT('idContracte=', NEW.idContracte, ', dataInici=', NEW.dataInici, ', estat=', NEW.estat, ', nom=', NEW.nom, ', emailU=', NEW.emailU, ', idConfigProducte=', NEW.idConfigProducte, ', mesos=', NEW.mesos));
+END$$
+
+-- Trigger para UPDATE en la tabla CONTRACTE
+CREATE TRIGGER auditar_update_contracte
+AFTER UPDATE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('CONTRACTE', 'UPDATE', CONCAT('idContracte=', OLD.idContracte, ', dataInici=', OLD.dataInici, ', estat=', OLD.estat, ', nom=', OLD.nom, ', emailU=', OLD.emailU, ', idConfigProducte=', OLD.idConfigProducte, ', mesos=', OLD.mesos),
+            CONCAT('idContracte=', NEW.idContracte, ', dataInici=', NEW.dataInici, ', estat=', NEW.estat, ', nom=', NEW.nom, ', emailU=', NEW.emailU, ', idConfigProducte=', NEW.idConfigProducte, ', mesos=', NEW.mesos));
+END$$
+
+-- Trigger para DELETE en la tabla CONTRACTE
+CREATE TRIGGER auditar_delete_contracte
+AFTER DELETE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('CONTRACTE', 'DELETE', CONCAT('idContracte=', OLD.idContracte, ', dataInici=', OLD.dataInici, ', estat=', OLD.estat, ', nom=', OLD.nom, ', emailU=', OLD.emailU, ', idConfigProducte=', OLD.idConfigProducte, ', mesos=', OLD.mesos));
+END$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Trigger para la tabla CONTRACTE
+CREATE TRIGGER auditar_insert_contracte
+AFTER INSERT ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('CONTRACTE', 'INSERT', CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+END$$
+
+CREATE TRIGGER auditar_update_contracte
+AFTER UPDATE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('CONTRACTE', 'UPDATE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat),
+            CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+END$$
+
+CREATE TRIGGER auditar_delete_contracte
+AFTER DELETE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('CONTRACTE', 'DELETE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat));
+END$$
+
+-- Trigger para la tabla PRODUCTE
+CREATE TRIGGER auditar_insert_producte
+AFTER INSERT ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PRODUCTE', 'INSERT', CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_update_producte
+AFTER UPDATE ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PRODUCTE', 'UPDATE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio),
+            CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_delete_producte
+AFTER DELETE ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PRODUCTE', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
+END$$
+
+-- Trigger para la tabla CONTRACTE
+CREATE TRIGGER auditar_insert_contracte
+AFTER INSERT ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('CONTRACTE', 'INSERT', CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+END$$
+
+CREATE TRIGGER auditar_update_contracte
+AFTER UPDATE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('CONTRACTE', 'UPDATE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat),
+            CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+END$$
+
+CREATE TRIGGER auditar_delete_contracte
+AFTER DELETE ON CONTRACTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('CONTRACTE', 'DELETE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat));
+END$$
+
+-- Trigger para la tabla PRODUCTE
+CREATE TRIGGER auditar_insert_producte
+AFTER INSERT ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PRODUCTE', 'INSERT', CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_update_producte
+AFTER UPDATE ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PRODUCTE', 'UPDATE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio),
+            CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_delete_producte
+AFTER DELETE ON PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PRODUCTE', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
+END$$
+
+-- Trigger para la tabla USUARI
+CREATE TRIGGER auditar_insert_usuari
+AFTER INSERT ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('USUARI', 'INSERT', CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email));
+END$$
+
+CREATE TRIGGER auditar_update_usuari
+AFTER UPDATE ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('USUARI', 'UPDATE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email),
+            CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email));
+END$$
+
+CREATE TRIGGER auditar_delete_usuari
+AFTER DELETE ON USUARI
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('USUARI', 'DELETE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email));
+END$$
+
+-- Trigger para la tabla ORGANITZACIO
+CREATE TRIGGER auditar_insert_organitzacio
+AFTER INSERT ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('ORGANITZACIO', 'INSERT', CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_update_organitzacio
+AFTER UPDATE ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('ORGANITZACIO', 'UPDATE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio),
+            CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+END$$
+
+CREATE TRIGGER auditar_delete_organitzacio
+AFTER DELETE ON ORGANITZACIO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('ORGANITZACIO', 'DELETE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
+END$$
+
+
+DELIMITER ;
