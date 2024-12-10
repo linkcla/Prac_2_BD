@@ -109,9 +109,7 @@ if (isset($_SESSION['noMod'])) {
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
+        
         <form id="formulari" action="" method="post">
             <input type="hidden" name="accio" value="eliminar">
             <div class="container">
