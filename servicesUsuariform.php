@@ -14,8 +14,9 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Obtener el nombre de la organización del usuario
-$sql = "SELECT p.nom, p.cognom, p.contrasenya, u.email, u.nomOrg, u.grup AS nomG FROM USUARI u
+$sql = "SELECT p.nom, p.cognom, p.email, u.nomOrg, u.grup AS nomG, pdg.tipusPriv FROM USUARI u
         JOIN PERSONA p ON u.email = p.email
+        JOIN PRIV_DE_GRUP pdg ON u.grup = pdg.nomG
         WHERE u.email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
@@ -137,6 +138,7 @@ if ($result->num_rows > 0) {
                                 <th>Email</th>
                                 <th>Organització</th>
                                 <th>Grup</th>
+                                <th>Privilegis</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,6 +148,7 @@ if ($result->num_rows > 0) {
                                 <td><?php echo ($usuario['email']); ?></td>
                                 <td><?php echo ($usuario['nomOrg']); ?></td>
                                 <td><?php echo ($usuario['nomG']); ?></td>
+                                <td><?php echo ($usuario['tipusPriv']); ?></td>
                             </tr>
                         </tbody>
                     </table>
