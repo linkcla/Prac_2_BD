@@ -39,13 +39,13 @@ $permisos = $_SESSION['permisos'];
     <link href="css/responsive.css" rel="stylesheet" />
     <style>
         .table th.id-column, .table td.id-column {
-            width: 15%;
+            width: 10%;
         }
         .table th.name-column, .table td.name-column {
-            width: 20%;
+            width: 15%;
         }
         .table th.description-column, .table td.description-column {
-            width: 65%;
+            width: 40%;
         }
     </style>
 </head>
@@ -98,23 +98,33 @@ $permisos = $_SESSION['permisos'];
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th class="id-column">ID Contracte</th>
+                            <th class="name-column">Estat</th>
                             <th class="id-column">ID Config</th>
                             <th class="name-column">Nom del Producte</th>
+                            <th class="id-column">Data de finalitzacio</th>
                             <th class="description-column">Descripció</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT p.idConfig, p.nom, p.descripcio
+                        $query = "SELECT p.idConfig, p.nom, p.descripcio, c.idContracte, c.dataInici, c.mesos, c.estat
                                   FROM CONTRACTE c 
                                   JOIN PRODUCTE p ON c.idConfigProducte = p.idConfig 
-                                  WHERE c.nom = '$nomOrg'";
+                                  WHERE c.nom = '$nomOrg'
+                                  ORDER BY c.idContracte AND c.estat";
                         $result = mysqli_query($conn, $query);
                         while ($row = mysqli_fetch_assoc($result)) {
+                            // Generar la descripció del producte a partir de les característiques
+                            $descripcio = getDescripcio($row['idConfig']);
+                            $dataFin = calcularDataFinal($row['dataInici'], $row['mesos']);
                             echo "<tr>
+                                    <td>{$row['idContracte']}</td>
+                                    <td>{$row['estat']}</td>
                                     <td>{$row['idConfig']}</td>
                                     <td>{$row['nom']}</td>
-                                    <td>{$row['descripcio']}</td>
+                                    <td>{$dataFin}</td>
+                                    <td>{$descripcio}</td>
                                   </tr>";
                         }
                         ?>
@@ -150,3 +160,88 @@ $permisos = $_SESSION['permisos'];
 </body>
 
 </html>
+
+<?php
+    function getDescripcio($idConfig) {
+        
+        $query = "SELECT idConfig FROM paas WHERE idConfig = '{$idConfig}'";
+        $result = mysqli_query(Conexion::getConnection(), $query);
+
+        if (!$result) {
+            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
+            header('Location: error.php');
+            exit();
+        }
+        
+        // Miram si es un PaaS o un SaaS. Si es un PaaS la condició serà falsa.
+        if (mysqli_num_rows($result) == 0) {
+            return getSaaSDescripcio($idConfig);
+        }
+        return getPaaSDescripcio($idConfig);
+    }
+
+    function getSaaSDescripcio($idConfig) {
+        $query = "SELECT * FROM saas WHERE idConfig = '$idConfig'";
+        $result = mysqli_query(Conexion::getConnection(), $query);
+
+        if (!$result) {
+            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
+            header('Location: error.php');
+            exit();
+        }
+        $descripcioSaaS = "SaaS: ";
+        // Només hi haurà una fila ja que l'idConfig és clau primària.
+        // Concatenam tota la informació per poder mostrar-la en una sola fila.
+        while ($row = mysqli_fetch_assoc($result)) {
+            $descripcioSaaS .= "Domini: " . $row['domini'] . " | ";
+            $descripcioSaaS .= "Data Creacio: " . $row['dataCreacio'] . " | ";
+            $descripcioSaaS .= "MCMS: " . $row['tipusMCMS'] . " | ";
+            $descripcioSaaS .= "CDN: " . $row['tipusCDN'] . " | ";
+            $descripcioSaaS .= "SSL: " . $row['tipusSSL'] . " | ";
+            $descripcioSaaS .= "SGBD: " . $row['tipusSGBD'] . " | ";
+            $descripcioSaaS .= "RAM: " . $row['tipusRam'] . " | ";
+            $descripcioSaaS .= "GB RAM: " . $row['GBRam'] . " | ";
+            $descripcioSaaS .= "Disc dur: " . $row['tipusDD'] . " | ";
+            $descripcioSaaS .= "GB disc dur: " . $row['GBDD'];
+        }
+        return $descripcioSaaS;
+
+    }
+
+    function getPaaSDescripcio($idConfig) {
+        $query = "SELECT * FROM paas WHERE idConfig = '$idConfig'";
+        $result = mysqli_query(Conexion::getConnection(), $query);
+
+        if (!$result) {
+            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
+            header('Location: error.php');
+            exit();
+        }
+
+        $descripcioPaas = "PaaS: ";
+        // Només hi haurà una fila ja que l'idConfig és clau primària.
+        // Concatenam tota la informació per poder mostrar-la en una sola fila.
+        while ($row = mysqli_fetch_assoc($result)) {
+            $descripcioPaas .= "idConfig: " . $row['idConfig'] . " | ";
+            if ($row['iPv4'] != null) {
+            $descripcioPaas .= "iPv4: " . $row['iPv4'] . " | ";
+            } else {
+            $descripcioPaas .= "iPv6: " . $row['iPv6'] . " | ";
+            }
+            $descripcioPaas .= "tipusRAM: " . $row['tipusRAM'] . " | ";
+            $descripcioPaas .= "GBRam: " . $row['GBRam'] . " | ";
+            $descripcioPaas .= "tipusDD: " . $row['tipusDD'] . " | ";
+            $descripcioPaas .= "GBDD: " . $row['GBDD'] . " | ";
+            $descripcioPaas .= "modelCPU: " . $row['modelCPU'] . " | ";
+            $descripcioPaas .= "nNuclis: " . $row['nNuclis'] . " | ";
+            $descripcioPaas .= "nomSO: " . $row['nomSO'];
+        }
+        return $descripcioPaas;
+    }
+
+    function calcularDataFinal($dataInici, $mesos) {
+        $data = new DateTime($dataInici);
+        $data->modify("+$mesos months");
+        return $data->format('Y-m-d');
+    }
+?>
