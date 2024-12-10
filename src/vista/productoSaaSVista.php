@@ -40,7 +40,6 @@ function crearSaaS() {
     $testSelectedRows = isset($_POST['selectedRowstest']) ? $_POST['selectedRowstest'] : null;
 
     $res = SaaS::crear(
-        $_POST['dominio'],
         $_POST['nombre'] ,
         $_POST['descipcio'] ,
         $_POST['tipo_cms'] ,
@@ -71,7 +70,6 @@ function editarSaaS() {
 
     $res = SaaS::editar(
         $_POST['idConfig'],
-        $_POST['dominio'],
         $tipoCMS = $_POST['tipo_cms'],
         $tipoCDN = $_POST['tipo_cdn'],
         $tipoSSL = $_POST['tipo_ssl'],
@@ -90,7 +88,6 @@ function eliminarSaaS() {
     $valorSeleccionat = $_POST['selectedRow'];
     list(
         $idConfig,
-        $domini,
         $dataCreacio,
         $tipusMCMS,
         $tipusCDN,

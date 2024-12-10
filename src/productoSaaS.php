@@ -4,17 +4,8 @@ require_once 'conexio.php';
 
 class SaaS {
 
-    public static function crear($dominio,$nom, $descripcion, $tipoCMS, $tipoCDN, $tipoSSL, $tipoSGBD, $currentDate, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur, $emailCreador, $selectedRows) {
+    public static function crear($nom, $descripcion, $tipoCMS, $tipoCDN, $tipoSSL, $tipoSGBD, $currentDate, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur, $emailCreador, $selectedRows) {
         $conn = Conexion::getConnection();
-        
-        $sql = "SELECT domini FROM SAAS WHERE domini = '$dominio'";
-        $result = mysqli_query($conn, $sql);
-
-        if (mysqli_num_rows($result) > 0) {
-            $_SESSION["error_msg"] = "El dominio ya existe. Por favor, elige otro ";
-            return false;
-        }
-        
         
         //Crea el producto
         $insert_query_producte = "INSERT INTO PRODUCTE (idConfig, nom, descripcio) VALUES (NULL, '$nom', '$descripcion');";
@@ -28,8 +19,8 @@ class SaaS {
         
         $idConf = mysqli_insert_id($conn);
 
-        $insert_query_saas = "INSERT INTO SAAS (idConfig, domini, dataCreacio, tipusMCMS, tipusCDN, tipusSSL, tipusSGBD, tipusRam, GBRam, tipusDD, GBDD) VALUES 
-        ('$idConf', '$dominio', '$currentDate', '$tipoCMS', '$tipoCDN', '$tipoSSL', '$tipoSGBD', '$tipoRam', '$gbRam', '$tipoDiscDur', '$gbDiscDur');";
+        $insert_query_saas = "INSERT INTO SAAS (idConfig, dataCreacio, tipusMCMS, tipusCDN, tipusSSL, tipusSGBD, tipusRam, GBRam, tipusDD, GBDD) VALUES 
+        ('$idConf', '$currentDate', '$tipoCMS', '$tipoCDN', '$tipoSSL', '$tipoSGBD', '$tipoRam', '$gbRam', '$tipoDiscDur', '$gbDiscDur');";
         $result_saas = mysqli_query($conn, $insert_query_saas);
 
         // Persona que ha creado el producto
@@ -62,20 +53,11 @@ class SaaS {
     }
 
     
-    public static function editar($idConfig, $dominio, $tipoCMS, $tipoCDN, $tipoSSL, $tipoSGBD, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur) {
+    public static function editar($idConfig, $tipoCMS, $tipoCDN, $tipoSSL, $tipoSGBD, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur) {
         $conn = Conexion::getConnection();
         
-        $sql = "SELECT domini FROM SAAS WHERE domini = '$dominio' AND idConfig != '$idConfig'";
-        $result = mysqli_query($conn, $sql);
-
-        if (mysqli_num_rows($result) > 0 ) {
-            $_SESSION["error_msg"] = "El dominio ya existe. Por favor, elige otro ";
-            return false;
-        }
-
         $update_query = "UPDATE SAAS 
         SET 
-        domini = '$dominio',
         tipusMCMS = '$tipoCMS ',
         tipusCDN = '$tipoCDN ',
         tipusSSL = '$tipoSSL ',

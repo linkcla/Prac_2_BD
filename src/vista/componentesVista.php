@@ -20,7 +20,7 @@ function crearSaaS() {
     
 
     // Redirecciona a la pagina 
-    header("Location: ./../../servicesSaaSTestform.php");
+    header("Location: ./../../servicesSaaSComponentesform.php");
     exit();
 }
 
@@ -30,7 +30,7 @@ function eliminarSaaS() {
     $res = Test::eliminarTestSaas($testName);
 
     // Redirecciona a la pagina 
-    header("Location: ./../../servicesSaaSTestform.php");
+    header("Location: ./../../servicesSaaSComponentesform.php");
     exit();
 }
 
