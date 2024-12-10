@@ -2,10 +2,10 @@
 
 <?php session_start() ;
 include "conexion.php";
-include "PaaSFuncionalidades.php"; // Incluye el archivo que contiene la clase PaaSFuncionalidades
+include "PaaSFuncionalidades.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn); // Crea una instancia de PaaSFuncionalidades
+$paasFuncionalidades = new PaaSFuncionalidades($conn); 
 
 // Obtener tipos de RAM desde la base de datos
 $ramTypesQuery = "SELECT DISTINCT tipus FROM RAM";
