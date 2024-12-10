@@ -13,14 +13,24 @@ class PaaSFuncionalidades {
     //-------------------------------------FUNCIONES DE CREATE_NEW_RAM--------------------------------------
     public function crearNuevaRAM($tipo) {
         if ($tipo) {
-            $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', 0, 0)";
-            if (mysqli_query($this->conn, $query)) {
-                return "Nuevo tipo de RAM añadido exitosamente.";
+            // Verificar si el tipo de RAM ya existe
+            $checkQuery = "SELECT * FROM RAM WHERE tipus = '$tipo'";
+            $checkResult = mysqli_query($this->conn, $checkQuery);
+            
+            if (mysqli_num_rows($checkResult) > 0) {
+                echo "<div class='alert alert-danger' role='alert'>El tipo de RAM ya existe.</div>";
+
             } else {
-                return "Error al añadir el nuevo tipo de RAM: " . mysqli_error($this->conn);
+                $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', 0, 0)";
+                if (mysqli_query($this->conn, $query)) {
+                    echo "<div class='alert alert-success' role='alert'>Nuevo tipo de RAM añadido exitosamente.</div>";
+
+                } else {
+                    echo "Error al añadir el nuevo tipo de RAM: " . mysqli_error($this->conn);
+                }
             }
         } else {
-            return "El campo Tipo de RAM es obligatorio.";
+            echo "<div class='alert alert-warning' role='alert'>El campo Tipo de RAM es obligatorio.</div>";
         }
     }
 
