@@ -84,7 +84,7 @@ if (isset($_SESSION['noMod'])) {
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacions</a>
                             </div>                       
                         </div>
                     </div>
@@ -99,7 +99,7 @@ if (isset($_SESSION['noMod'])) {
     <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Gestionar Organitzacións
+                Gestionar Organitzacions
             </h2>
             <form>
                 <div class="container">
