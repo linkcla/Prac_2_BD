@@ -10,7 +10,21 @@ class PaaSFuncionalidades {
         $this->conn = $conn;
     }
 
-    // FUNCIONES DE DELETE_PAAS
+    //-------------------------------------FUNCIONES DE CREATE_NEW_RAM--------------------------------------
+    public function crearNuevaRAM($tipo) {
+        if ($tipo) {
+            $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', 0, 0)";
+            if (mysqli_query($this->conn, $query)) {
+                return "Nuevo tipo de RAM añadido exitosamente.";
+            } else {
+                return "Error al añadir el nuevo tipo de RAM: " . mysqli_error($this->conn);
+            }
+        } else {
+            return "El campo Tipo de RAM es obligatorio.";
+        }
+    }
+
+    //---------------------------------------FUNCIONES DE DELETE_PAAS---------------------------------------
     public function deletePaaS($selectedRows) {
         if ($selectedRows && is_array($selectedRows)) {
             $error_ocurred = false;
@@ -68,7 +82,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // FUNCIONES DE DELETE_STOCK_COMPONENTES
+    //----------------------------------------FUNCIONES DE DELETE_STOCK_COMPONENTES--------------------------------
     public function deleteStockComponentes($selectedRam, $selectedDiscDur, $selectedCpu, $selectedSo) {
         if (empty($selectedRam) && empty($selectedDiscDur) && empty($selectedCpu) && empty($selectedSo)) {
             $_SESSION["warning_msg"] = "Debes seleccionar al menos un componente.";
@@ -141,7 +155,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // FUNCIONES DE EDIT_STOCK_COMPONENTES
+    //-----------------------------------------FUNCIONES DE EDIT_STOCK_COMPONENTES--------------------------------
     public function getComponentesByTipo($tipo) {
         $componentes = [];
         $query = "";
@@ -209,7 +223,7 @@ class PaaSFuncionalidades {
         }
     }
 
-    // FUNCIONES DE TEST_MANAGEMENT
+    //-----------------------------------FUNCIONES DE TEST_MANAGEMENT-----------------------------------
     public function createTest($nombreTest, $descripcionTest, $idConfigProducte, $emailP) {
         $fechaCreacion = date('Y-m-d');
 

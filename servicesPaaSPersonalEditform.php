@@ -235,7 +235,7 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                         ?>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" formaction="servicesPaaSPersonalEditBD.php">Guardar Cambios</button>
+                <button type="submit" class="btn btn-primary custom-btn" formaction="servicesPaaSPersonalEditBD.php">Guardar Cambios</button>
             </form>
         </div>
     </section>

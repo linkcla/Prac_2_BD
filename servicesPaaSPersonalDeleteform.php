@@ -101,8 +101,8 @@ $conn = Conexion::getConnection();
         </div>
 
         <div class="container">
-            <button type="button" class="btn btn-primary" onclick="location.href='servicesPaaSPersonalDeletePaaSform.php'">Eliminar PaaS</button>
-            <button type="button" class="btn btn-primary" onclick="location.href='servicesPaaSPersonalDeleteStockComponentesform.php'">Stock Componentes</button>
+            <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaaSPersonalDeletePaaSform.php'">PaaS</button>
+            <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaaSPersonalDeleteStockComponentesform.php'">Componentes</button>
         </div>
 
     </section>

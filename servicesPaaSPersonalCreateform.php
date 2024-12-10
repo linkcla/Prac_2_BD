@@ -2,7 +2,17 @@
 
 <?php session_start() ;
 include "conexion.php";
+include "PaaSFuncionalidades.php";
+
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
+
+$resultado = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearRAM'])) {
+    $tipo = $_POST['tipo'];
+    $resultado = $paasFuncionalidades->crearNuevaRAM($tipo);
+}
 ?>
 
 <html>
@@ -101,9 +111,27 @@ $conn = Conexion::getConnection();
         </div>
 
         <div class="container">
-            <button type="button" class="btn btn-primary" onclick="location.href='servicesPaasPersonalCreatePaaSform.php'">Crear PaaS</button>
-            <button type="button" class="btn btn-primary" onclick="location.href='servicesPaaSPersonalCreateStockComponentesform.php'">Stock Componentes</button>
-            <button type="button" class="btn btn-primary" onclick="location.href='servicesPaaSPersonalCreateNewRAMform.php'">Nuevo Componente</button>
+            <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaasPersonalCreatePaaSform.php'">PaaS</button>
+            <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaaSPersonalCreateStockComponentesform.php'">Componentes</button>
+        </div>
+
+
+        <div class="container form-container">
+            <h2 class="text-uppercase" style="margin-top: 40px; font-size: 36px;">
+                Crear Nueva RAM
+            </h2>
+            <form method="POST" action="servicesPaaSPersonalCreateform.php">
+                <div class="form-group">
+                    <label for="tipo">Tipo de RAM:</label>
+                    <input type="text" class="form-control mx-auto" id="tipo" name="tipo" required style="width: 40%;" >
+                </div>
+                <button type="submit" class="btn btn-primary custom-btn" name="crearRAM">Crear RAM</button>
+            </form>
+            <?php
+            if ($resultado) {
+                echo "<div class='alert alert-info' role='alert'>$resultado</div>";
+            }
+            ?>
         </div>
 
     </section>

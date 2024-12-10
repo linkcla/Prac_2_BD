@@ -35,6 +35,8 @@ $conn = Conexion::getConnection();
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="css/responsive.css" rel="stylesheet" />
+    <!-- Pau's style -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -157,8 +159,8 @@ $conn = Conexion::getConnection();
                         ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3" name="action" value="edit">Editar PaaS Seleccionado</button>
-                <button type="button" class="btn btn-primary mt-3" onclick="location.href='servicesPaaSPersonalEditComponentesform.php'">Editar Precio Componentes</button>
+                <button type="submit" class="btn btn-primary custom-btn" name="action" value="edit">Editar PaaS Seleccionado</button>
+                <button type="button" class="btn btn-primary custom-btn" onclick="location.href='servicesPaaSPersonalEditComponentesform.php'">Editar Precio Componentes</button>
             </form>
         </div>
     </section>
