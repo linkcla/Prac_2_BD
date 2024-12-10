@@ -177,7 +177,7 @@ CREATE TABLE PERSONAL_ADMINISTRA_CONTR (
 
 CREATE TABLE PERSONAL_CREA_PRODUCTE (
     emailP VARCHAR(128),
-    idConfigProducte INT AUTO_INCREMENT,
+    idConfigProducte INT,
     PRIMARY KEY (emailP, idConfigProducte),
     CONSTRAINT fk_personal_crea_producte_personal FOREIGN KEY (emailP) REFERENCES PERSONAL(email),
     CONSTRAINT fk_personal_crea_producte_producte FOREIGN KEY (idConfigProducte) REFERENCES PRODUCTE(idConfig)
@@ -360,9 +360,7 @@ BEGIN
     VALUES ('ORGANITZACIO', 'DELETE', CONCAT('nom=', OLD.nom, ', adreca=', OLD.adreca, ', telefon=', OLD.telefon));
 END$$
 
----------------------------------------------------------------------------------------------------------------------------- HASTA AQUÍ REVISADO
-
--- Trigger para INSERT en la tabla CONTRACTE
+-- Trigger para la tabla CONTRACTE
 CREATE TRIGGER auditar_insert_contracte
 AFTER INSERT ON CONTRACTE
 FOR EACH ROW
@@ -371,7 +369,6 @@ BEGIN
     VALUES ('CONTRACTE', 'INSERT', CONCAT('idContracte=', NEW.idContracte, ', dataInici=', NEW.dataInici, ', estat=', NEW.estat, ', nom=', NEW.nom, ', emailU=', NEW.emailU, ', idConfigProducte=', NEW.idConfigProducte, ', mesos=', NEW.mesos));
 END$$
 
--- Trigger para UPDATE en la tabla CONTRACTE
 CREATE TRIGGER auditar_update_contracte
 AFTER UPDATE ON CONTRACTE
 FOR EACH ROW
@@ -381,7 +378,6 @@ BEGIN
             CONCAT('idContracte=', NEW.idContracte, ', dataInici=', NEW.dataInici, ', estat=', NEW.estat, ', nom=', NEW.nom, ', emailU=', NEW.emailU, ', idConfigProducte=', NEW.idConfigProducte, ', mesos=', NEW.mesos));
 END$$
 
--- Trigger para DELETE en la tabla CONTRACTE
 CREATE TRIGGER auditar_delete_contracte
 AFTER DELETE ON CONTRACTE
 FOR EACH ROW
@@ -390,51 +386,21 @@ BEGIN
     VALUES ('CONTRACTE', 'DELETE', CONCAT('idContracte=', OLD.idContracte, ', dataInici=', OLD.dataInici, ', estat=', OLD.estat, ', nom=', OLD.nom, ', emailU=', OLD.emailU, ', idConfigProducte=', OLD.idConfigProducte, ', mesos=', OLD.mesos));
 END$$
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- Trigger para la tabla CONTRACTE
-CREATE TRIGGER auditar_insert_contracte
-AFTER INSERT ON CONTRACTE
+-- Trigger la tabla DURADA. Solo tiene PK entonces solo se puede hacer INSERT y DELETE.
+CREATE TRIGGER auditar_insert_durada
+AFTER INSERT ON DURADA
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_noves)
-    VALUES ('CONTRACTE', 'INSERT', CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+    VALUES ('DURADA', 'INSERT', CONCAT('mesos=', NEW.mesos));
 END$$
 
-CREATE TRIGGER auditar_update_contracte
-AFTER UPDATE ON CONTRACTE
-FOR EACH ROW
-BEGIN
-    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
-    VALUES ('CONTRACTE', 'UPDATE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat),
-            CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
-END$$
-
-CREATE TRIGGER auditar_delete_contracte
-AFTER DELETE ON CONTRACTE
+CREATE TRIGGER auditar_delete_durada
+AFTER DELETE ON DURADA
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
-    VALUES ('CONTRACTE', 'DELETE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat));
+    VALUES ('DURADA', 'DELETE', CONCAT('mesos=', OLD.mesos));
 END$$
 
 -- Trigger para la tabla PRODUCTE
@@ -463,109 +429,376 @@ BEGIN
     VALUES ('PRODUCTE', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
 END$$
 
--- Trigger para la tabla CONTRACTE
-CREATE TRIGGER auditar_insert_contracte
-AFTER INSERT ON CONTRACTE
+-- Trigger para la tabla TEST
+CREATE TRIGGER auditar_insert_test
+AFTER INSERT ON TEST
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_noves)
-    VALUES ('CONTRACTE', 'INSERT', CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+    VALUES ('TEST', 'INSERT', CONCAT('nom=', NEW.nom, ', descripcio=', NEW.descripcio, ', dataCreacio=', NEW.dataCreacio));
 END$$
 
-CREATE TRIGGER auditar_update_contracte
-AFTER UPDATE ON CONTRACTE
+CREATE TRIGGER auditar_update_test
+AFTER UPDATE ON TEST
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
-    VALUES ('CONTRACTE', 'UPDATE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat),
-            CONCAT('idConfigProducte=', NEW.idConfigProducte, ', nom=', NEW.nom, ', dataInici=', NEW.dataInici, ', mesos=', NEW.mesos, ', estat=', NEW.estat));
+    VALUES ('TEST', 'UPDATE', CONCAT('nom=', OLD.nom, ', descripcio=', OLD.descripcio, ', dataCreacio=', OLD.dataCreacio),
+            CONCAT('nom=', NEW.nom, ', descripcio=', NEW.descripcio, ', dataCreacio=', NEW.dataCreacio));
 END$$
 
-CREATE TRIGGER auditar_delete_contracte
-AFTER DELETE ON CONTRACTE
+CREATE TRIGGER auditar_delete_test
+AFTER DELETE ON TEST
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
-    VALUES ('CONTRACTE', 'DELETE', CONCAT('idConfigProducte=', OLD.idConfigProducte, ', nom=', OLD.nom, ', dataInici=', OLD.dataInici, ', mesos=', OLD.mesos, ', estat=', OLD.estat));
+    VALUES ('TEST', 'DELETE', CONCAT('nom=', OLD.nom, ', descripcio=', OLD.descripcio, ', dataCreacio=', OLD.dataCreacio));
 END$$
 
--- Trigger para la tabla PRODUCTE
-CREATE TRIGGER auditar_insert_producte
-AFTER INSERT ON PRODUCTE
+-- Trigger para la tabla ESTAT
+CREATE TRIGGER auditar_insert_estat
+AFTER INSERT ON ESTAT
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_noves)
-    VALUES ('PRODUCTE', 'INSERT', CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+    VALUES ('ESTAT', 'INSERT', CONCAT('estat=', NEW.estat, ', nomT=', NEW.nomT, ', idConfigProducte=', NEW.idConfigProducte));
 END$$
 
-CREATE TRIGGER auditar_update_producte
-AFTER UPDATE ON PRODUCTE
+CREATE TRIGGER auditar_update_estat
+AFTER UPDATE ON ESTAT
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
-    VALUES ('PRODUCTE', 'UPDATE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio),
-            CONCAT('idConfig=', NEW.idConfig, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+    VALUES ('ESTAT', 'UPDATE', CONCAT('estat=', OLD.estat, ', nomT=', OLD.nomT, ', idConfigProducte=', OLD.idConfigProducte),
+            CONCAT('estat=', NEW.estat, ', nomT=', NEW.nomT, ', idConfigProducte=', NEW.idConfigProducte));
 END$$
 
-CREATE TRIGGER auditar_delete_producte
-AFTER DELETE ON PRODUCTE
+CREATE TRIGGER auditar_delete_estat
+AFTER DELETE ON ESTAT
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
-    VALUES ('PRODUCTE', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
+    VALUES ('ESTAT', 'DELETE', CONCAT('estat=', OLD.estat, ', nomT=', OLD.nomT, ', idConfigProducte=', OLD.idConfigProducte));
 END$$
 
--- Trigger para la tabla USUARI
-CREATE TRIGGER auditar_insert_usuari
-AFTER INSERT ON USUARI
+-- Trigger para la tabla SAAS
+CREATE TRIGGER auditar_insert_saas
+AFTER INSERT ON SAAS
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_noves)
-    VALUES ('USUARI', 'INSERT', CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email));
+    VALUES ('SAAS', 'INSERT', CONCAT('idConfig=', NEW.idConfig, ', domini=', NEW.domini, ', dataCreacio=', NEW.dataCreacio, ', tipusMCMS=', NEW.tipusMCMS, ', tipusCDN=', NEW.tipusCDN, ', tipusSSL=', NEW.tipusSSL, ', tipusSGBD=', NEW.tipusSGBD, ', tipusRam=', NEW.tipusRam, ', GBRam=', NEW.GBRam, ', tipusDD=', NEW.tipusDD, ', GBDD=', NEW.GBDD));
 END$$
 
-CREATE TRIGGER auditar_update_usuari
-AFTER UPDATE ON USUARI
+CREATE TRIGGER auditar_update_saas
+AFTER UPDATE ON SAAS
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
-    VALUES ('USUARI', 'UPDATE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email),
-            CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', cognom=', NEW.cognom, ', email=', NEW.email));
+    VALUES ('SAAS', 'UPDATE', CONCAT('idConfig=', OLD.idConfig, ', domini=', OLD.domini, ', dataCreacio=', OLD.dataCreacio, ', tipusMCMS=', OLD.tipusMCMS, ', tipusCDN=', OLD.tipusCDN, ', tipusSSL=', OLD.tipusSSL, ', tipusSGBD=', OLD.tipusSGBD, ', tipusRam=', OLD.tipusRam, ', GBRam=', OLD.GBRam, ', tipusDD=', OLD.tipusDD, ', GBDD=', OLD.GBDD),
+            CONCAT('idConfig=', NEW.idConfig, ', domini=', NEW.domini, ', dataCreacio=', NEW.dataCreacio, ', tipusMCMS=', NEW.tipusMCMS, ', tipusCDN=', NEW.tipusCDN, ', tipusSSL=', NEW.tipusSSL, ', tipusSGBD=', NEW.tipusSGBD, ', tipusRam=', NEW.tipusRam, ', GBRam=', NEW.GBRam, ', tipusDD=', NEW.tipusDD, ', GBDD=', NEW.GBDD));
 END$$
 
-CREATE TRIGGER auditar_delete_usuari
-AFTER DELETE ON USUARI
+CREATE TRIGGER auditar_delete_saas
+AFTER DELETE ON SAAS
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
-    VALUES ('USUARI', 'DELETE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', cognom=', OLD.cognom, ', email=', OLD.email));
+    VALUES ('SAAS', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', domini=', OLD.domini, ', dataCreacio=', OLD.dataCreacio, ', tipusMCMS=', OLD.tipusMCMS, ', tipusCDN=', OLD.tipusCDN, ', tipusSSL=', OLD.tipusSSL, ', tipusSGBD=', OLD.tipusSGBD, ', tipusRam=', OLD.tipusRam, ', GBRam=', OLD.GBRam, ', tipusDD=', OLD.tipusDD, ', GBDD=', OLD.GBDD));
 END$$
 
--- Trigger para la tabla ORGANITZACIO
-CREATE TRIGGER auditar_insert_organitzacio
-AFTER INSERT ON ORGANITZACIO
+-- Trigger para la tabla MODUL_CMS. Solo tiene PK entonces solo se puede hacer INSERT y DELETE.
+CREATE TRIGGER auditar_insert_modul_cms
+AFTER INSERT ON MODUL_CMS
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_noves)
-    VALUES ('ORGANITZACIO', 'INSERT', CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
+    VALUES ('MODUL_CMS', 'INSERT', CONCAT('tipus=', NEW.tipus));
 END$$
 
-CREATE TRIGGER auditar_update_organitzacio
-AFTER UPDATE ON ORGANITZACIO
-FOR EACH ROW
-BEGIN
-    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
-    VALUES ('ORGANITZACIO', 'UPDATE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio),
-            CONCAT('id=', NEW.id, ', nom=', NEW.nom, ', descripcio=', NEW.descripcio));
-END$$
-
-CREATE TRIGGER auditar_delete_organitzacio
-AFTER DELETE ON ORGANITZACIO
+CREATE TRIGGER auditar_delete_modul_cms
+AFTER DELETE ON MODUL_CMS
 FOR EACH ROW
 BEGIN
     INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
-    VALUES ('ORGANITZACIO', 'DELETE', CONCAT('id=', OLD.id, ', nom=', OLD.nom, ', descripcio=', OLD.descripcio));
+    VALUES ('MODUL_CMS', 'DELETE', CONCAT('tipus=', OLD.tipus));
 END$$
 
+-- Trigger para la tabla CDN
+CREATE TRIGGER auditar_insert_cdn
+AFTER INSERT ON CDN
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('CDN', 'INSERT', CONCAT('tipus=', NEW.tipus, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_cdn
+AFTER UPDATE ON CDN
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('CDN', 'UPDATE', CONCAT('tipus=', OLD.tipus, ', preu=', OLD.preu),
+            CONCAT('tipus=', NEW.tipus, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_cdn
+AFTER DELETE ON CDN
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('CDN', 'DELETE', CONCAT('tipus=', OLD.tipus, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla C_SSL
+CREATE TRIGGER auditar_insert_c_ssl
+AFTER INSERT ON C_SSL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('C_SSL', 'INSERT', CONCAT('tipus=', NEW.tipus, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_c_ssl
+AFTER UPDATE ON C_SSL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('C_SSL', 'UPDATE', CONCAT('tipus=', OLD.tipus, ', preu=', OLD.preu),
+            CONCAT('tipus=', NEW.tipus, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_c_ssl
+AFTER DELETE ON C_SSL
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('C_SSL', 'DELETE', CONCAT('tipus=', OLD.tipus, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla SIST_GESTIO_BD. Solo tiene PK entonces solo se puede hacer INSERT y DELETE.
+CREATE TRIGGER auditar_insert_sist_gestio_bd
+AFTER INSERT ON SIST_GESTIO_BD
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('SIST_GESTIO_BD', 'INSERT', CONCAT('tipus=', NEW.tipus));
+END$$
+
+CREATE TRIGGER auditar_delete_sist_gestio_bd
+AFTER DELETE ON SIST_GESTIO_BD
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('SIST_GESTIO_BD', 'DELETE', CONCAT('tipus=', OLD.tipus));
+END$$
+
+-- Trigger para la tabla PAAS
+CREATE TRIGGER auditar_insert_paas
+AFTER INSERT ON PAAS
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PAAS', 'INSERT', CONCAT('idConfig=', NEW.idConfig, ', iPv4=', NEW.iPv4, ', iPv6=', NEW.iPv6, ', tipusRAM=', NEW.tipusRAM, ', GBRam=', NEW.GBRam, ', tipusDD=', NEW.tipusDD, ', GBDD=', NEW.GBDD, ', modelCPU=', NEW.modelCPU, ', nNuclis=', NEW.nNuclis, ', nomSO=', NEW.nomSO));
+END$$
+
+CREATE TRIGGER auditar_update_paas
+AFTER UPDATE ON PAAS
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PAAS', 'UPDATE', CONCAT('idConfig=', OLD.idConfig, ', iPv4=', OLD.iPv4, ', iPv6=', OLD.iPv6, ', tipusRAM=', OLD.tipusRAM, ', GBRam=', OLD.GBRam, ', tipusDD=', OLD.tipusDD, ', GBDD=', OLD.GBDD, ', modelCPU=', OLD.modelCPU, ', nNuclis=', OLD.nNuclis, ', nomSO=', OLD.nomSO),
+            CONCAT('idConfig=', NEW.idConfig, ', iPv4=', NEW.iPv4, ', iPv6=', NEW.iPv6, ', tipusRAM=', NEW.tipusRAM, ', GBRam=', NEW.GBRam, ', tipusDD=', NEW.tipusDD, ', GBDD=', NEW.GBDD, ', modelCPU=', NEW.modelCPU, ', nNuclis=', NEW.nNuclis, ', nomSO=', NEW.nomSO));
+END$$
+
+CREATE TRIGGER auditar_delete_paas
+AFTER DELETE ON PAAS
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PAAS', 'DELETE', CONCAT('idConfig=', OLD.idConfig, ', iPv4=', OLD.iPv4, ', iPv6=', OLD.iPv6, ', tipusRAM=', OLD.tipusRAM, ', GBRam=', OLD.GBRam, ', tipusDD=', OLD.tipusDD, ', GBDD=', OLD.GBDD, ', modelCPU=', OLD.modelCPU, ', nNuclis=', OLD.nNuclis, ', nomSO=', OLD.nomSO));
+END$$
+
+-- Trigger para la tabla RAM
+CREATE TRIGGER auditar_insert_ram
+AFTER INSERT ON RAM
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('RAM', 'INSERT', CONCAT('tipus=', NEW.tipus, ', GB=', NEW.GB, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_ram
+AFTER UPDATE ON RAM
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('RAM', 'UPDATE', CONCAT('tipus=', OLD.tipus, ', GB=', OLD.GB, ', preu=', OLD.preu),
+            CONCAT('tipus=', NEW.tipus, ', GB=', NEW.GB, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_ram
+AFTER DELETE ON RAM
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('RAM', 'DELETE', CONCAT('tipus=', OLD.tipus, ', GB=', OLD.GB, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla DISC_DUR
+CREATE TRIGGER auditar_insert_disc_dur
+AFTER INSERT ON DISC_DUR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('DISC_DUR', 'INSERT', CONCAT('tipus=', NEW.tipus, ', GB=', NEW.GB, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_disc_dur
+AFTER UPDATE ON DISC_DUR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('DISC_DUR', 'UPDATE', CONCAT('tipus=', OLD.tipus, ', GB=', OLD.GB, ', preu=', OLD.preu),
+            CONCAT('tipus=', NEW.tipus, ', GB=', NEW.GB, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_disc_dur
+AFTER DELETE ON DISC_DUR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('DISC_DUR', 'DELETE', CONCAT('tipus=', OLD.tipus, ', GB=', OLD.GB, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla CPU
+CREATE TRIGGER auditar_insert_cpu
+AFTER INSERT ON CPU
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('CPU', 'INSERT', CONCAT('model=', NEW.model, ', nNuclis=', NEW.nNuclis, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_cpu
+AFTER UPDATE ON CPU
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('CPU', 'UPDATE', CONCAT('model=', OLD.model, ', nNuclis=', OLD.nNuclis, ', preu=', OLD.preu),
+            CONCAT('model=', NEW.model, ', nNuclis=', NEW.nNuclis, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_cpu
+AFTER DELETE ON CPU
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('CPU', 'DELETE', CONCAT('model=', OLD.model, ', nNuclis=', OLD.nNuclis, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla SO
+CREATE TRIGGER auditar_insert_so
+AFTER INSERT ON SO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('SO', 'INSERT', CONCAT('nom=', NEW.nom, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_update_so
+AFTER UPDATE ON SO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('SO', 'UPDATE', CONCAT('nom=', OLD.nom, ', preu=', OLD.preu),
+            CONCAT('nom=', NEW.nom, ', preu=', NEW.preu));
+END$$
+
+CREATE TRIGGER auditar_delete_so
+AFTER DELETE ON SO
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('SO', 'DELETE', CONCAT('nom=', OLD.nom, ', preu=', OLD.preu));
+END$$
+
+-- Trigger para la tabla PRIV_DE_GRUP
+CREATE TRIGGER auditar_insert_priv_de_grup
+AFTER INSERT ON PRIV_DE_GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PRIV_DE_GRUP', 'INSERT', CONCAT('tipusPriv=', NEW.tipusPriv, ', nomG=', NEW.nomG, ', nomOrg=', NEW.nomOrg));
+END$$
+
+CREATE TRIGGER auditar_update_priv_de_grup
+AFTER UPDATE ON PRIV_DE_GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PRIV_DE_GRUP', 'UPDATE', CONCAT('tipusPriv=', OLD.tipusPriv, ', nomG=', OLD.nomG, ', nomOrg=', OLD.nomOrg),
+            CONCAT('tipusPriv=', NEW.tipusPriv, ', nomG=', NEW.nomG, ', nomOrg=', NEW.nomOrg));
+END$$
+
+CREATE TRIGGER auditar_delete_priv_de_grup
+AFTER DELETE ON PRIV_DE_GRUP
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PRIV_DE_GRUP', 'DELETE', CONCAT('tipusPriv=', OLD.tipusPriv, ', nomG=', OLD.nomG, ', nomOrg=', OLD.nomOrg));
+END$$
+
+-- Trigger para la tabla PERSONAL_ADMINISTRA_CONTR
+CREATE TRIGGER auditar_insert_personal_administra_contr
+AFTER INSERT ON PERSONAL_ADMINISTRA_CONTR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PERSONAL_ADMINISTRA_CONTR', 'INSERT', CONCAT('emailP=', NEW.emailP, ', idContracte=', NEW.idContracte));
+END$$
+
+CREATE TRIGGER auditar_update_personal_administra_contr
+AFTER UPDATE ON PERSONAL_ADMINISTRA_CONTR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors, dades_noves)
+    VALUES ('PERSONAL_ADMINISTRA_CONTR', 'UPDATE', CONCAT('emailP=', OLD.emailP, ', idContracte=', OLD.idContracte),
+            CONCAT('emailP=', NEW.emailP, ', idContracte=', NEW.idContracte));
+END$$
+
+CREATE TRIGGER auditar_delete_personal_administra_contr
+AFTER DELETE ON PERSONAL_ADMINISTRA_CONTR
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PERSONAL_ADMINISTRA_CONTR', 'DELETE', CONCAT('emailP=', OLD.emailP, ', idContracte=', OLD.idContracte));
+END$$
+
+-- Trigger para la tabla PERSONAL_CREA_PRODUCTE. Solo tiene PK entonces solo se puede hacer INSERT y DELETE.
+CREATE TRIGGER auditar_insert_personal_crea_producte
+AFTER INSERT ON PERSONAL_CREA_PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PERSONAL_CREA_PRODUCTE', 'INSERT', CONCAT('emailP=', NEW.emailP, ', idConfigProducte=', NEW.idConfigProducte));
+END$$
+
+CREATE TRIGGER auditar_delete_personal_crea_producte
+AFTER DELETE ON PERSONAL_CREA_PRODUCTE
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_anteriors)
+    VALUES ('PERSONAL_CREA_PRODUCTE', 'DELETE', CONCAT('emailP=', OLD.emailP, ', idConfigProducte=', OLD.idConfigProducte));
+END$$
+
+-- Trigger para la tabla PERSONAL_REALITZA_TEST
+CREATE TRIGGER auditar_insert_personal_realitza_test
+AFTER INSERT ON PERSONAL_REALITZA_TEST
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA (taula, operacio, dades_noves)
+    VALUES ('PERSONAL_REALITZA_TEST', 'INSERT', CONCAT('emailP=', NEW.emailP, ', nomT=', NEW.nomT));
+END$$
 
 DELIMITER ;
