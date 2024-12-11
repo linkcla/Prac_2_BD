@@ -2,6 +2,22 @@
 <?php session_start() ; 
 include "conexion.php";
 $conn = Conexion::getConnection(); 
+
+
+        // PROCESO PARA ACTUALIZAR EL ESTADO DEL CONTRATO Y LOS MESES
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
+    $idContracte = $_POST['update'];
+    $nuevoEstat = $_POST['estat'][$idContracte];
+    $nuevosMesos = $_POST['mesos'][$idContracte];
+            
+    // Consulta para actualizar el contrato
+    $cadenaUpdate = "UPDATE CONTRACTE SET estat = '$nuevoEstat', mesos = '$nuevosMesos' WHERE idContracte = '$idContracte'";
+    if (mysqli_query($conn, $cadenaUpdate)) {
+        echo "<div class='alert alert-success' role='alert'>Contrato actualizado exitosamente.</div>";
+    } else {
+        echo "<div class='alert alert-danger' role='alert'>Error al actualizar el contrato: " . mysqli_error($conn) . "</div>";
+    }
+}
 ?>
 
     <html>
@@ -100,7 +116,7 @@ $conn = Conexion::getConnection();
             </div>
 
             <div class="container">
-                <form action="servicesPaaSform.php" method="POST">
+                <form action="servicesPaaSPersonalContratosform.php" method="POST">
                     <!-- Tabla para mostrar los datos del contrato -->
                     <table class="table table-striped">
                         <thead>
@@ -112,41 +128,55 @@ $conn = Conexion::getConnection();
                                 <th>Email Usuari</th>
                                 <th>ID Config Producte</th>
                                 <th>Mesos</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                             <?php
+                            <?php
                             // Consulta para obtener los datos de la tabla CONTRACTE donde idConfigProducte 
                             // esté en la lista de idConfigs de la tabla PAAS
-                            $cadenaContracte = "SELECT c.* FROM CONTRACTE c
+                            $cadenaContracte = "SELECT c.idContracte, c.dataInici, c.estat, c.nom, c.emailU, c.idConfigProducte, c.mesos
+                                                FROM CONTRACTE c
                                                 JOIN PAAS s ON c.idConfigProducte = s.idConfig";
                             $resultadoContracte = mysqli_query($conn, $cadenaContracte);
                             
+                            // Consulta para obtener los valores de 'mesos' disponibles en la tabla 'durada'
+                            $cadenaDurada = "SELECT mesos FROM durada";
+                            $resultadoDurada = mysqli_query($conn, $cadenaDurada);
+                            $mesosOptions = [];
+                            while ($rowDurada = $resultadoDurada->fetch_assoc()) {
+                                $mesosOptions[] = $rowDurada['mesos'];
+                            }
+
                             if ($resultadoContracte->num_rows > 0) {
                                 while ($rowContracte = $resultadoContracte->fetch_assoc()) {
                                     echo "<tr>
                                         <td>{$rowContracte['idContracte']}</td>
                                         <td>{$rowContracte['dataInici']}</td>
-                                        <td>{$rowContracte['estat']}</td>
+                                        <td>
+                                            <select name='estat[{$rowContracte['idContracte']}]' class='form-control'>
+                                                <option value='Actiu' " . ($rowContracte['estat'] == 'Actiu' ? 'selected' : '') . ">Actiu</option>
+                                                <option value='Finalitzat' " . ($rowContracte['estat'] == 'Finalitzat' ? 'selected' : '') . ">Finalitzat</option>
+                                                <option value='Cancel·lat' " . ($rowContracte['estat'] == 'Cancel·lat' ? 'selected' : '') . ">Cancel·lat</option>
+                                            </select>
+                                        </td>
                                         <td>{$rowContracte['nom']}</td>
                                         <td>{$rowContracte['emailU']}</td>
                                         <td>{$rowContracte['idConfigProducte']}</td>
-                                        <td>{$rowContracte['mesos']}</td>
+                                        <td>
+                                            <select name='mesos[{$rowContracte['idContracte']}]' class='form-control'>";
+                                            foreach ($mesosOptions as $mesos) {
+                                                echo "<option value='$mesos' " . ($rowContracte['mesos'] == $mesos ? 'selected' : '') . ">$mesos</option>";
+                                            }
+                                            echo "</select>
+                                        </td>
+                                        <td>
+                                            <button type='submit' name='update' value='{$rowContracte['idContracte']}' class='btn btn-primary custom-btn'>Actualizar</button>
+                                        </td>
                                         </tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
-                            }
-
-                            // PROCESO PARA ACTUALIZAR EL ESTADO DEL CONTRATO A "CANCELAT" SI SE ENVÍA EL FORMULARIO
-                            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                $idContracte = $_POST['idContracte'];
-                                $cadenaUpdate = "UPDATE CONTRACTE SET estat = 'Cancelat' WHERE idContracte = '$idContracte'";
-                                if (mysqli_query($conn, $cadenaUpdate)) {
-                                    echo "<p>Contrato cancelado exitosamente.</p>";
-                                } else {
-                                    echo "<p>Error al cancelar el contrato: " . mysqli_error($conn) . "</p>";
-                                }
+                                echo "<tr><td colspan='8'>No hay contratos disponibles.</td></tr>";
                             }
                             ?>
                         </tbody>
@@ -154,6 +184,7 @@ $conn = Conexion::getConnection();
                 </form>
             </div>
         </section>
+
         <!-- end about section -->
 
 
