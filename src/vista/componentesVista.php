@@ -40,13 +40,9 @@ function eliminarSaaS() {
 
     $res = Componentes::eliminarComponentesSaas($componente, $tipo, $gb);
 
-    if ($res) {
-        // Redirecciona a la pagina 
-        header("Location: ./../../servicesSaaSComponentesform.php");
-        exit();
-    } else {
-        echo "Error al eliminar el componente.";
-    }
+    // Redirecciona a la pagina 
+    header("Location: ./../../servicesSaaSComponentesform.php");
+    exit();
 }
 
 function editarSaaS() {
