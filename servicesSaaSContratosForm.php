@@ -157,7 +157,7 @@ if (isset($_SESSION['error_msg'])) {
                                     </tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='7'>No hay contratos disponibles.</td></tr>";
+                            echo "<tr><td colspan='9'>No hay contratos disponibles.</td></tr>";
                         }
                         
 

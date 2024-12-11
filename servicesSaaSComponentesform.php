@@ -11,127 +11,6 @@ if (isset($_SESSION['error_msg'])) {
     echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
     unset($_SESSION['error_msg']);
 }           
-
-
-// Verificar si se ha enviado el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['component'])) {
-        $component = $_POST['component'];
-        $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : null;
-        $gb = isset($_POST['gb']) ? $_POST['gb'] : null;
-        $precio = isset($_POST['precio']) ? $_POST['precio'] : null;
-
-        // Verificar que los campos obligatorios no estén vacíos
-        if ($tipo && $precio) {
-            // Validar que el precio sea un número válido
-            if (!is_numeric($precio) || $precio < 0 || $precio > 999.99) {
-                echo "<div class='alert alert-danger' role='alert'>El precio debe ser un número entre 0 y 999.99</div>";
-            } else {
-                $query = "";
-                $existsQuery = "";
-
-                // Construir las consultas SQL según el tipo de componente
-                switch ($component) {
-                    case 'CMS':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM MODUL_CMS WHERE tipus = '$tipo'";
-                            $query = "INSERT INTO MODUL_CMS (tipus, GB, preu) VALUES ('$tipo')";
-                        }
-                        break;
-                    case 'CDN':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM CDN WHERE tipus = '$tipo";
-                            $query = "INSERT INTO CDN (tipus, preu) VALUES ('$tipo', $precio)";
-                        }
-                        break;
-                    case 'SSL':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM C_SSL WHERE tipus = '$tipo'";
-                            $query = "INSERT INTO C_SSL (tipus, preu) VALUES ('$tipo', $precio)";
-                        }
-                        break;
-                    case 'SGBD':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM SIST_GESTIO_BD WHERE tipus = '$tipo'";
-                            $query = "INSERT INTO SIST_GESTIO_BD (tipus,) VALUES ('$tipo')";
-                        }
-                        break;
-                    case 'RAM':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
-                            $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
-                        }
-                        break;
-                    case 'DISC_DUR':
-                        if ($gb) {
-                            $existsQuery = "SELECT * FROM DISC_DUR WHERE tipus = '$tipo' AND GB = $gb";
-                            $query = "INSERT INTO DISC_DUR (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
-                        }
-                        break;
-                }
-
-                // Verificar si el componente ya existe en la base de datos
-                if ($existsQuery) {
-                    $existsResult = mysqli_query($conn, $existsQuery);
-                    if (mysqli_num_rows($existsResult) > 0) {
-                        echo "<div class='alert alert-danger' role='alert'>El componente ya existe.</div>";
-                    } else {
-                        // Insertar el nuevo componente en la base de datos 
-                        if (mysqli_query($conn, $query)) {
-                            echo "<div class='alert alert-success' role='alert'>Componente añadido exitosamente.</div>";
-                        } else {
-                            echo "<p>Error al añadir el componente: " . mysqli_error($conn) . "</p>";
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_cms'])) {
-    $tipo = $_POST['tipo1'];
-
-    if ($tipo) {
-        $query = "INSERT INTO MODUL_CMS (tipus) VALUES ('$tipo')";
-        if (mysqli_query($conn, $query)) {
-            echo "<div class='alert alert-success' role='alert'>Nuevo modulo CMS añadido exitosamente.</div>";
-        } else {
-            echo "<div class='alert alert-danger' role='alert'>Error al añadir el nuevo modulo CMS: " . mysqli_error($conn) . "</div>";
-        }
-    } else {
-        echo "<div class='alert alert-warning' role='alert'>El campo modulo CMS es obligatorio.</div>";
-    }
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_sgbd'])) {
-    $tipo = $_POST['tipo'];
-
-    if ($tipo) {
-        $query = "INSERT INTO SIST_GESTIO_BD (tipus) VALUES ('$tipo')";
-        if (mysqli_query($conn, $query)) {
-            echo "<div class='alert alert-success' role='alert'>Nuevo tipo de RAM añadido exitosamente.</div>";
-        } else {
-            echo "<div class='alert alert-danger' role='alert'>Error al añadir el nuevo tipo de RAM: " . mysqli_error($conn) . "</div>";
-        }
-    } else {
-        echo "<div class='alert alert-warning' role='alert'>El campo Tipo de RAM es obligatorio.</div>";
-    }
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
-    $tipo = $_POST['tipo'];
-
-    if ($tipo) {
-        $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', 0, 0)";
-        if (mysqli_query($conn, $query)) {
-            echo "<div class='alert alert-success' role='alert'>Nuevo tipo de RAM añadido exitosamente.</div>";
-        } else {
-            echo "<div class='alert alert-danger' role='alert'>Error al añadir el nuevo tipo de RAM: " . mysqli_error($conn) . "</div>";
-        }
-    } else {
-        echo "<div class='alert alert-warning' role='alert'>El campo Tipo de RAM es obligatorio.</div>";
-    }
-}
-
 ?>
 
 <html>
@@ -212,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
+    <section class="about_section layout_paddingAbout"  >
         <div class="container">
             <h2 class="text-uppercase">
                 Servicios SaaS - COMPONENTES
@@ -226,66 +105,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                 </div>
             </form>
         </div>
+    </section>
+
+    <section class="about_section layout_paddingAbout">
         <div class="container">
             <h4 class="text-uppercase">
                 Añadir Componentes
             </h4>
-            <form action=" " method="POST">
+            <form id="componentForm" action="" method="POST">
+                <input type="hidden" id="accio" name="accio" value="crearS">
                 <div class="form-group">
                     <label for="component">Selecciona Componente</label>
                     <select name="component" id="component" class="form-control" onchange="this.form.submit()">
                         <option value="">Selecciona Componente</option>
-                        <option value="CMS" <?php if(isset($_POST['component']) && $_POST['component'] == 'CMS') echo 'selected'; ?>>Modulo CMS</option>
+                        <option value="CMS" <?php if(isset($_POST['component']) && $_POST['component'] == 'CMS') echo 'selected'; ?>>CMS</option>
                         <option value="CDN" <?php if(isset($_POST['component']) && $_POST['component'] == 'CDN') echo 'selected'; ?>>CDN</option>
                         <option value="SSL" <?php if(isset($_POST['component']) && $_POST['component'] == 'SSL') echo 'selected'; ?>>SSL</option>
-                        <option value="SGBD" <?php if(isset($_POST['component']) && $_POST['component'] == 'SGBD') echo 'selected'; ?>>SGBD</option>
+                        <option value="SGBD" <?php if(isset($_POST['component']) && $_POST['component'] == 'SGBD') echo 'selected'; ?>>SGBD</option-->
                         <option value="RAM" <?php if(isset($_POST['component']) && $_POST['component'] == 'RAM') echo 'selected'; ?>>RAM</option>
                         <option value="DISC_DUR" <?php if(isset($_POST['component']) && $_POST['component'] == 'DISC_DUR') echo 'selected'; ?>>DISC DUR</option>
                     </select>
                 </div>
 
                 <!-- Formulario para añadir CMS -->                
-                <?php 
-                // Obtener tipos de CMS desde la base de datos
-                $cmsTypesQuery = "SELECT DISTINCT tipus FROM MODUL_CMS";
-                $cmsTypesResult = mysqli_query($conn, $cmsTypesQuery);
-                $cmsTypes = [];
-                while ($row = mysqli_fetch_assoc($cmsTypesResult)) {
-                    $cmsTypes[] = $row['tipus'];
-                }
-                if(isset($_POST['component']) && $_POST['component'] == 'CMS'): ?>
+                <?php if(isset($_POST['component']) && $_POST['component'] == 'CMS'): ?>
                 <fieldset>
-                    <legend>Modulo CMS</legend>
+                    <legend> Modulo CMS</legend>
                     <div class="form-group">
-                        <label for="tipo_cms">Tipo de CMS</label>
-                        <select name="tipo" id="tipo_cms" class="form-control">
-                            <?php foreach ($cmsTypes as $cmsType): ?>
-                                <option value="<?php echo $cmsType; ?>"><?php echo $cmsType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label for="tipo_cms">Tipo de Modulo CMS</label>
+                        <input type="text" name="tipotipo" id="tipo_cms" class="form-control" placeholder="Ej: Joomla">
                     </div>
                 </fieldset>
                 <?php endif; ?>
 
                 <!-- Formulario para añadir CDN -->                
-                <?php 
-                // Obtener tipos de CDN desde la base de datos
-                $cdnTypesQuery = "SELECT DISTINCT tipus, preu FROM CDN";
-                $cdnTypesResult = mysqli_query($conn, $cdnTypesQuery);
-                $cdnTypes = [];
-                while ($row = mysqli_fetch_assoc($cdnTypesResult)) {
-                    $cdnTypes[] = $row['tipus'];
-                }
-                
-                if(isset($_POST['component']) && $_POST['component'] == 'CDN'): ?>
+                <?php  if(isset($_POST['component']) && $_POST['component'] == 'CDN'): ?>
                 <fieldset>
                     <legend>CDN</legend>
                     <div class="form-group">
                         <label for="tipo_cdn">Tipo de CDN</label>
                         <select name="tipo" id="tipo_cdn" class="form-control">
-                            <?php foreach ($cdnTypes as $cdnType): ?>
-                                <option value="<?php echo $cdnType; ?>"><?php echo $cdnType; ?></option>
-                            <?php endforeach; ?>
+                            <option value="Bàsic">Bàsic</option>
+                            <option value="Protegit">Protegit</option>
+                            <option value="Avançat">Avançat</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -296,24 +158,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                 <?php endif; ?>
 
                 <!-- Formulario para añadir SSL -->                
-                <?php 
-                // Obtener tipos de SSL desde la base de datos
-                $sslTypesQuery = "SELECT DISTINCT tipus, preu FROM C_SSL";
-                $sslTypesResult = mysqli_query($conn, $sslTypesQuery);
-                $sslTypes = [];
-                while ($row = mysqli_fetch_assoc($sslTypesResult)) {
-                    $sslTypes[] = $row['tipus'];
-                }
-                
-                if(isset($_POST['component']) && $_POST['component'] == 'SSL'): ?>
+                <?php if(isset($_POST['component']) && $_POST['component'] == 'SSL'): ?>
                 <fieldset>
                     <legend>SSL</legend>
                     <div class="form-group">
                         <label for="tipo_ssl">Tipo de SSL</label>
                         <select name="tipo" id="tipo_ssl" class="form-control">
-                            <?php foreach ($sslTypes as $sslType): ?>
-                                <option value="<?php echo $sslType; ?>"><?php echo $sslType; ?></option>
-                            <?php endforeach; ?>
+                            <option value="Bàsic">Bàsic</option>
+                            <option value="Professional">Professional</option>
+                            <option value="Avançat">Avançat</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -324,24 +177,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                 <?php endif; ?>
 
                 <!-- Formulario para añadir SGBD -->                
-                <?php 
-                // Obtener tipos de SGBD desde la base de datos
-                $sgbdTypesQuery = "SELECT DISTINCT tipus FROM SIST_GESTIO_BD";
-                $sgbdTypesResult = mysqli_query($conn, $sgbdTypesQuery);
-                $sgbdTypes = [];
-                while ($row = mysqli_fetch_assoc($sgbdTypesResult)) {
-                    $sgbdTypes[] = $row['tipus'];
-                }
-                if(isset($_POST['component']) && $_POST['component'] == 'SGBD'): ?>
+                <?php if(isset($_POST['component']) && $_POST['component'] == 'SGBD'): ?>
                 <fieldset>
                     <legend>SGBD</legend>
                     <div class="form-group">
                         <label for="tipo_sgbd">Tipo de SGBD</label>
-                        <select name="tipo" id="tipo_sgbd" class="form-control">
-                            <?php foreach ($sgbdTypes as $sgbdType): ?>
-                                <option value="<?php echo $sgbdType; ?>"><?php echo $sgbdType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" name="tipotipo" id="tipo_sgbd" class="form-control" placeholder="Ej: PostgreSQL">
                     </div>
                 </fieldset>
                 <?php endif; ?>
@@ -362,10 +203,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                     <div class="form-group">
                         <label for="tipo_ram">Tipo de RAM</label>
                         <select name="tipo" id="tipo_ram" class="form-control">
+                            <option value="">Selecciona Tipo de Ram ya creada o crea una nueva</option>
                             <?php foreach ($ramTypes as $ramType): ?>
                                 <option value="<?php echo $ramType; ?>"><?php echo $ramType; ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tipo_ram">Nuevo tipo de Ram</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="tipotipo" id="tipo_ram" class="form-control" placeholder="Ej: PostgreSQL">
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gb_ram">GB de RAM</label>
@@ -412,279 +262,150 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
                 </fieldset>
                 <?php endif; ?>
 
-                <button type="submit" class="btn btn-primary">Añadir Componente</button>
+                <button type="submit" id="addComponentButton" class="btn btn-primary" >Añadir Componente</button>
             </form>
+             <script>
+                document.getElementById('componentForm').addEventListener('submit', function(event) {
+                    let valid = true;
+                    const component = document.getElementById('component').value;
+                    if (!component) {
+                        valid = false;
+                        alert('Por favor, selecciona un componente.');
+                    }
+
+                    tipo = document.querySelector('select[name="tipo"]');
+                    const tipotipo = document.querySelector('input[name="tipotipo"]');
+                    const precio = document.querySelector('input[name="precio"]');
+                    const gb = document.querySelector('select[name="gb"]');
+
+                    if ((component === 'CMS' || component === 'SGBD') && (!tipotipo || !tipotipo.value)) {
+                        valid = false;
+                        alert('Por favor, ingresa el tipo.');
+                    }
+
+                    if (((component === 'CDN' || component === 'SSL')||(component === 'DISC_DUR' && (!gb.value))) && 
+                        (!tipo || !tipo.value) && (!precio || !precio.value)) {
+                        valid = false;
+                        alert('Por favor, selecciona todos los campos.');
+                    }
+
+                    if (component === 'RAM'){
+                        
+                        if (!gb.value || !precio || !precio.value) {
+                            valid = false;
+                            alert('Por favor, la cantidad de GB y el precio.');
+                        }else if (tipo && tipo.value && tipotipo && tipotipo.value) {
+                            valid = false;
+                            alert('Por favor, selecciona un tipo de RAM ya creado o crea uno, pero no los dos a la vez .');
+                        }else if ((!tipo || !tipo.value) && (!tipotipo || !tipotipo.value)) {
+                            valid = false;
+                            alert('Por favor, selecciona un tipo de RAM.');
+                        }
+                    }
+
+                    if (!valid) {
+                        event.preventDefault();
+                    } else {
+                        this.action = './src/vista/componentesVista.php';
+                    }
+                });
+            </script>
         </div>
 
     </section>
-
+   
     <section class="about_section layout_paddingAbout">
         <div class="container">
             <h4 class="text-uppercase">
-                Crear Nuevos Componentes
+                Editar Precios/ Eliminar Componentes
             </h4>
         </div>
-        <div class="container d-flex justify-content-center">
-            <form method="POST">
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <label for="tipo1">Modulos CMS</label>
-                    </div>
-                    <div class="col-auto">
-                        <input type="text" name="tipo1" id="tipo1" class="form-control mb-2" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="new_cms" class="btn btn-primary mb-2">Añadir</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="container d-flex justify-content-center">
-            <form method="POST">
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <label for="tipo1">Sistema de gestion de Base de datos</label>
-                    </div>
-                    <div class="col-auto">
-                        <input type="text" name="tipo1" id="tipo1" class="form-control mb-2" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="new_sgbd" class="btn btn-primary mb-2">Añadir</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="container d-flex justify-content-center">
-            <form method="POST">
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <label for="tipo1">Tipo de RAM</label>
-                    </div>
-                    <div class="col-auto">
-                        <input type="text" name="tipo1" id="tipo1" class="form-control mb-2" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="new_ram" class="btn btn-primary mb-2">Añadir</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="about_section layout_paddingAbout">
         <div class="container">
-            <h4 class="text-uppercase">
-                Editar Precios Componentes
-            </h4>
-        </div>
-        <div class="container d-flex justify-content-center">
-            <form method="POST">
-                <div class="form-group">
-                    <label for="component1">Selecciona Componente</label>
-                    <select name="component1" id="component1" class="form-control" onchange="this.form.submit()">
-                        <option value="">Selecciona Componente</option>
-                        <option value="CDN" <?php if(isset($_POST['component1']) && $_POST['component1'] == 'CDN') echo 'selected'; ?>>CDN</option>
-                        <option value="SSL" <?php if(isset($_POST['component1']) && $_POST['component1'] == 'SSL') echo 'selected'; ?>>SSL</option>
-                        <option value="RAM" <?php if(isset($_POST['component1']) && $_POST['component1'] == 'RAM') echo 'selected'; ?>>RAM</option>
-                        <option value="DISC_DUR" <?php if(isset($_POST['component1']) && $_POST['component1'] == 'DISC_DUR') echo 'selected'; ?>>DISC DUR</option>
-                    </select>
-                </div>
-                
+            <form action=" " method="POST" onsubmit="return validateForm(event)">
+                <input type="hidden" name="accio" id="accio" value=" ">
+                    <!-- Tabla para mostrar los datos de CONTRACTE -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Seleccionar</th>
+                                <th>Componente</th>
+                                <th>Tipo</th>
+                                <th>Precio</th>
+                                <th>GB</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Consultas para obtener datos de cada componente
+                            $queries = [
+                                "CMS" => "SELECT 'Modul CMS' as componente, tipus as tipo, '' as preu, '' as GB FROM MODUL_CMS",
+                                "CDN" => "SELECT 'CDN' as componente, tipus as tipo, preu, '' as GB FROM CDN",
+                                "SSL" => "SELECT 'Certificado SSL' as componente, tipus as tipo, preu, '' as GB FROM C_SSL",
+                                "SGBD" => "SELECT 'Sistema de Gestion de Base de Datos' as componente, tipus as tipo, '' as preu, '' as GB FROM SIST_GESTIO_BD",
+                                "RAM" => "SELECT 'RAM' as componente, tipus as tipo, preu, GB FROM RAM",
+                                "DISC_DUR" => "SELECT 'Disco Duro' as componente, tipus as tipo, preu, GB FROM DISC_DUR"
+                            ];
+                            foreach ($queries as $query) {
+                                $resultado = mysqli_query($conn, $query);
+                                if (!$resultado) {
+                                    die("Error al obtener datos: " . mysqli_error($conn));
+                                }
+                                while ($row = mysqli_fetch_assoc($resultado)) {
+                                    $value = $row['componente'] . '|' . $row['tipo']. '|' . $row['preu']. '|' . $row['GB'];
+                                        echo "<tr>
+                                        <td>
+                                            <input type='radio' id='selectedRow' name='selectedRow' value='{$value}'>
+                                        </td>
+                                        <td>{$row['componente']}</td>
+                                        <td>{$row['tipo']}</td>
+                                        <td>{$row['preu']}</td>
+                                        <td>{$row['GB']}</td>
+                                        </tr>";
+                                }
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <div class="form-row align-items-center3">
+                            <div class="col-auto2">
+                                <label for="precio_ssl">Precio</label>
+                            </div>
+                            <div class="col-auto2">
+                                <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
+                            </div>
+                            <div class="col-auto2">
+                                <button type="submit" class="btn btn-primary mb-3" name="edit">Actualizar Precio </button>
+                                <button type="submit" class="btn btn-primary mb-3" name="elimar">Eliminar Componente</button>
+                            </div>
+                        </div>
+                    </div>
             </form>
-        </div>
-    </section>
+            <script>
+            function validateForm(event) {
+                const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
+                const precio = document.querySelector('input[name="precio"]');
+                const buttonClicked = event.submitter.name;
 
-    <section class="about_section layout_paddingAbout">
-        <div class="container">
-            <h4 class="text-uppercase">
-                Eliminar Componentes
-            </h4>
-        </div>
-        <div class="container d-flex justify-content-center">
-            <form method="POST">
-                <div class="form-group">
-                    <label for="component2">Selecciona Componente</label>
-                    <select name="component2" id="component2" class="form-control" onchange="this.form.submit()">
-                        <option value="">Selecciona Componente</option>
-                        <option value="CMS" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'CMS') echo 'selected'; ?>>Modulo CMS</option>
-                        <option value="CDN" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'CDN') echo 'selected'; ?>>CDN</option>
-                        <option value="SSL" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'SSL') echo 'selected'; ?>>SSL</option>
-                        <option value="SGBD" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'SGBD') echo 'selected'; ?>>SGBD</option>
-                        <option value="RAM" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'RAM') echo 'selected'; ?>>RAM</option>
-                        <option value="DISC_DUR" <?php if(isset($_POST['component2']) && $_POST['component2'] == 'DISC_DUR') echo 'selected'; ?>>DISC DUR</option>
-                    </select>
-                </div>
-
-                <!-- Formulario para añadir CMS -->                
-                <?php 
-                // Obtener tipos de CMS desde la base de datos
-                $cmsTypesQuery = "SELECT DISTINCT tipus FROM MODUL_CMS";
-                $cmsTypesResult = mysqli_query($conn, $cmsTypesQuery);
-                $cmsTypes = [];
-                while ($row = mysqli_fetch_assoc($cmsTypesResult)) {
-                    $cmsTypes[] = $row['tipus'];
+                if (buttonClicked === 'edit') {
+                    if (!selectedRow || !precio || !precio.value) {
+                        alert('Por favor, selecciona un componente y un precio.');
+                        return false;
+                    } else {
+                        document.getElementById('accio').value = 'editarS';
+                    }
+                } 
+                if (buttonClicked === 'elimar') {
+                    if (!selectedRow) {
+                        alert('Por favor, selecciona un componente.');
+                        return false;
+                    } else {
+                        document.getElementById('accio').value = 'eliminarS';
+                    }
                 }
-                if(isset($_POST['component2']) && $_POST['component2'] == 'CMS'): ?>
-                <fieldset>
-                    <legend>Modulo CMS</legend>
-                    <div class="form-group">
-                        <label for="tipo2_cms">Tipo de CMS</label>
-                        <select name="tipo2" id="tipo2_cms" class="form-control">
-                            <?php foreach ($cmsTypes as $cmsType): ?>
-                                <option value="<?php echo $cmsType; ?>"><?php echo $cmsType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                <!-- Formulario para añadir CDN -->                
-                <?php 
-                // Obtener tipos de CDN desde la base de datos
-                $cdnTypesQuery = "SELECT DISTINCT tipus, preu FROM CDN";
-                $cdnTypesResult = mysqli_query($conn, $cdnTypesQuery);
-                $cdnTypes = [];
-                while ($row = mysqli_fetch_assoc($cdnTypesResult)) {
-                    $cdnTypes[] = $row['tipus'];
-                }
-                
-                if(isset($_POST['component2']) && $_POST['component2'] == 'CDN'): ?>
-                <fieldset>
-                    <legend>CDN</legend>
-                    <div class="form-group">
-                        <label for="tipo2_cdn">Tipo de CDN</label>
-                        <select name="tipo2" id="tipo2_cdn" class="form-control">
-                            <?php foreach ($cdnTypes as $cdnType): ?>
-                                <option value="<?php echo $cdnType; ?>"><?php echo $cdnType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="precio_cdn">Precio</label>
-                        <input type="text" name="precio2" id="precio_cdn" class="form-control" placeholder="Max: 99.99">
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                <!-- Formulario para añadir SSL -->                
-                <?php 
-                // Obtener tipos de SSL desde la base de datos
-                $sslTypesQuery = "SELECT DISTINCT tipus, preu FROM C_SSL";
-                $sslTypesResult = mysqli_query($conn, $sslTypesQuery);
-                $sslTypes = [];
-                while ($row = mysqli_fetch_assoc($sslTypesResult)) {
-                    $sslTypes[] = $row['tipus'];
-                }
-                
-                if(isset($_POST['component2']) && $_POST['component2'] == 'SSL'): ?>
-                <fieldset>
-                    <legend>SSL</legend>
-                    <div class="form-group">
-                        <label for="tipo2_ssl">Tipo de SSL</label>
-                        <select name="tipo2" id="tipo2_ssl" class="form-control">
-                            <?php foreach ($sslTypes as $sslType): ?>
-                                <option value="<?php echo $sslType; ?>"><?php echo $sslType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="precio_ssl">Precio</label>
-                        <input type="text" name="precio2" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                <!-- Formulario para añadir SGBD -->                
-                <?php 
-                // Obtener tipos de SGBD desde la base de datos
-                $sgbdTypesQuery = "SELECT DISTINCT tipus FROM SIST_GESTIO_BD";
-                $sgbdTypesResult = mysqli_query($conn, $sgbdTypesQuery);
-                $sgbdTypes = [];
-                while ($row = mysqli_fetch_assoc($sgbdTypesResult)) {
-                    $sgbdTypes[] = $row['tipus'];
-                }
-                if(isset($_POST['component2']) && $_POST['component2'] == 'SGBD'): ?>
-                <fieldset>
-                    <legend>SGBD</legend>
-                    <div class="form-group">
-                        <label for="tipo2_sgbd">Tipo de SGBD</label>
-                        <select name="tipo2" id="tipo2_sgbd" class="form-control">
-                            <?php foreach ($sgbdTypes as $sgbdType): ?>
-                                <option value="<?php echo $sgbdType; ?>"><?php echo $sgbdType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                <!-- Formulario para añadir RAM -->                
-                <?php 
-                // Obtener tipos de RAM desde la base de datos
-                $ramTypesQuery = "SELECT DISTINCT tipus FROM RAM";
-                $ramTypesResult = mysqli_query($conn, $ramTypesQuery);
-                $ramTypes = [];
-                while ($row = mysqli_fetch_assoc($ramTypesResult)) {
-                    $ramTypes[] = $row['tipus'];
-                }
-                
-                if(isset($_POST['component2']) && $_POST['component2'] == 'RAM'): ?>
-                <fieldset>
-                    <legend>RAM</legend>
-                    <div class="form-group">
-                        <label for="tipo2_ram">Tipo de RAM</label>
-                        <select name="tipo2" id="tipo2_ram" class="form-control">
-                            <?php foreach ($ramTypes as $ramType): ?>
-                                <option value="<?php echo $ramType; ?>"><?php echo $ramType; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="gb_ram">GB de RAM</label>
-                        <select name="gb" id="gb_ram" class="form-control">
-                            <option value="4">4 GB</option>
-                            <option value="8">8 GB</option>
-                            <option value="16">16 GB</option>
-                            <option value="32">32 GB</option>
-                            <option value="64">64 GB</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="precio_ram">Precio</label>
-                        <input type="text" name="precio2" id="precio_ram" class="form-control" placeholder="Max: 99.99">
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                <!-- Formulario para añadir DISC DUR -->
-                <?php if(isset($_POST['component2']) && $_POST['component2'] == 'DISC_DUR'): ?>
-                <fieldset>
-                    <legend>DISC DUR</legend>
-                    <div class="form-group">
-                        <label for="tipo2_disc_dur">Tipo de DISC DUR</label>
-                        <select name="tipo2" id="tipo2_disc_dur" class="form-control">
-                            <option value="HDD">HDD</option>
-                            <option value="SSD">SSD</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="gb_disc_dur">GB de DISC DUR</label>
-                        <select name="gb" id="gb_disc_dur" class="form-control">
-                            <option value="128">128 GB</option>
-                            <option value="256">256 GB</option>
-                            <option value="512">512 GB</option>
-                            <option value="1024">1024 GB</option>
-                            <option value="2048">2048 GB</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="precio_disc_dur">Precio</label>
-                        <input type="text" name="precio2" id="precio_disc_dur" class="form-control" placeholder="Max: 999.99">
-                    </div>
-                </fieldset>
-                <?php endif; ?>
-
-                
-            </form>
+                return true;
+            }
+            </script>
         </div>
     </section>
 
@@ -713,5 +434,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_ram'])) {
         }
     </script>
 </body>
+
+
+
+<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $selectedRow = $_POST['selectedRow'];
+    list($componente, $tipo, $precio, $gb) = explode('|', $selectedRow);
+    echo "Debug: eliminarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
+
+
+    // if ($_POST['accio'] == 'editarS') {
+        switch ($componente) {
+            case 'Modul CMS':
+                $query = "DELETE FROM MODUL_CMS WHERE tipus='$tipo'";
+                break;
+            case 'CDN':
+                $query = "DELETE FROM CDN WHERE tipus='$tipo'";
+                break;
+            case 'Certificado SSL':
+                $query = "DELETE FROM C_SSL WHERE tipus='$tipo'";
+                break;
+            case 'Sistema de Gestion de Base de Datos':
+                $query = "DELETE FROM SIST_GESTIO_BD WHERE tipus='$tipo'";
+                break;
+            case 'RAM':
+                $query = "DELETE FROM RAM WHERE tipus='$tipo'";
+                break;
+            case 'Disco Duro':
+                $query = "DELETE FROM DISC_DUR WHERE tipus='$tipo'";
+                break;
+        }
+        
+        $resultado = mysqli_query($conn, $query);
+        if (!$resultado) {
+            $_SESSION["error_msg"] = "No se pudo eliminar el componente.";
+            return false;
+        }
+        $_SESSION["success_msg"] = "Componente eliminado.";
+        return true;
+    // }
+        
+}
+?>
 
 </html>
