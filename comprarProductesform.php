@@ -35,17 +35,43 @@ if ($result->num_rows > 0) {
 }
 
 // Obtener los datos de las tablas correspondientes
-$tipusMCMS = $conn->query("SELECT tipus FROM MODUL_CMS")->fetch_all(MYSQLI_ASSOC);
-$tipusCDN = $conn->query("SELECT tipus, preu FROM CDN")->fetch_all(MYSQLI_ASSOC);
-$tipusSSL = $conn->query("SELECT tipus, preu FROM C_SSL")->fetch_all(MYSQLI_ASSOC);
-$tipusSGBD = $conn->query("SELECT tipus FROM SIST_GESTIO_BD")->fetch_all(MYSQLI_ASSOC);
-$tipusRAM = $conn->query("SELECT DISTINCT tipus, preu FROM RAM")->fetch_all(MYSQLI_ASSOC);
-$gbRAM = $conn->query("SELECT DISTINCT GB, preu FROM RAM")->fetch_all(MYSQLI_ASSOC);
-$tipusDD = $conn->query("SELECT DISTINCT tipus, preu FROM DISC_DUR")->fetch_all(MYSQLI_ASSOC);
-$gbDD = $conn->query("SELECT DISTINCT GB, preu FROM DISC_DUR")->fetch_all(MYSQLI_ASSOC);
-$modelCPU = $conn->query("SELECT model, nNuclis, preu FROM CPU")->fetch_all(MYSQLI_ASSOC);
-$nNuclis = $conn->query("SELECT DISTINCT nNuclis, preu FROM CPU")->fetch_all(MYSQLI_ASSOC);
-$nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
+$tipusMCMS = array_unique($conn->query("SELECT DISTINCT tipus FROM MODUL_CMS")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$tipusCDN = array_unique($conn->query("SELECT DISTINCT tipus, preu FROM CDN")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$tipusSSL = array_unique($conn->query("SELECT DISTINCT tipus, preu FROM C_SSL")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$tipusSGBD = array_unique($conn->query("SELECT DISTINCT tipus FROM SIST_GESTIO_BD")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$tipusRAM = array_unique($conn->query("SELECT DISTINCT tipus, preu FROM RAM")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$gbRAM = array_unique($conn->query("SELECT DISTINCT GB, preu FROM RAM")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$tipusDD = array_unique($conn->query("SELECT DISTINCT tipus, preu FROM DISC_DUR")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$gbDD = array_unique($conn->query("SELECT DISTINCT GB, preu FROM DISC_DUR")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$modelCPU = array_unique($conn->query("SELECT DISTINCT model, preu FROM CPU")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$nNuclis = array_unique($conn->query("SELECT DISTINCT nNuclis, preu FROM CPU")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$nomSO = array_unique($conn->query("SELECT DISTINCT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
+$ipv4Options = $conn->query("SELECT DISTINCT iPv4 FROM PAAS WHERE iPv4 IS NOT NULL")->fetch_all(MYSQLI_ASSOC);
+$ipv6Options = $conn->query("SELECT DISTINCT iPv6 FROM PAAS WHERE iPv6 IS NOT NULL")->fetch_all(MYSQLI_ASSOC);
+$mesosOptions = $conn->query("SELECT DISTINCT mesos FROM DURADA")->fetch_all(MYSQLI_ASSOC);
+
+// Función para eliminar duplicados
+function uniqueOptions($array, $key) {
+    $tempArray = [];
+    foreach ($array as $item) {
+        $tempArray[$item[$key]] = $item;
+    }
+    return array_values($tempArray);
+}
+
+// Eliminar duplicados
+$tipusMCMS = uniqueOptions($tipusMCMS, 'tipus');
+$tipusCDN = uniqueOptions($tipusCDN, 'tipus');
+$tipusSSL = uniqueOptions($tipusSSL, 'tipus');
+$tipusSGBD = uniqueOptions($tipusSGBD, 'tipus');
+$tipusRAM = uniqueOptions($tipusRAM, 'tipus');
+$gbRAM = uniqueOptions($gbRAM, 'GB');
+$tipusDD = uniqueOptions($tipusDD, 'tipus');
+$gbDD = uniqueOptions($gbDD, 'GB');
+$modelCPU = uniqueOptions($modelCPU, 'model');
+$nNuclis = uniqueOptions($nNuclis, 'nNuclis');
+$nomSO = uniqueOptions($nomSO, 'nom');
+
 ?>
 
 <html>
@@ -152,6 +178,7 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                 <th>Tipus DD</th>
                 <th>GB DD</th>
                 <th>Domini</th>
+                <th>Mesos</th>
                 <th>Preu (€)</th>
             </tr>
         </thead>
@@ -225,6 +252,14 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                     <input type="text" name="domini" class="form-control" placeholder="Ej: hola.com">
                 </td>
                 <td>
+                    <select name="mesos" class="form-control" onchange="calculatePriceSaaS()">
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <?php foreach ($mesosOptions as $option): ?>
+                            <option value="<?php echo $option['mesos']; ?>"><?php echo $option['mesos']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td>
                     <input type="text" name="precio" class="form-control" id="precioTotalSaaS" readonly>
                 </td>
             </tr>           
@@ -249,21 +284,30 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                 <th>GB DD</th>
                 <th>Model CPU</th>
                 <th>nNuclis</th>
-                <th>Nom SO</th>   
-                <th>Precio (€)</th>
+                <th>Nom SO</th>  
+                <th>Mesos</th> 
+                <th>Preu (€)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>
-                    <select name="ip" class="form-control" onchange="calculatePricePaaS()" onclick="showOptions(this)">
+                    <select name="ip" class="form-control" onchange="updateIpOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <option value="IPv4">IPv4</option>
                         <option value="IPv6">IPv6</option>
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="nip" class="form-control" placeholder="">
+                    <select name="ipValue" class="form-control mt-2">
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <?php foreach ($ipv4Options as $option): ?>
+                            <option class="IPv4" value="<?php echo $option['iPv4']; ?>"><?php echo $option['iPv4']; ?></option>
+                        <?php endforeach; ?>
+                        <?php foreach ($ipv6Options as $option): ?>
+                            <option class="IPv6" value="<?php echo $option['iPv6']; ?>"><?php echo $option['iPv6']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </td>
                 <td>
                     <select name="tipusRAM" class="form-control" onchange="calculatePricePaaS()" onclick="showOptions(this)">
@@ -322,6 +366,14 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                     </select>
                 </td>
                 <td>
+                    <select name="mesos" class="form-control" onchange="calculatePricePaaS()">
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <?php foreach ($mesosOptions as $option): ?>
+                            <option value="<?php echo $option['mesos']; ?>"><?php echo $option['mesos']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td>
                     <input type="text" name="preu" class="form-control" id="precioTotalPaaS" readonly>
                 </td>
             </tr>
@@ -375,19 +427,39 @@ $nomSO = $conn->query("SELECT nom, preu FROM SO")->fetch_all(MYSQLI_ASSOC);
                 const precio = parseFloat(selectedOption.getAttribute('data-precio')) || 0;
                 total += precio;
             });
+            const meses = parseInt(document.querySelector('#productFormPaaS select[name="mesos"]').value) || 1;
+            total *= meses;
             document.getElementById('precioTotalPaaS').value = total.toFixed(2) + ' €';
         }
 
         function calculatePriceSaaS() {
-            let total = 0;
-            const selects = document.querySelectorAll('#productFormSaaS select');
-            selects.forEach(select => {
-                const selectedOption = select.options[select.selectedIndex];
-                const precio = parseFloat(selectedOption.getAttribute('data-precio')) || 0;
-                total += precio;
-            });
-            document.getElementById('precioTotalSaaS').value = total.toFixed(2) + ' €';
-        }
+        let total = 0;
+        const selects = document.querySelectorAll('#productFormSaaS select');
+        selects.forEach(select => {
+            const selectedOption = select.options[select.selectedIndex];
+            const precio = parseFloat(selectedOption.getAttribute('data-precio')) || 0;
+            total += precio;
+        });
+        const meses = parseInt(document.querySelector('#productFormSaaS select[name="mesos"]').value) || 1;
+        total *= meses;
+        document.getElementById('precioTotalSaaS').value = total.toFixed(2) + ' €';
+    }
+
+    function updateIpOptions(select) {
+        var ipType = select.value;
+        var ipValueSelect = document.querySelector('select[name="ipValue"]');
+        var options = ipValueSelect.querySelectorAll('option');
+
+        options.forEach(function(option) {
+            if (option.classList.contains(ipType)) {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+
+        ipValueSelect.value = '';
+    }
 
         // Llamar a las funciones de cálculo al cargar la página para inicializar los precios
         window.onload = function() {
