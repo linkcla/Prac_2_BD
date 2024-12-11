@@ -321,8 +321,8 @@ if (isset($_SESSION['error_msg'])) {
             </h4>
         </div>
         <div class="container">
-            <form action=" " method="POST" onsubmit="return validateForm(event)">
-                <input type="hidden" name="accio" id="accio" value=" ">
+            <form action="./src/vista/componentesVista.php" method="POST" onsubmit="return validateForm(event)">
+                <input type="hidden" name="accio" id="accio" value="eliminarS">
                     <!-- Tabla para mostrar los datos de CONTRACTE -->
                     <table class="table table-striped">
                         <thead>
@@ -391,7 +391,7 @@ if (isset($_SESSION['error_msg'])) {
                     if (!selectedRow || !precio || !precio.value) {
                         alert('Por favor, selecciona un componente y un precio.');
                         return false;
-                    } else {
+                    }else {
                         document.getElementById('accio').value = 'editarS';
                     }
                 } 
@@ -399,9 +399,7 @@ if (isset($_SESSION['error_msg'])) {
                     if (!selectedRow) {
                         alert('Por favor, selecciona un componente.');
                         return false;
-                    } else {
-                        document.getElementById('accio').value = 'eliminarS';
-                    }
+                    } 
                 }
                 return true;
             }
@@ -435,48 +433,5 @@ if (isset($_SESSION['error_msg'])) {
     </script>
 </body>
 
-
-
-<!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
-<?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $selectedRow = $_POST['selectedRow'];
-    list($componente, $tipo, $precio, $gb) = explode('|', $selectedRow);
-    echo "Debug: eliminarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
-
-
-    // if ($_POST['accio'] == 'editarS') {
-        switch ($componente) {
-            case 'Modul CMS':
-                $query = "DELETE FROM MODUL_CMS WHERE tipus='$tipo'";
-                break;
-            case 'CDN':
-                $query = "DELETE FROM CDN WHERE tipus='$tipo'";
-                break;
-            case 'Certificado SSL':
-                $query = "DELETE FROM C_SSL WHERE tipus='$tipo'";
-                break;
-            case 'Sistema de Gestion de Base de Datos':
-                $query = "DELETE FROM SIST_GESTIO_BD WHERE tipus='$tipo'";
-                break;
-            case 'RAM':
-                $query = "DELETE FROM RAM WHERE tipus='$tipo'";
-                break;
-            case 'Disco Duro':
-                $query = "DELETE FROM DISC_DUR WHERE tipus='$tipo'";
-                break;
-        }
-        
-        $resultado = mysqli_query($conn, $query);
-        if (!$resultado) {
-            $_SESSION["error_msg"] = "No se pudo eliminar el componente.";
-            return false;
-        }
-        $_SESSION["success_msg"] = "Componente eliminado.";
-        return true;
-    // }
-        
-}
-?>
 
 </html>
