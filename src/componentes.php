@@ -78,34 +78,47 @@ class Componentes {
 
     }
 
-    public static function eliminarComponentesSaas($componente, $tipo, $gb, $precio) {
+    public static function eliminarComponentesSaas($componente, $tipo, $gb) {
         $conn = Conexion::getConnection();
 
         switch ($componente) {
             case 'Modul CMS':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusMCMS='$tipo'";
                 $query = "DELETE FROM MODUL_CMS WHERE tipus='$tipo'";
                 break;
             case 'CDN':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusCDN='$tipo'";
                 $query = "DELETE FROM CDN WHERE tipus='$tipo'";
                 break;
             case 'Certificado SSL':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusSSL='$tipo'";
                 $query = "DELETE FROM C_SSL WHERE tipus='$tipo'";
                 break;
             case 'Sistema de Gestion de Base de Datos':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusSGBD='$tipo'";
                 $query = "DELETE FROM SIST_GESTIO_BD WHERE tipus='$tipo'";
                 break;
             case 'RAM':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam=$gb";
                 $query = "DELETE FROM RAM WHERE tipus='$tipo'";
                 break;
             case 'Disco Duro':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD=$gb";
                 $query = "DELETE FROM DISC_DUR WHERE tipus='$tipo'";
                 break;
         }
         
-        $resultado = mysqli_query($conn, $query);
-        if (!$resultado) {
-            $_SESSION["error_msg"] = "No se pudo eliminar el componente.";
+        // Verificar si el componente está en uso
+        $result = mysqli_query($conn, $querySaaS);
+        if (mysqli_num_rows($result) > 0) {
+            $_SESSION["error_msg"] = "Error, el componente esta en uso, no se pudo eliminar el componente.";
             return false;
+        }else{
+            $resultado = mysqli_query($conn, $query);
+            if(!$resultado){
+                $_SESSION["error_msg"] = "No se pudo eliminar el componente.";
+                return false;
+            }
         }
         $_SESSION["success_msg"] = "Componente eliminado.";
         return true;
@@ -120,9 +133,11 @@ class Componentes {
                 return false;
                 break;
             case 'CDN':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusCDN='$tipo'";
                 $query = "UPDATE CDN SET preu='$precio' WHERE tipus='$tipo'";
                 break;
             case 'Certificado SSL':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusCDN='$tipo'";
                 $query = "UPDATE C_SSL SET preu='$precio' WHERE tipus='$tipo'";
                 break;
             case 'Sistema de Gestion de Base de Datos':
@@ -130,18 +145,27 @@ class Componentes {
                 return false;
                 break;
             case 'RAM':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam=$gb";
                 $query = "UPDATE RAM SET preu='$precio' WHERE tipus='$tipo'";
                 break;
             case 'Disco Duro':
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD=$gb";
                 $query = "UPDATE DISC_DUR SET preu='$precio' WHERE tipus='$tipo'";
                 break;
         }
-        $resultado = mysqli_query($conn, $query);
-        if (!$resultado) {
-            $_SESSION["error_msg"] = "No se pudo actualizar el componente.";
+        // Verificar si el componente está en uso
+        $result = mysqli_query($conn, $querySaaS);
+        if (mysqli_num_rows($result) > 0) {
+            $_SESSION["error_msg"] = "Error, el componente esta en uso, no se pudo editar el componente.";
             return false;
+        }else{
+            $resultado = mysqli_query($conn, $query);
+            if(!$resultado){
+                $_SESSION["error_msg"] = "No se pudo editar el componente.";
+                return false;
+            }
         }
-        $_SESSION["success_msg"] = "Componente actualizado.";
+        $_SESSION["success_msg"] = "Componente eliminado.";
         return true;
     }
 }
