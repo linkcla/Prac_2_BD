@@ -87,7 +87,8 @@ $con = Conexion::getConnection();
           </div>
           <div class="col-md-6 form_bg px-0">
             <div class="col-md-10 px-0">
-              <form action="insereixusuaribd.php" method="post">
+              <form action="./src/vista/usuarioVista.php" method="POST">
+                <input type="hidden" name="accio" value="crear">
                 <div class="contact_form-container">
                   <div>
                     <div>
