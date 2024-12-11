@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "<div class='alert alert-danger' role='alert'>El precio debe ser un número entre 0 y 999.99</div>";
             } else {
                 // Llama al método crearNuevoComponente de la instancia de PaaSFuncionalidades
-                $paasFuncionalidades->crearNuevoComponente($conn, $component, $tipo, $gb, $nNuclis, $precio);
+                $paasFuncionalidades->crearComponente($conn, $component, $tipo, $gb, $nNuclis, $precio);
             }
         } else {
             // Error: Todos los campos son obligatorios.
