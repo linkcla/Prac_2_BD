@@ -2,8 +2,15 @@
 
 <?php session_start() ;
 include "conexion.php";
-$conn = Conexion::getConnection();    
-
+$conn = Conexion::getConnection(); 
+if (isset($_SESSION['success_msg'])) {
+    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+    unset($_SESSION['error_msg']);
+}             
 ?>
 
 <html>
@@ -101,12 +108,15 @@ $conn = Conexion::getConnection();
                      
     
         <div class="container">
-            <form action=" " method="POST">
+            <form action="./src/vista/contratosVista.php" method="POST" onsubmit="return validateForm(event)">
+                <input type="hidden" name="accio" id="accio" value="">
                 <!-- Tabla para mostrar los datos de CONTRACTE -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Seleccionar</th>
                             <th>ID Contracte</th>
+                            <th>Domini</th>
                             <th>Data Inici</th>
                             <th>Estat</th>
                             <th>Nom Org</th>
@@ -131,8 +141,13 @@ $conn = Conexion::getConnection();
                             $cadenaContracte = "SELECT * FROM CONTRACTE WHERE idConfigProducte IN ($idConfigsString)";
                             $resultadoContracte = mysqli_query($conn, $cadenaContracte);
                             while ($rowContracte = $resultadoContracte->fetch_assoc()) {
+                                $value = $rowContracte['idContracte'];
                                 echo "<tr>
+                                    <td>
+                                        <input type='radio' id='selectedRow' name='selectedRow' value='{$value}'>
+                                    </td>
                                     <td>{$rowContracte['idContracte']}</td>
+                                    <td>{$rowContracte['domini']}</td>
                                     <td>{$rowContracte['dataInici']}</td>
                                     <td>{$rowContracte['estat']}</td>
                                     <td>{$rowContracte['nom']}</td>
@@ -149,8 +164,79 @@ $conn = Conexion::getConnection();
                         ?>
                     </tbody>
                 </table>
+                <div class="container d-flex justify-content-center align-items-center">
+                    <div class="form-row align-items-center3">
+                        <div class="col-auto2">
+                            <select name="nomsestats" id="estat" class="form-control">
+                                <option value="">Selecciona un Estado</option>
+                                <option value="Actiu">Actiu</option>
+                                <option value="Finalitzat">Finalitzat</option>
+                                <option value="Cancel·lat">Cancel·lat</option>
+                            </select>
+                        </div>   
+                        <div class="col-auto2">
+                            <button type="submit" class="btn btn-primary mb-3" name="editEstat">Actualizar Estado Contrato</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container d-flex justify-content-center align-items-center">
+                    <div class="form-row align-items-center3">
+                        <div class="col-auto2">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decrement()">-</button>
+                                </div>
+                                <input type="number" id="numberInput" name="duration" class="form-control" value="3" min="3">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="increment()">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto2">
+                            <button type="submit" class="btn btn-primary mb-3" name="editdura">Actualizar Duracion Contrato</button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
+        <script>
+            function increment() {
+                const input = document.getElementById('numberInput');
+                input.value = parseInt(input.value) + 1;
+            }
+
+            function decrement() {
+                const input = document.getElementById('numberInput');
+                if (parseInt(input.value) > 1) {
+                    input.value = parseInt(input.value) - 1;
+                }
+            }
+
+            function validateForm(event) {
+                const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
+                const estatSelect = document.getElementById('estat');
+                const input = document.getElementById('numberInput');
+                const buttonClicked = event.submitter.name;
+
+                if (buttonClicked === 'editEstat') {
+                    if (!selectedRow || estatSelect.value === '') {
+                        alert('Por favor, selecciona un contrato y un estado.');
+                        return false;
+                    } else {
+                        document.getElementById('accio').value = 'estado';
+                    }
+                } 
+                if (buttonClicked === 'editdura') {
+                    if (!selectedRow || input.value === '') {
+                        alert('Por favor, selecciona un producto y una duración.');
+                        return false;
+                    } else {
+                        document.getElementById('accio').value = 'durada';
+                    }
+                }
+                return true;
+            }
+        </script>
     </section>
 
     <!-- end about section -->

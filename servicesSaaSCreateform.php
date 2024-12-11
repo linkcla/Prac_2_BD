@@ -439,14 +439,6 @@ if (isset($_SESSION['error_msg'])) {
                             </table>
                         </div>
                     </fieldset>
-                    
-                    <!-- DOMINIO -->
-                    <fieldset>
-                        <div class="form-group1">
-                                <label for="dominio">Dominio: </label>
-                                <input name="dominio" placeholder="  miejemplo.com" type="text" required />
-                        </div>
-                    </fieldset>
 
                     <!-- añadir más componentes -->
                    

@@ -17,7 +17,6 @@ if (isset($_SESSION['error_msg'])) {
 $valorSeleccionat = $_POST['selectedRow'];
 list(
     $idConfig,
-    $domini,
     $dataCreacio,
     $tipusMCMS,
     $tipusCDN,
@@ -419,15 +418,6 @@ list(
                             </div>
                         </fieldset>
 
-                        <!-- DOMINIO -->
-                        <fieldset>
-                            <div class="form-group1">
-                                    <label for="dominio">Dominio: </label>
-                                    <input name="dominio" placeholder="  miejemplo.com" value="<?php echo $domini; ?>"  type="text" required />
-                            </div>
-                        </fieldset>
-
-                        
                         <div class="container">
                             <!-- Campos ocultos para pasar los valores -->
                             <input type="hidden" name="idConfig" value="<?php echo ($idConfig); ?>">

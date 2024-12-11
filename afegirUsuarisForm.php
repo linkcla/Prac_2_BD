@@ -49,7 +49,7 @@ $resultGrups = mysqli_query($conn, $selectGrups);
         <!-- header section strats -->
         <header class="header_section">
             <div class="container-fluid">
-                <nav class="navbar navbar-expand-lg custom_nav-container"  style="min-height: calc(100vh - 200px);">
+                <nav class="navbar navbar-expand-lg custom_nav-container"  >
                     <a class="navbar-brand" href="loginform.php">
                         <span>
                             MPHB
@@ -91,7 +91,7 @@ $resultGrups = mysqli_query($conn, $selectGrups);
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout" style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
                 Afegir Usuaris a l'Organització

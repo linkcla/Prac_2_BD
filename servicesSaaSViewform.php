@@ -118,7 +118,6 @@ if (isset($_SESSION['error_msg'])) {
                         <tr>
                             <th>Seleccionar</th>
                             <th>ID Configuración</th>
-                            <th>Dominio</th>
                             <th>Fecha Creación</th>
                             <th>Modulo CMS</th>
                             <th>CDN</th>
@@ -133,8 +132,7 @@ if (isset($_SESSION['error_msg'])) {
                     <tbody>
                         <?php
                         $cadenaContracte = "SELECT 
-                                SAAS.idConfig, 
-                                SAAS.domini, 
+                                SAAS.idConfig,  
                                 SAAS.dataCreacio, 
                                 SAAS.tipusMCMS, 
                                 SAAS.tipusCDN, 
@@ -154,7 +152,6 @@ if (isset($_SESSION['error_msg'])) {
                         while ($rowContracte = $resultadoContracte->fetch_assoc()) {
                             $value = implode('|', [
                                 $rowContracte['idConfig'],
-                                $rowContracte['domini'],
                                 $rowContracte['dataCreacio'],
                                 $rowContracte['tipusMCMS'],
                                 $rowContracte['tipusCDN'],
@@ -171,7 +168,6 @@ if (isset($_SESSION['error_msg'])) {
                                     <input type='radio' name='selectedRow' value='{$value}'>
                                 </td>
                                 <td>{$rowContracte['idConfig']}</td>
-                                <td>{$rowContracte['domini']}</td>
                                 <td>{$rowContracte['dataCreacio']}</td>
                                 <td>{$rowContracte['tipusMCMS']}</td>
                                 <td>{$rowContracte['tipusCDN']}</td>
