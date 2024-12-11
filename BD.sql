@@ -250,6 +250,31 @@ END$$
 DELIMITER ;
 
 
+-- Procediment per exportar el historial a un fitxer CSV.
+DELIMITER $$
+
+CREATE PROCEDURE export_historial_to_file()
+BEGIN
+    -- Construir la ruta del archivo dinámicamente
+    SET @file_path = CONCAT('C:/xampp/htdocs/Prac_2_BD/historial_', DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'), '.csv');
+
+    -- Construir el comando SQL dinámico
+    SET @sql = CONCAT(
+        'SELECT * ',
+        'FROM HISTORIAL ',
+        'INTO OUTFILE "', @file_path, '" ',
+        'FIELDS TERMINATED BY "," ',
+        'ENCLOSED BY \'"\' ',
+        'LINES TERMINATED BY "\\r\\n"' 
+    );
+
+    -- Ejecutar el SQL dinámico
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END$$
+
+DELIMITER ;
 
 
 -- TRIGGERS PARA REALIZAR LA EL HISTORIAL DE CAMBIOS
