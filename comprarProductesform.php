@@ -165,7 +165,8 @@ $nomSO = uniqueOptions($nomSO, 'nom');
         <!-- Tabla de productos SaaS -->
 <div class="mt-4">
     <h1>Productos SaaS</h1>
-    <form action="comprarProductesSaaS.php" method="POST" id="productFormSaaS" onsubmit="return validateForm('productFormSaaS')">
+    <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormSaaS" onsubmit="return validateForm('productFormSaaS')">
+    <input type="hidden" name="accio" value="comprarSaaS">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -272,7 +273,8 @@ $nomSO = uniqueOptions($nomSO, 'nom');
 <!-- Tabla de productos PaaS -->
 <div class="mt-4">
     <h1>Productos PaaS</h1>
-    <form action="comprarProductesPaaS.php" method="POST" id="productFormPaaS" onsubmit="return validateForm('productFormPaaS')">
+    <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormPaaS" onsubmit="return validateForm('productFormPaaS')">
+    <input type="hidden" name="accio" value="comprarPaaS">
     <table class="table table-bordered">
         <thead>
             <tr>
