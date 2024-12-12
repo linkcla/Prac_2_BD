@@ -24,7 +24,6 @@ function crearSaaS() {
     $tipotipo = isset($_POST['tipotipo']) ? $_POST['tipotipo'] : null;
     $gb = isset($_POST['gb']) ? $_POST['gb'] : null;
     $precio = isset($_POST['precio']) ? $_POST['precio'] : null;
-    echo "Debug: crearSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
     
     $res = Componentes::crearComponentesSaas($component, $tipo, $tipotipo, $gb, $precio);
 
@@ -36,8 +35,6 @@ function crearSaaS() {
 function eliminarSaaS() {
     $selectedRow = $_POST['selectedRow1'];
     list($componente, $tipo, $precio, $gb) = explode('|', $selectedRow);
-    echo "Debug: eliminarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
-
 
     $res = Componentes::eliminarComponentesSaas($componente, $tipo, $gb);
 
