@@ -6,7 +6,13 @@ class Contratos {
         $conn = Conexion::getConnection();
 
         //Comprovar si la persona que administra el contrato existeix
-        $emailCreador = $_SESSION["email"];
+        $emailCreador = isset($_POST['email']) ? $_POST['email'] : null;
+
+        if($emailCreador == null) {
+            $_SESSION["error_msg"] = "Error al intentar actualizar el contrato, no se ha registrado ningun usuario del personal.";
+            return false;
+        }
+
         $selectQuery= "SELECT emailP FROM PERSONAL_ADMINISTRA_CONTR WHERE emailP = '$emailCreador'";
         $result= mysqli_query($conn, $selectQuery);
         if(mysqli_num_rows($result) == 0) {

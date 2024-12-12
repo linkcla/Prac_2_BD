@@ -38,6 +38,7 @@ function crearSaaS() {
     list($tipoDiscDur, $gbDiscDur) = explode('|', $tipoGbDiscDur);
 
     $testSelectedRows = isset($_POST['selectedRowstest']) ? $_POST['selectedRowstest'] : null;
+    $email = isset($_POST['email']) ? $_POST['email'] : null;
 
     $res = SaaS::crear(
         $_POST['nombre'] ,
@@ -51,7 +52,7 @@ function crearSaaS() {
         $gbRam,	
         $tipoDiscDur,	
         $gbDiscDur,
-        $_SESSION["email"],
+        $email,
         $testSelectedRows
     );
 

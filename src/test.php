@@ -6,6 +6,13 @@ class Test {
 
     public static function crearTestSaas($testName, $testDescription, $currentDate) {
         $conn = Conexion::getConnection();
+        
+        $emailCreador = isset($_POST['email']) ? $_POST['email'] : null;
+
+        if($emailCreador == null) {
+            $_SESSION["error_msg"] = "Error al intentar crear el test, no se ha registrado ningun usuario del personal que lo pueda crear.";
+            return false;
+        }
 
         $select_check_Query = "SELECT nom FROM TEST WHERE nom = '$testName'";
         $result_test = mysqli_query($conn, $select_check_Query);
@@ -20,7 +27,8 @@ class Test {
             }
                             
             // Persona que ha creado el test
-            $emailCreador = $_SESSION["email"];
+            
+
             $insert_query_saas = "INSERT INTO PERSONAL_REALITZA_TEST (emailP, nomT) VALUES ('$emailCreador', '$testName');";
             $result_saas = mysqli_query($conn, $insert_query_saas);
             if (!$result_saas) {
