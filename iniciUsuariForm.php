@@ -179,7 +179,7 @@ $permisos = $_SESSION['permisos'];
         
         // Miram si es un PaaS o un SaaS. Si es un PaaS la condició serà falsa.
         if (mysqli_num_rows($result) == 0) {
-            $descripcioSaaS = "Domini: " . $row['domini'] . " | " . getSaaSDescripcio($idConfig);
+            $descripcioSaaS = "SaaS: Domini: " . $row['domini'] . " | " . getSaaSDescripcio($idConfig);
             return $descripcioSaaS;
         }
         return getPaaSDescripcio($idConfig);
@@ -194,7 +194,7 @@ $permisos = $_SESSION['permisos'];
             header('Location: error.php');
             exit();
         }
-        $descripcioSaaS = "SaaS: ";
+        $descripcioSaaS = "";
         // Només hi haurà una fila ja que l'idConfig és clau primària.
         // Concatenam tota la informació per poder mostrar-la en una sola fila.
         while ($row = mysqli_fetch_assoc($result)) {
