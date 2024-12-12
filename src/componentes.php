@@ -15,8 +15,8 @@ class Componentes {
                 $query = "INSERT INTO MODUL_CMS (tipus) VALUES ('$tipotipo')";
                 break;
             case 'CDN':
-                if (!is_numeric($precio) || $precio < 0 || $precio > 999.99) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 999.99.";
+                if (!is_numeric($precio) || $precio < 0 || $precio > 99.99) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus FROM CDN WHERE tipus = '$tipo'";
@@ -24,8 +24,8 @@ class Componentes {
                 }
                 break;
             case 'SSL':
-                if (!is_numeric($precio) || $precio < 0 || $precio > 999.99) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 999.99.";
+                if (!is_numeric($precio) || $precio < 0 || $precio > 99.99) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus FROM C_SSL WHERE tipus = '$tipo'";
@@ -37,12 +37,12 @@ class Componentes {
                 $query = "INSERT INTO SIST_GESTIO_BD (tipus) VALUES ('$tipotipo')";
                 break;
             case 'RAM':
-                if (!$gb || (!is_numeric($precio) || $precio < 0 || $precio > 999.99)) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 999.99.";
+                if (!$gb || (!is_numeric($precio) || $precio < 0 || $precio > 99.99)) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99 .";
                     return false;
                 }else{
                     if ($tipo == '') {
-                        $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipotipo' AND GB = $gb";
+                        $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipotipo' AND GBRam = $gb";
                         $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipotipo', $gb, $precio)";
                     } else {
                         $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
@@ -51,8 +51,8 @@ class Componentes {
                 }
                 break;
             case 'DISC_DUR':
-                if (!$gb || (!is_numeric($precio) || $precio < 0 || $precio > 999.99)) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 999.99.";
+                if (!$gb || (!is_numeric($precio) || $precio <= 0 || $precio > 99.99)) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus, GB FROM DISC_DUR WHERE tipus = '$tipo' AND GB = $gb";
@@ -99,12 +99,12 @@ class Componentes {
                 $query = "DELETE FROM SIST_GESTIO_BD WHERE tipus='$tipo'";
                 break;
             case 'RAM':
-                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam=$gb";
-                $query = "DELETE FROM RAM WHERE tipus='$tipo'";
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam='$gb'";
+                $query = "DELETE FROM RAM WHERE tipus='$tipo' AND GB=$gb";
                 break;
             case 'Disco Duro':
-                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD=$gb";
-                $query = "DELETE FROM DISC_DUR WHERE tipus='$tipo'";
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD='$gb'";
+                $query = "DELETE FROM DISC_DUR WHERE tipus='$tipo' AND GBDD='$gb' ";
                 break;
         }
         
@@ -134,23 +134,23 @@ class Componentes {
                 break;
             case 'CDN':
                 $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusCDN='$tipo'";
-                $query = "UPDATE CDN SET preu='$precio' WHERE tipus='$tipo'";
+                $query = "UPDATE CDN SET preu='$precioCambiar' WHERE tipus='$tipo'";
                 break;
             case 'Certificado SSL':
                 $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusCDN='$tipo'";
-                $query = "UPDATE C_SSL SET preu='$precio' WHERE tipus='$tipo'";
+                $query = "UPDATE C_SSL SET preu='$precioCambiar' WHERE tipus='$tipo'";
                 break;
             case 'Sistema de Gestion de Base de Datos':
                 $_SESSION["error_msg"] = "No se puede actualizar el precio.";
                 return false;
                 break;
             case 'RAM':
-                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam=$gb";
-                $query = "UPDATE RAM SET preu='$precio' WHERE tipus='$tipo'";
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusRAM='$tipo' AND GBRam='$gb'";
+                $query = "UPDATE RAM SET preu='$precioCambiar' WHERE tipus='$tipo' AND GB='$gb'";
                 break;
             case 'Disco Duro':
-                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD=$gb";
-                $query = "UPDATE DISC_DUR SET preu='$precio' WHERE tipus='$tipo'";
+                $querySaaS = "SELECT idConfig FROM SAAS WHERE tipusDD='$tipo' AND GBDD='$gb'";
+                $query = "UPDATE DISC_DUR SET preu='$precioCambiar' WHERE tipus='$tipo' AND GBDD='$gb'";
                 break;
         }
         // Verificar si el componente está en uso
@@ -165,7 +165,7 @@ class Componentes {
                 return false;
             }
         }
-        $_SESSION["success_msg"] = "Componente eliminado.";
+        $_SESSION["success_msg"] = "Componente editado.";
         return true;
     }
 }
