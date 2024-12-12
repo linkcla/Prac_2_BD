@@ -137,6 +137,10 @@ $permisos = $_SESSION['permisos'];
                 if (in_array('Crear', $permisos)) {
                     echo '<a href="comprarProductesform.php" class="btn btn-primary">Contratar producte</a>';
                 }
+                // Si te tots els permisos significa que es administrador i pot gestionar els usuaris i grups de l'organització
+                if (in_array('Editar', $permisos) && in_array('Borrar', $permisos) && in_array('Crear', $permisos) && in_array('Visualizar', $permisos)) {
+                    echo '<a href="gestUsForm.php" class="btn btn-primary">Gestionar usuaris</a>';
+                }
             ?>
         </div>
     </section>
