@@ -41,14 +41,12 @@ class Componentes {
                 if (!$gb || (!is_numeric($precio) || $precio < 0 || $precio > 99.99)) {
                     $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99 .";
                     return false;
-                }else{
-                    if ($tipo == '') {
-                        $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipotipo' AND GBRam = $gb";
-                        $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipotipo', $gb, $precio)";
-                    } else {
-                        $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
-                        $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
-                    }
+                }else if ($tipo == '') {
+                    $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipotipo' AND GB = $gb";
+                    $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipotipo', $gb, $precio)";
+                } else {
+                    $existsQuery = "SELECT tipus, GB FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
+                    $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
                 }
                 break;
             case 'DISC_DUR':
@@ -69,7 +67,7 @@ class Componentes {
         } else {
             // Insertar el nuevo componente en la base de datos 
             if (mysqli_query($conn, $query)) {
-                $_SESSION["success_msg"] = "Componente añadido.";
+                //$_SESSION["success_msg"] = "Componente añadido.";
                 return true;   
             } else {
                 $_SESSION["error_msg"] = "Error al añadir el componente.";
