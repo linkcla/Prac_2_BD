@@ -3,7 +3,30 @@
 <?php
 session_start();
 include "conexion.php";
+include "PaaSFuncionalidades.php";
 $conn = Conexion::getConnection();
+$paasFuncionalidades = new PaaSFuncionalidades($conn);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $idConfig = $_POST['idConfig'];
+    $iPv4 = $_POST['iPv4'];
+    $iPv6 = $_POST['iPv6'];
+    $nomSO = $_POST['nomSO'];
+    $tipusRAM = $_POST['tipusRAM'];
+    $GBRam = $_POST['GBRam'];
+    $tipusDD = $_POST['tipusDD'];
+    $GBDD = $_POST['GBDD'];
+    $modelCPU = $_POST['modelCPU'];
+    $nNuclis = $_POST['nNuclis'];
+
+    if ($paasFuncionalidades->updatePaaS($idConfig, $iPv4, $iPv6, $nomSO, $tipusRAM, $GBRam, $tipusDD, $GBDD, $modelCPU, $nNuclis)) {
+        header("Location: servicesPaaSPersonalInicioEditform.php");
+        exit();
+    } else {
+        header("Location: servicesPaaSPersonalEditform.php?idConfig=$idConfig");
+        exit();
+    }
+}
 
 if (isset($_GET['idConfig'])) {
     $idConfig = $_GET['idConfig'];
@@ -12,42 +35,37 @@ if (isset($_GET['idConfig'])) {
     $paas = mysqli_fetch_assoc($result);
 
     // Obtener opciones de RAM
-    $ramQuery = "SELECT DISTINCT tipus FROM RAM";
+    $ramQuery = "SELECT tipus, GB FROM RAM";
     $ramResult = mysqli_query($conn, $ramQuery);
-
-    // Obtener opciones de cantidad de RAM
-    $ramGBQuery = "SELECT tipus, GB FROM RAM";
-    $ramGBResult = mysqli_query($conn, $ramGBQuery);
+    $ramOptions = [];
+    while ($rowRAM = mysqli_fetch_assoc($ramResult)) {
+        $ramOptions[$rowRAM['tipus']][] = $rowRAM['GB'];
+    }
 
     // Obtener opciones de Disco Duro
-    $ddQuery = "SELECT DISTINCT tipus FROM DISC_DUR";
+    $ddQuery = "SELECT tipus, GB FROM DISC_DUR";
     $ddResult = mysqli_query($conn, $ddQuery);
-
-    // Obtener opciones de cantidad de Disco Duro
-    $ddGBQuery = "SELECT tipus, GB FROM DISC_DUR";
-    $ddGBResult = mysqli_query($conn, $ddGBQuery);
+    $ddOptions = [];
+    while ($rowDD = mysqli_fetch_assoc($ddResult)) {
+        $ddOptions[$rowDD['tipus']][] = $rowDD['GB'];
+    }
 
     // Obtener opciones de CPU
-    $cpuQuery = "SELECT DISTINCT model FROM CPU";
+    $cpuQuery = "SELECT model, nNuclis FROM CPU";
     $cpuResult = mysqli_query($conn, $cpuQuery);
-
-    // Obtener opciones de cantidad de CPU
-    $cpuNucliQuery = "SELECT model, nNuclis FROM CPU";
-    $cpuNucliResult = mysqli_query($conn, $cpuNucliQuery);
+    $cpuOptions = [];
+    while ($rowCPU = mysqli_fetch_assoc($cpuResult)) {
+        $cpuOptions[$rowCPU['model']][] = $rowCPU['nNuclis'];
+    }
 
     // Obtener opciones de Sistema Operativo
-    $soQuery = "SELECT * FROM SO";
+    $soQuery = "SELECT DISTINCT nom FROM SO";
     $soResult = mysqli_query($conn, $soQuery);
 } else {
     $_SESSION["warning_msg"] = "No se ha seleccionado ningún PaaS para editar.";
     header("Location: servicesPaaSPersonalInicioEditform.php");
     exit();
 }
-
-// Filtrar opciones según el tipo seleccionado
-$selectedTipusRAM = isset($_POST['tipusRAM']) ? $_POST['tipusRAM'] : $paas['tipusRAM'];
-$selectedTipusDD = isset($_POST['tipusDD']) ? $_POST['tipusDD'] : $paas['tipusDD'];
-$selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['modelCPU'];
 ?>
 
 <html>
@@ -165,10 +183,10 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                 </div>
                 <div class="form-group">
                     <label for="tipusRAM">Tipo de RAM</label>
-                    <select class="form-control" id="tipusRAM" name="tipusRAM" onchange="this.form.submit()">
-                        <?php while ($rowRAM = mysqli_fetch_assoc($ramResult)) { ?>
-                            <option value="<?php echo $rowRAM['tipus']; ?>" <?php if ($rowRAM['tipus'] == $selectedTipusRAM) echo 'selected'; ?>>
-                                <?php echo $rowRAM['tipus']; ?>
+                    <select class="form-control" id="tipusRAM" name="tipusRAM" onchange="updateGBRamOptions()">
+                        <?php foreach (array_keys($ramOptions) as $tipus) { ?>
+                            <option value="<?php echo $tipus; ?>" <?php if ($tipus == $paas['tipusRAM']) echo 'selected'; ?>>
+                                <?php echo $tipus; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -176,23 +194,15 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                 <div class="form-group">
                     <label for="GBRam">Cantidad de RAM (GB)</label>
                     <select class="form-control" id="GBRam" name="GBRam">
-                        <?php 
-                        mysqli_data_seek($ramGBResult, 0);
-                        while ($rowRAMGB = mysqli_fetch_assoc($ramGBResult)) { 
-                            if ($rowRAMGB['tipus'] == $selectedTipusRAM) {
-                                $selected = ($rowRAMGB['GB'] == $paas['GBRam']) ? 'selected' : '';
-                                echo "<option value='{$rowRAMGB['GB']}' $selected>{$rowRAMGB['GB']}</option>";
-                            }
-                        }
-                        ?>
+                        <!-- Las opciones se actualizarán dinámicamente con JavaScript -->
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="tipusDD">Tipo de Disco Duro</label>
-                    <select class="form-control" id="tipusDD" name="tipusDD" onchange="this.form.submit()">
-                        <?php while ($rowDD = mysqli_fetch_assoc($ddResult)) { ?>
-                            <option value="<?php echo $rowDD['tipus']; ?>" <?php if ($rowDD['tipus'] == $selectedTipusDD) echo 'selected'; ?>>
-                                <?php echo $rowDD['tipus']; ?>
+                    <select class="form-control" id="tipusDD" name="tipusDD" onchange="updateGBDDOptions()">
+                        <?php foreach (array_keys($ddOptions) as $tipus) { ?>
+                            <option value="<?php echo $tipus; ?>" <?php if ($tipus == $paas['tipusDD']) echo 'selected'; ?>>
+                                <?php echo $tipus; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -200,23 +210,15 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                 <div class="form-group">
                     <label for="GBDD">Cantidad de Disco Duro (GB)</label>
                     <select class="form-control" id="GBDD" name="GBDD">
-                        <?php 
-                        mysqli_data_seek($ddGBResult, 0);
-                        while ($rowDDGB = mysqli_fetch_assoc($ddGBResult)) { 
-                            if ($rowDDGB['tipus'] == $selectedTipusDD) {
-                                $selected = ($rowDDGB['GB'] == $paas['GBDD']) ? 'selected' : '';
-                                echo "<option value='{$rowDDGB['GB']}' $selected>{$rowDDGB['GB']}</option>";
-                            }
-                        }
-                        ?>
+                        <!-- Las opciones se actualizarán dinámicamente con JavaScript -->
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="modelCPU">Modelo de CPU</label>
-                    <select class="form-control" id="modelCPU" name="modelCPU" onchange="this.form.submit()">
-                        <?php while ($rowCPU = mysqli_fetch_assoc($cpuResult)) { ?>
-                            <option value="<?php echo $rowCPU['model']; ?>" <?php if ($rowCPU['model'] == $selectedModelCPU) echo 'selected'; ?>>
-                                <?php echo $rowCPU['model']; ?>
+                    <select class="form-control" id="modelCPU" name="modelCPU" onchange="updateNuclisOptions()">
+                        <?php foreach (array_keys($cpuOptions) as $model) { ?>
+                            <option value="<?php echo $model; ?>" <?php if ($model == $paas['modelCPU']) echo 'selected'; ?>>
+                                <?php echo $model; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -224,18 +226,10 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
                 <div class="form-group">
                     <label for="nNuclis">Número de Núcleos</label>
                     <select class="form-control" id="nNuclis" name="nNuclis">
-                        <?php 
-                        mysqli_data_seek($cpuNucliResult, 0);
-                        while ($rowNucliCPU = mysqli_fetch_assoc($cpuNucliResult)) { 
-                            if ($rowNucliCPU['model'] == $selectedModelCPU) {
-                                $selected = ($rowNucliCPU['nNuclis'] == $paas['nNuclis']) ? 'selected' : '';
-                                echo "<option value='{$rowNucliCPU['nNuclis']}' $selected>{$rowNucliCPU['nNuclis']}</option>";
-                            }
-                        }
-                        ?>
+                        <!-- Las opciones se actualizarán dinámicamente con JavaScript -->
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary custom-btn" formaction="servicesPaaSPersonalEditBD.php">Guardar Cambios</button>
+                <button type="submit" class="btn btn-primary custom-btn">Guardar Cambios</button>
             </form>
         </div>
     </section>
@@ -251,8 +245,57 @@ $selectedModelCPU = isset($_POST['modelCPU']) ? $_POST['modelCPU'] : $paas['mode
     </section>
     <!-- footer section -->
 
-    <!--script type="text/javascript" src="js/jquery-3.4.1.min.js"></script-->
-    <!--script type="text/javascript" src="js/bootstrap.js"></script-->
+    <script>
+        const ramOptions = <?php echo json_encode($ramOptions); ?>;
+        const ddOptions = <?php echo json_encode($ddOptions); ?>;
+        const cpuOptions = <?php echo json_encode($cpuOptions); ?>;
+
+        function updateGBRamOptions() {
+            const tipusRAM = document.getElementById('tipusRAM').value;
+            const gbramSelect = document.getElementById('GBRam');
+            gbramSelect.innerHTML = '';
+
+            ramOptions[tipusRAM].forEach(gb => {
+                const opt = document.createElement('option');
+                opt.value = gb;
+                opt.innerHTML = gb;
+                gbramSelect.appendChild(opt);
+            });
+        }
+
+        function updateGBDDOptions() {
+            const tipusDD = document.getElementById('tipusDD').value;
+            const gbddSelect = document.getElementById('GBDD');
+            gbddSelect.innerHTML = '';
+
+            ddOptions[tipusDD].forEach(gb => {
+                const opt = document.createElement('option');
+                opt.value = gb;
+                opt.innerHTML = gb;
+                gbddSelect.appendChild(opt);
+            });
+        }
+
+        function updateNuclisOptions() {
+            const modelCPU = document.getElementById('modelCPU').value;
+            const nuclisSelect = document.getElementById('nNuclis');
+            nuclisSelect.innerHTML = '';
+
+            cpuOptions[modelCPU].forEach(nucli => {
+                const opt = document.createElement('option');
+                opt.value = nucli;
+                opt.innerHTML = nucli;
+                nuclisSelect.appendChild(opt);
+            });
+        }
+
+        // Inicializar las opciones al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateGBRamOptions();
+            updateGBDDOptions();
+            updateNuclisOptions();
+        });
+    </script>
 </body>
 
 </html>

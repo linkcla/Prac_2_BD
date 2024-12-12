@@ -285,6 +285,43 @@ class PaaSFuncionalidades {
         }
     }
 
+    //---------------------------------------------FUNCIONES DE EDIT_PAAS-----------------------------------------
+    public function updatePaaS($idConfig, $iPv4, $iPv6, $nomSO, $tipusRAM, $GBRam, $tipusDD, $GBDD, $modelCPU, $nNuclis) {
+        // Validar que solo uno de los campos de dirección IP esté lleno
+        if (!empty($iPv4) && !empty($iPv6)) {
+            $_SESSION["error_msg"] = "Solo se puede tener una dirección IPv4 o IPv6, no ambas.";
+            return false;
+        }
+        // Validar que las direcciones IP solo contengan números y el carácter '.'
+        if (!empty($iPv4) && !preg_match('/^[0-9.]+$/', $iPv4)) {
+            $_SESSION["error_msg"] = "La dirección IPv4 solo puede contener números y el carácter ' . '";
+            return false;
+        }
+        if (!empty($iPv6) && !preg_match('/^[0-9.]+$/', $iPv6)) {
+            $_SESSION["error_msg"] = "La dirección IPv6 solo puede contener números y el carácter ' . '";
+            return false;
+        }
+
+        // Verificar que la combinación de tipusRAM y GBRam existe en la tabla RAM
+        $ramCheckQuery = "SELECT * FROM RAM WHERE tipus='$tipusRAM' AND GB='$GBRam'";
+        $ramCheckResult = mysqli_query($this->conn, $ramCheckQuery);
+
+        if (mysqli_num_rows($ramCheckResult) == 0) {
+            $_SESSION["error_msg"] = "La combinación de tipo de RAM y cantidad de RAM no es válida.";
+            return false;
+        }
+
+        // Actualizamos los atributos del PaaS en la base de datos
+        $updateQuery = "UPDATE PAAS SET iPv4='$iPv4', iPv6='$iPv6', nomSO='$nomSO', tipusRAM='$tipusRAM', GBRam='$GBRam', tipusDD='$tipusDD', GBDD='$GBDD', modelCPU='$modelCPU', nNuclis='$nNuclis' WHERE idConfig='$idConfig'";
+        if (mysqli_query($this->conn, $updateQuery)) {
+            $_SESSION["success_msg"] = "PaaS actualizado correctamente.";
+            return true;
+        } else {
+            $_SESSION["error_msg"] = "Error al actualizar PaaS: " . mysqli_error($this->conn);
+            return false;
+        }
+    }
+
     //-----------------------------------------FUNCIONES DE EDIT_STOCK_COMPONENTES--------------------------------
     public function getComponentesByTipo($tipo) {
         $componentes = [];
