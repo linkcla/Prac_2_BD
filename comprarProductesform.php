@@ -5,35 +5,6 @@
 include "conexion.php";
 $conn = Conexion::getConnection();  
 
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['email'])) {
-    header("Location: loginform.php");
-    exit();
-}
-
-$email = $_SESSION['email'];
-
-// Obtener el nombre de la organización del usuario y sus privilegios
-$sql = "SELECT p.nom, p.cognom, u.nomOrg, pdg.tipusPriv FROM USUARI u
-        JOIN PERSONA p ON u.email = p.email
-        JOIN PRIV_DE_GRUP pdg ON u.grup = pdg.nomG
-        WHERE u.email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $adminName = $row['nom'] . " " . $row['cognom'] . " - ";
-    $nomOrg = $row['nomOrg'];
-    $privilegios = $row['tipusPriv'];
-} else {
-    $adminName = "";
-    $nomOrg = "Sin organización";
-    $privilegios = "";
-}
-
 // Obtener los datos de las tablas correspondientes
 $tipusMCMS = array_unique($conn->query("SELECT DISTINCT tipus FROM MODUL_CMS")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
 $tipusCDN = array_unique($conn->query("SELECT DISTINCT tipus, preu FROM CDN")->fetch_all(MYSQLI_ASSOC), SORT_REGULAR);
@@ -71,7 +42,6 @@ $gbDD = uniqueOptions($gbDD, 'GB');
 $modelCPU = uniqueOptions($modelCPU, 'model');
 $nNuclis = uniqueOptions($nNuclis, 'nNuclis');
 $nomSO = uniqueOptions($nomSO, 'nom');
-
 ?>
 
 <html>
@@ -103,6 +73,24 @@ $nomSO = uniqueOptions($nomSO, 'nom');
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="css/responsive.css" rel="stylesheet" />
+    <style>
+        .table-large {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table-large th, .table-large td {
+            padding: 10px; /* Aumenta el tamaño de las celdas */
+            font-size: 14px; /* Ajusta el tamaño del texto */
+            word-wrap: break-word;
+            min-width: 300px; /* Ajusta el ancho mínimo de las celdas */
+        }
+        .select-large {
+            width: 100%; /* Ajusta el ancho del select */
+            height: 40px; /* Ajusta la altura del select */
+            font-size: 14px; /* Ajusta el tamaño del texto */
+        }
+    </style>
 </head>
 
 <body>
@@ -168,7 +156,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
     <h1>Productos SaaS</h1>
     <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormSaaS" onsubmit="return validateForm('productFormSaaS')">
     <input type="hidden" name="accio" value="comprarSaaS">
-    <table class="table table-bordered table-large-sa">
+    <table class="table table-bordered table-large">
         <thead>
             <tr>
                 <th>Tipus MCMS</th>
@@ -187,7 +175,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
         <tbody>
             <tr>
                 <td>
-                    <select name="tipusMCMS" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="tipusMCMS" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusMCMS as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>" data-precio="0"><?php echo ($item['tipus']); ?></option>
@@ -195,7 +183,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="tipusCDN" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="tipusCDN" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusCDN as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['tipus']); ?></option>
@@ -203,7 +191,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="tipusSSL" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="tipusSSL" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusSSL as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['tipus']); ?></option>
@@ -211,7 +199,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="tipusSGBD" class="form-control">
+                    <select name="tipusSGBD" class="form-control select-large">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusSGBD as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>"><?php echo ($item['tipus']); ?></option>
@@ -219,7 +207,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="tipusRAM" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="tipusRAM" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusRAM as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['tipus']); ?></option>
@@ -227,7 +215,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="gbRAM" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="gbRAM" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($gbRAM as $item): ?>
                             <option value="<?php echo ($item['GB']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['GB']); ?></option>
@@ -235,7 +223,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <select name="tipusDD" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                    <select name="tipusDD" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($tipusDD as $item): ?>
                             <option value="<?php echo ($item['tipus']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['tipus']); ?></option>
@@ -243,7 +231,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                     <select name="gbDD" class="form-control" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
+                     <select name="gbDD" class="form-control select-large" onchange="calculatePriceSaaS()" onclick="showOptions(this)">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <?php foreach ($gbDD as $item): ?>
                             <option value="<?php echo ($item['GB']); ?>" data-precio="<?php echo ($item['preu']); ?>"><?php echo ($item['GB']); ?></option>
@@ -251,7 +239,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="domini" class="form-control" placeholder="Ej: hola.com">
+                    <input type="text" name="domini" class="form-control select-large" placeholder="Ej: hola.com">
                 </td>
                 <td>
                     <select name="mesos" class="form-control" onchange="calculatePriceSaaS()">
@@ -262,7 +250,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="precio" class="form-control" id="precioTotalSaaS" readonly>
+                    <input type="text" name="precio" class="form-control select-large" id="precioTotalSaaS" readonly>
                 </td>
             </tr>           
         </tbody>
@@ -276,7 +264,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
     <h1>Productos PaaS</h1>
     <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormPaaS" onsubmit="return validateForm('productFormPaaS')">
     <input type="hidden" name="accio" value="comprarPaaS">
-    <table class="table table-bordered table-large-sa">
+    <table class="table table-bordered table-large">
         <thead>
             <tr>
                 <th>IP</th>

@@ -1,8 +1,16 @@
-<!-- @Author: Marc -->
+<!-- @Author: Hai Zi Bibiloni Trobat -->
 
 <?php session_start();
 include "conexion.php";
 $conn = Conexion::getConnection();
+
+// Consulta SQL per obtenir les dades de la taula HISTORIAL
+$sql_historial = "SELECT dia, canvis_realitzats, numero_canvis FROM HISTORIAL";
+$result_historial = $conn->query($sql_historial);
+
+// Consulta SQL per obtenir les dades de la tuala AUDITORIA
+$sql_auditoria = "SELECT dia_hora_minut, taula, operacio, dades_anteriors, dades_noves FROM AUDITORIA";
+$result_auditoria = $conn->query($sql_auditoria);
 ?>
 
 <html>
@@ -34,17 +42,6 @@ $conn = Conexion::getConnection();
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="css/responsive.css" rel="stylesheet" />
-    <style>
-        .table th.id-column, .table td.id-column {
-            width: 10%;
-        }
-        .table th.name-column, .table td.name-column {
-            width: 15%;
-        }
-        .table th.description-column, .table td.description-column {
-            width: 40%;
-        }
-    </style>
 </head>
 
 <body>
@@ -85,8 +82,74 @@ $conn = Conexion::getConnection();
     <section class="about_section layout_paddingAbout" style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Benvingut, <?php echo $_SESSION['nom']; ?>
-            </h2>            
+                Benvingut, <?php echo $_SESSION['nom']; ?> 
+            </h2>         
+            <br>   
+            <button type="button" class="btn btn-primary" onclick="showTable('historial')">Historial</button>
+            <button type="button" class="btn btn-primary" onclick="showTable('auditoria')">Auditoria</button>
+            
+            <div id="historialTable" style="display:none;">
+                <br>
+                <h3>Historial</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Dia</th>
+                            <th>Canvis realitzats</th>
+                            <th>Nº canvis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        if ($result_historial->num_rows > 0) {
+                            while($row = $result_historial->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . $row["dia"] . "</td>";
+                                echo "<td>" . nl2br($row["canvis_realitzats"]) . "</td>";
+                                echo "<td>" . $row["numero_canvis"] . "</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='3'>No hi ha dades disponibles</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="auditoriaTable" style="display:none;">
+                <br>
+                <h3>Auditoria</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Taula</th>
+                            <th>Operacio</th>
+                            <th>Dades anteriors</th>
+                            <th>Dades noves</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        if ($result_auditoria->num_rows > 0) {
+                            while($row = $result_auditoria->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . $row["dia_hora_minut"] . "</td>";
+                                echo "<td>" . $row["taula"] . "</td>";
+                                echo "<td>" . $row["operacio"] . "</td>";
+                                echo "<td>" . $row["dades_anteriors"] . "</td>";
+                                echo "<td>" . $row["dades_noves"] . "</td>";
+                                echo "<td>" . $row["dia_hora_minut"] . "</td>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='5'>No hi ha dades disponibles</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
@@ -105,92 +168,13 @@ $conn = Conexion::getConnection();
                 .querySelector(".custom_menu-btn")
                 .classList.toggle("menu_btn-style");
         }
+
+        function showTable(tableId) {
+            document.getElementById('historialTable').style.display = 'none';
+            document.getElementById('auditoriaTable').style.display = 'none';
+            document.getElementById(tableId + 'Table').style.display = 'block';
+        }
     </script>
 </body>
 
 </html>
-
-<?php
-    function getDescripcio($idConfig) {
-        
-        $query = "SELECT idConfig FROM paas WHERE idConfig = '{$idConfig}'";
-        $result = mysqli_query(Conexion::getConnection(), $query);
-
-        if (!$result) {
-            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
-            header('Location: error.php');
-            exit();
-        }
-        
-        // Miram si es un PaaS o un SaaS. Si es un PaaS la condició serà falsa.
-        if (mysqli_num_rows($result) == 0) {
-            return getSaaSDescripcio($idConfig);
-        }
-        return getPaaSDescripcio($idConfig);
-    }
-
-    function getSaaSDescripcio($idConfig) {
-        $query = "SELECT * FROM saas WHERE idConfig = '$idConfig'";
-        $result = mysqli_query(Conexion::getConnection(), $query);
-
-        if (!$result) {
-            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
-            header('Location: error.php');
-            exit();
-        }
-        $descripcioSaaS = "SaaS: ";
-        // Només hi haurà una fila ja que l'idConfig és clau primària.
-        // Concatenam tota la informació per poder mostrar-la en una sola fila.
-        while ($row = mysqli_fetch_assoc($result)) {
-            $descripcioSaaS .= "Domini: " . $row['domini'] . " | ";
-            $descripcioSaaS .= "Data Creacio: " . $row['dataCreacio'] . " | ";
-            $descripcioSaaS .= "MCMS: " . $row['tipusMCMS'] . " | ";
-            $descripcioSaaS .= "CDN: " . $row['tipusCDN'] . " | ";
-            $descripcioSaaS .= "SSL: " . $row['tipusSSL'] . " | ";
-            $descripcioSaaS .= "SGBD: " . $row['tipusSGBD'] . " | ";
-            $descripcioSaaS .= "RAM: " . $row['tipusRam'] . " | ";
-            $descripcioSaaS .= "GB RAM: " . $row['GBRam'] . " | ";
-            $descripcioSaaS .= "Disc dur: " . $row['tipusDD'] . " | ";
-            $descripcioSaaS .= "GB disc dur: " . $row['GBDD'];
-        }
-        return $descripcioSaaS;
-
-    }
-
-    function getPaaSDescripcio($idConfig) {
-        $query = "SELECT * FROM paas WHERE idConfig = '$idConfig'";
-        $result = mysqli_query(Conexion::getConnection(), $query);
-
-        if (!$result) {
-            $_SESSION['error_msg'] = "Error al consultar la base de dades la descripció.";
-            header('Location: error.php');
-            exit();
-        }
-
-        $descripcioPaas = "PaaS: ";
-        // Només hi haurà una fila ja que l'idConfig és clau primària.
-        // Concatenam tota la informació per poder mostrar-la en una sola fila.
-        while ($row = mysqli_fetch_assoc($result)) {
-            $descripcioPaas .= "idConfig: " . $row['idConfig'] . " | ";
-            if ($row['iPv4'] != null) {
-            $descripcioPaas .= "iPv4: " . $row['iPv4'] . " | ";
-            } else {
-            $descripcioPaas .= "iPv6: " . $row['iPv6'] . " | ";
-            }
-            $descripcioPaas .= "tipusRAM: " . $row['tipusRAM'] . " | ";
-            $descripcioPaas .= "GBRam: " . $row['GBRam'] . " | ";
-            $descripcioPaas .= "tipusDD: " . $row['tipusDD'] . " | ";
-            $descripcioPaas .= "GBDD: " . $row['GBDD'] . " | ";
-            $descripcioPaas .= "modelCPU: " . $row['modelCPU'] . " | ";
-            $descripcioPaas .= "nNuclis: " . $row['nNuclis'] . " | ";
-            $descripcioPaas .= "nomSO: " . $row['nomSO'];
-        }
-        return $descripcioPaas;
-    }
-
-    function calcularDataFinal($dataInici, $mesos) {
-        $data = new DateTime($dataInici);
-        $data->modify("+$mesos months");
-        return $data->format('Y-m-d');
-    }
-?>
