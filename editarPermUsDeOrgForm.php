@@ -98,9 +98,6 @@ $email = $_POST['selectedRow'];
                 </div>
             </form>
         </div>
-    </section>
-
-    <section>
         <div class="container">
             <form id="formulari" action="editarOrg.php" method="post">
                 <?php

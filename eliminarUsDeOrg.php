@@ -1,6 +1,6 @@
 <!-- Author: Marc -->
 <!-- 
-    Aqui poden accedir el Personal i l'usuari que tengui pertanyi al grup d'administrador en la seva organització.
+    Aqui poden accedir el Personal i l'usuari que tengui tots els permisos (considerat com un Admin).
     Descripció: Aquest fitxer s'encarrega d'eliminar un usuari d'una organització.
     Un cop eliminat, s'eliminen els el grup al que pertanyia en aquella organització.
 -->

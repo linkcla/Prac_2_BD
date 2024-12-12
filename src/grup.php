@@ -1,3 +1,4 @@
+<!-- @Author: Marc -->
 <?php
 require_once 'conexio.php';
 

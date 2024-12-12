@@ -1,4 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
+<!-- @Author: Marc -->
 
 <?php session_start() ;
 require_once "conexion.php";
