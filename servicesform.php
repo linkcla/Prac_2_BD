@@ -205,6 +205,25 @@ if ($_SESSION['esUsuari']) {
               </div>';
             }
           ?>
+          <?php
+            if (!$_SESSION['esUsuari']) {
+              echo '<div class="about_card">
+                <div class="about-detail">
+                  <div class="about_img-container">
+                    <div class="about_img-box">
+                      <a href="mostrarHistorialform.php"><img src="images/f3.png" alt="" /></a>
+                    </div>
+                  </div>
+                  <div class="card_detail-ox">
+                    <h4>
+                      <a href="mostrarHistorialform.php">Historial</a>
+                    </h4>
+                    
+                  </div>
+                </div>
+              </div>';
+            }
+          ?>
         </div>
       </div>
     </section>

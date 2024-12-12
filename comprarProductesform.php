@@ -147,27 +147,28 @@ $nomSO = uniqueOptions($nomSO, 'nom');
             <h2 class="text-uppercase">
                 Productes
             </h2>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='iniciUsuariform.php'">Tornar enrera</button>            
             <?php
-        if (isset($_SESSION['success_msg'])) {
-            echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
-            unset($_SESSION['success_msg']);
-        }
-        if (isset($_SESSION['error_msg'])) {
-            echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
-            unset($_SESSION['error_msg']);
-        }
-        if (isset($_SESSION['info_msg'])) {
-            echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
-            unset($_SESSION['info_msg']);
-        }
-        ?>
+            if (isset($_SESSION['success_msg'])) {
+                echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+                unset($_SESSION['success_msg']);
+            }
+            if (isset($_SESSION['error_msg'])) {
+                echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+                unset($_SESSION['error_msg']);
+            }
+            if (isset($_SESSION['info_msg'])) {
+                echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
+                unset($_SESSION['info_msg']);
+            }
+            ?>
 
         <!-- Tabla de productos SaaS -->
 <div class="mt-4">
     <h1>Productos SaaS</h1>
     <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormSaaS" onsubmit="return validateForm('productFormSaaS')">
     <input type="hidden" name="accio" value="comprarSaaS">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-large-sa">
         <thead>
             <tr>
                 <th>Tipus MCMS</th>
@@ -275,7 +276,7 @@ $nomSO = uniqueOptions($nomSO, 'nom');
     <h1>Productos PaaS</h1>
     <form action="./src/vista/comprarProductesVista.php" method="POST" id="productFormPaaS" onsubmit="return validateForm('productFormPaaS')">
     <input type="hidden" name="accio" value="comprarPaaS">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-large-sa">
         <thead>
             <tr>
                 <th>IP</th>

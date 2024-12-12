@@ -84,10 +84,10 @@ if (mysqli_num_rows($result) > 0) {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesPaaSform.php">PaaS</a>
+                                <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>   
                             <div class="overlay-content">
                                 <a href="servicesUsuariform.php">Usuari</a>
