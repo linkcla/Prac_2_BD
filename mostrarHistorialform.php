@@ -70,6 +70,18 @@ $result_auditoria = $conn->query($sql_auditoria);
                             <div class="overlay-content">
                                 <a href="loginform.php">Home</a>
                             </div>
+                            <div class="overlay-content">
+                                <a href="servicesPersonalform.php">Usuari</a>
+                            </div>
+                            <div class="overlay-content">
+                                <a href="servicesform.php">Services</a>
+                            </div>
+                            <div class="overlay-content">
+                                <a href="servicesSaaSViewform.php">SaaS</a>
+                            </div>
+                            <div class="overlay-content">
+                                <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
+                            </div>
                         </div>
                     </div>
                 </nav>

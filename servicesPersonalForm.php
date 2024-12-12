@@ -91,7 +91,10 @@ if (mysqli_num_rows($result) > 0) {
                             </div>   
                             <div class="overlay-content">
                                 <a href="servicesUsuariform.php">Usuari</a>
-                            </div>                      
+                            </div> 
+                            <div class="overlay-content">
+                                <a href="mostrarHistorialform.php">Historial</a>
+                            </div>                     
                         </div>
                     </div>
                 </nav>
