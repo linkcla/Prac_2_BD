@@ -2,46 +2,30 @@
 
 <?php 
 session_start();
-include "conexion.php";
-include "PaaSFuncionalidades.php";
+include "src/conexio.php";
+include "src/test.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['crear_test'])) {
         $nombreTest = $_POST['nombre_test'];
         $descripcionTest = $_POST['descripcion_test'];
         $idConfigProducte = $_POST['idConfigProducte'];
-        $emailP = $_SESSION['email']; 
+        $emailP = $_SESSION['email'];
 
-        $resultado = $paasFuncionalidades->createTest($nombreTest, $descripcionTest, $idConfigProducte, $emailP);
+        $resultado = Test::createTestPaaS($nombreTest, $descripcionTest, $idConfigProducte, $emailP);
 
-        if ($resultado) {
-            $_SESSION['success_msg'] = "Test creado exitosamente.";
-        } else {
-            $_SESSION['error_msg'] = "Error al crear el test.";
-        }
     } elseif (isset($_POST['actualizar_estado'])) {
         $nombreTest = $_POST['nombre_test_seleccionado'];
         $nuevoEstado = $_POST['nuevo_estado'];
 
-        $paasFuncionalidades->updateTestStatus($nombreTest, $nuevoEstado);
+        $resultado = Test::updateTestStatusPaaS($nombreTest, $nuevoEstado);
 
-        if (isset($_SESSION['success_msg'])) {
-            $_SESSION['success_msg'] = "Estado del test actualizado exitosamente.";
-        } else {
-            $_SESSION['error_msg'] = "Error al actualizar el estado del test.";
-        }
     } elseif (isset($_POST['eliminar_test'])) {
         $nombreTest = $_POST['nombre_test_seleccionado'];
-        $paasFuncionalidades->deleteTest($nombreTest);
+        $resultado = Test::deleteTestPaaS($nombreTest);
 
-        if (isset($_SESSION['success_msg'])) {
-            $_SESSION['success_msg'] = "Test eliminado exitosamente.";
-        } else {
-            $_SESSION['error_msg'] = "Error al eliminar el test.";
-        }
     }
     header("Location: servicesPaaSPersonalTestform.php");
     exit();
@@ -108,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <a href="servicesform.php">Services</a>
                             </div>
                             <div class="overlay-content">
-                                <a href="servicesSaaSPersonalform.php">SaaS</a>
+                                <a href="servicesSaaSViewform.php">SaaS</a>
                             </div>
                             <div class="overlay-content">
                                 <a href="servicesPaaSPersonalInicioEditform.php">PaaS</a>
                             </div>  
                             <div class="overlay-content">
-                                <a href="gestOrg.php">Gestionar Organitzacións</a>
+                                <a href="gestOrgForm.php">Gestionar Organitzacións</a>
                             </div>                       
                         </div>
                     </div>
@@ -126,10 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- about section -->
 
-    <section class="about_section layout_paddingAbout">
+    <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-                Servicios PaaS - Crear Test
+                Servicios PaaS - Test
             </h2>
             <?php
             if (isset($_SESSION["success_msg"])) {
@@ -226,15 +210,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- end about section -->
 
-
     <!-- footer section -->
     <section class="container-fluid footer_section">
         <p>&copy; 2024 (UIB - EPS). Design by MPHB</p>
     </section>
     <!-- footer section -->
-
-    <!--script type="text/javascript" src="js/jquery-3.4.1.min.js"></script-->
-    <!--script type="text/javascript" src="js/bootstrap.js"></script-->
 
     <script>
         function openNav() {
