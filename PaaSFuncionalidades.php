@@ -11,26 +11,30 @@ class PaaSFuncionalidades {
     }
 
     //-------------------------------------FUNCIONES DE CREATE_NEW_RAM--------------------------------------
-    public function crearNuevaRAM($tipo) {
-        if ($tipo) {
-            // Verificar si el tipo de RAM ya existe
-            $checkQuery = "SELECT * FROM RAM WHERE tipus = '$tipo'";
+    public function crearNuevaRAM($tipo, $gb, $precio) {
+        if ($tipo && $gb && $precio) {
+            // Validar que el precio sea un valor decimal con dos decimales y no negativo
+            if (!preg_match('/^\d+(\.\d{1,2})?$/', $precio) || $precio < 0) {
+                echo "<div class='alert alert-danger' role='alert'>El precio debe ser un número entre 0 y 999.99.</div>";
+                return;
+            }
+
+            // Verificar si el tipo de RAM ya existe con la misma cantidad de GB
+            $checkQuery = "SELECT * FROM RAM WHERE tipus = '$tipo' AND GB = $gb";
             $checkResult = mysqli_query($this->conn, $checkQuery);
             
             if (mysqli_num_rows($checkResult) > 0) {
-                echo "<div class='alert alert-danger' role='alert'>El tipo de RAM ya existe.</div>";
-
+                echo "<div class='alert alert-danger' role='alert'>El tipo de RAM con esa cantidad de GB ya existe.</div>";
             } else {
-                $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', 0, 0)";
+                $query = "INSERT INTO RAM (tipus, GB, preu) VALUES ('$tipo', $gb, $precio)";
                 if (mysqli_query($this->conn, $query)) {
                     echo "<div class='alert alert-success' role='alert'>Nuevo tipo de RAM añadido exitosamente.</div>";
-
                 } else {
                     echo "Error al añadir el nuevo tipo de RAM: " . mysqli_error($this->conn);
                 }
             }
         } else {
-            echo "<div class='alert alert-warning' role='alert'>El campo Tipo de RAM es obligatorio.</div>";
+            echo "<div class='alert alert-warning' role='alert'>Todos los campos son obligatorios.</div>";
         }
     }
 

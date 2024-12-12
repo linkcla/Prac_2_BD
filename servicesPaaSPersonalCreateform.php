@@ -1,6 +1,6 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
 
-<?php session_start() ;
+<?php session_start();
 include "conexion.php";
 include "PaaSFuncionalidades.php";
 
@@ -11,7 +11,9 @@ $resultado = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearRAM'])) {
     $tipo = $_POST['tipo'];
-    $resultado = $paasFuncionalidades->crearNuevaRAM($tipo);
+    $gb = $_POST['gb'];
+    $precio = $_POST['precio'];
+    $resultado = $paasFuncionalidades->crearNuevaRAM($tipo, $gb, $precio);
 }
 ?>
 
@@ -123,6 +125,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearRAM'])) {
             <form method="POST" action="servicesPaaSPersonalCreateform.php">
                 <div class="form-group">
                     <input type="text" class="form-control mx-auto" id="tipo" name="tipo" placeholder="Ej: DDR9" required style="width: 40%;" >
+                </div>
+                <div class="form-group">
+                    <select class="form-control mx-auto" id="gb" name="gb" required style="width: 40%;">
+                        <option value="" disabled selected>Seleccione GB</option>
+                        <option value="4">4 GB</option>
+                        <option value="8">8 GB</option>
+                        <option value="16">16 GB</option>
+                        <option value="32">32 GB</option>
+                        <option value="64">64 GB</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="number" step="0.01" class="form-control mx-auto" id="precio" name="precio" placeholder="Max: 99.99" required style="width: 40%;" >
                 </div>
                 <button type="submit" class="btn btn-primary custom-btn" name="crearRAM">Añadir</button>
             </form>
