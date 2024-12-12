@@ -7,11 +7,6 @@ class SaaS {
     public static function crear($nom, $descripcion, $tipoCMS, $tipoCDN, $tipoSSL, $tipoSGBD, $currentDate, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur, $emailCreador, $selectedRows) {
         $conn = Conexion::getConnection();
         
-        if($emailCreador == null) {
-            $_SESSION["error_msg"] = "Error al intentar crear el producto, no se ha registrado ningun usuario del personalque lo pueda crear.";
-            return false;
-        }
-
         //Crea el producto
         $insert_query_producte = "INSERT INTO PRODUCTE (idConfig, nom, descripcio) VALUES (NULL, '$nom', '$descripcion');";
         
