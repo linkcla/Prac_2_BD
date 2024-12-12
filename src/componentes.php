@@ -3,20 +3,19 @@
 require_once 'conexio.php';
 
 class Componentes {
-    public static function crearComponentesSaas($component, $tipo, $tipotipo, $gb) {
+    public static function crearComponentesSaas($component, $tipo, $tipotipo, $gb, $precio) {
         $conn = Conexion::getConnection();
 
         $query = " ";
         $existsQuery = "";
-
         switch ($component) {
             case 'CMS':
                 $existsQuery = "SELECT tipus FROM MODUL_CMS WHERE tipus = '$tipotipo'";
                 $query = "INSERT INTO MODUL_CMS (tipus) VALUES ('$tipotipo')";
                 break;
             case 'CDN':
-                if (!is_numeric($precio) || $precio < 0 || $precio > 99.99) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
+                if (!is_numeric($precio) || $precio < 0 || $precio > 9.99) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 9.99 .";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus FROM CDN WHERE tipus = '$tipo'";
@@ -24,8 +23,8 @@ class Componentes {
                 }
                 break;
             case 'SSL':
-                if (!is_numeric($precio) || $precio < 0 || $precio > 99.99) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
+                if (!is_numeric($precio) || $precio < 0 || $precio > 9.99) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 9.99.";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus FROM C_SSL WHERE tipus = '$tipo'";
@@ -51,8 +50,8 @@ class Componentes {
                 }
                 break;
             case 'DISC_DUR':
-                if (!$gb || (!is_numeric($precio) || $precio <= 0 || $precio > 99.99)) {
-                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 99.99.";
+                if (!$gb || (!is_numeric($precio) || $precio <= 0 || $precio > 999.99)) {
+                    $_SESSION["error_msg"] = "El precio debe ser un número entre 0 y 999.99.";
                     return false;
                 }else{
                     $existsQuery = "SELECT tipus, GB FROM DISC_DUR WHERE tipus = '$tipo' AND GB = $gb";

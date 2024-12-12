@@ -152,7 +152,7 @@ if (isset($_SESSION['error_msg'])) {
                     </div>
                     <div class="form-group">
                         <label for="precio_cdn">Precio</label>
-                        <input type="text" name="precio" id="precio_cdn" class="form-control" placeholder="Max: 99.99">
+                        <input type="text" name="precio" id="precio_cdn" class="form-control" placeholder="Max: 9.99">
                     </div>
                 </fieldset>
                 <?php endif; ?>
@@ -171,7 +171,7 @@ if (isset($_SESSION['error_msg'])) {
                     </div>
                     <div class="form-group">
                         <label for="precio_ssl">Precio</label>
-                        <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
+                        <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 9.99">
                     </div>
                 </fieldset>
                 <?php endif; ?>
