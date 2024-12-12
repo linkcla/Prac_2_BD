@@ -2,8 +2,8 @@
 
 <?php 
 session_start();
-include "conexion.php";
-include "PaaSFuncionalidades.php"; // Incluir el archivo que contiene la clase PaaSFuncionalidades
+include "src/conexio.php";
+include "src/productoPaaS.php";
 
 $conn = Conexion::getConnection();
 
@@ -55,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si se ha pulsado el botón de crear PaaS
     if (isset($_POST['crear_paas'])) {
-        // Crear una instancia de la clase PaaSFuncionalidades
-        $paasFuncionalidades = new PaaSFuncionalidades($conn);
+        // Crear una instancia de la clase productoPaaS
+        $paas = new PaaS($conn);
 
         // Llamar al método crearPaaS
-        echo $paasFuncionalidades->crearPaaS($conn, $tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur, $modelCpu, $nNuclisCpu, $nomSo, $tipoIpv, $direccionIpv, $nombreProducto, $descripcionProducto);
+        echo $paas->crearPaaS($tipoRam, $gbRam, $tipoDiscDur, $gbDiscDur, $modelCpu, $nNuclisCpu, $nomSo, $tipoIpv, $direccionIpv, $nombreProducto, $descripcionProducto);
     }
 }
 ?>

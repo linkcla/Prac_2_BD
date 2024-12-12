@@ -1,17 +1,17 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
 
 <?php session_start() ;
-include "conexion.php";
-include_once "PaaSFuncionalidades.php"; 
+include "src/conexio.php";
+include "src/productoPaaS.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
+$paas = new PaaS($conn);
 
 // Manejar la solicitud POST para eliminar PaaS
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_paas') {
     $selectedRows = isset($_POST['selectedRows']) ? $_POST['selectedRows'] : null;
-    $paasFuncionalidades->deletePaaS($selectedRows);
-    header("Location: servicesPaaSPersonalDeletePaasform.php"); // Redirigir después de procesar
+    $paas->deletePaaS($selectedRows);
+    header("Location: servicesPaaSPersonalDeletePaasform.php");
     exit();
 }
 ?>

@@ -2,11 +2,10 @@
 
 <?php
 session_start();
-include "conexion.php";
-include_once "PaaSFuncionalidades.php"; 
+include "src/conexio.php";
+include_once "src/componentes.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
     $tipo = $_POST['component'];
@@ -14,8 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
     $gb_componente = $_POST['gb_componente'];
     $precio = $_POST['precio'];
 
-    // Llamar al método updatePrecio() de la clase PaaSFuncionalidades
-    $paasFuncionalidades->updatePrecio($tipo, $nombre, $gb_componente, $precio);
+    // Crear una instancia de la clase Componentes
+    $componentes = new Componentes();
+
+    // Llamada a la función para actualizar el precio del componente
+    $componentes->updatePrecioComponentePaaS($conn, $tipo, $nombre, $gb_componente, $precio);
 }
 ?>
 
@@ -141,8 +143,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
                         <select name="nombre" id="nombre" class="form-control" onchange="this.form.submit()">
                             <option value="">Selecciona Nombre</option>
                             <?php
-                            $componentes = $paasFuncionalidades->getComponentesByTipo($_POST['component']);
-                            $nombres = array_unique(array_column($componentes, 'nombre'));
+                            // Crear una instancia de la clase Componentes
+                            $componentes = new Componentes();
+                            $componentesList = $componentes->getComponentesByTipoPaaS($conn, $_POST['component']);
+                            $nombres = array_unique(array_column($componentesList, 'nombre'));
                             foreach ($nombres as $nombre) {
                                 $selected = isset($_POST['nombre']) && $_POST['nombre'] == $nombre ? 'selected' : '';
                                 echo "<option value='$nombre' $selected>$nombre</option>";
@@ -168,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
                                 if ($_POST['component'] === 'RAM' || $_POST['component'] === 'DISC_DUR') {
                                     $valor = "GB";
                                 }
-                                foreach ($componentes as $componente) {
+                                foreach ($componentesList as $componente) {
                                     if ($componente['nombre'] === $_POST['nombre']) {
                                         $selected = isset($_POST['gb_componente']) && $_POST['gb_componente'] == $componente['gb_componente'] ? 'selected' : '';
                                         echo "<option value='{$componente['gb_componente']}' $selected>{$componente['gb_componente']} {$valor}</option>";
