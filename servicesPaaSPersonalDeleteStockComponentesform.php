@@ -2,11 +2,10 @@
 
 <?php
 session_start();
-include "conexion.php";
-include_once "PaaSFuncionalidades.php"; 
+include "src/conexio.php";
+include_once "src/componentes.php"; 
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
 
 // Manejar la solicitud POST para eliminar componentes de stock
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_components') {
@@ -15,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $selectedCpu = isset($_POST['selectedCpu']) ? $_POST['selectedCpu'] : [];
     $selectedSo = isset($_POST['selectedSo']) ? $_POST['selectedSo'] : [];
 
-    $paasFuncionalidades->deleteStockComponentes($selectedRam, $selectedDiscDur, $selectedCpu, $selectedSo);
+    Componentes::eliminarComponentesPaaS($conn, $selectedRam, $selectedDiscDur, $selectedCpu, $selectedSo);
     header("Location: servicesPaaSPersonalDeleteStockComponentesform.php"); // Redirigir después de procesar
     exit();
 }

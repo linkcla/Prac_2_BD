@@ -1,11 +1,10 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
 
 <?php session_start();
-include "conexion.php";
-include "PaaSFuncionalidades.php";
+include "src/conexio.php";
+include "src/componentes.php";
 
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
 
 $resultado = '';
 
@@ -13,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearRAM'])) {
     $tipo = $_POST['tipo'];
     $gb = $_POST['gb'];
     $precio = $_POST['precio'];
-    $resultado = $paasFuncionalidades->crearNuevaRAM($tipo, $gb, $precio);
+    $resultado = Componentes::crearNuevaRAMPaaS($conn, $tipo, $gb, $precio);
 }
 ?>
 

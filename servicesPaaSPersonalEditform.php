@@ -2,10 +2,11 @@
 
 <?php
 session_start();
-include "conexion.php";
-include "PaaSFuncionalidades.php";
+include "src/conexio.php";
+include "src/productoPaaS.php";
+
 $conn = Conexion::getConnection();
-$paasFuncionalidades = new PaaSFuncionalidades($conn);
+$paas = new PaaS($conn);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $idConfig = $_POST['idConfig'];
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $modelCPU = $_POST['modelCPU'];
     $nNuclis = $_POST['nNuclis'];
 
-    if ($paasFuncionalidades->updatePaaS($idConfig, $iPv4, $iPv6, $nomSO, $tipusRAM, $GBRam, $tipusDD, $GBDD, $modelCPU, $nNuclis)) {
+    if ($paas->updatePaaS($idConfig, $iPv4, $iPv6, $nomSO, $tipusRAM, $GBRam, $tipusDD, $GBDD, $modelCPU, $nNuclis)) {
         header("Location: servicesPaaSPersonalInicioEditform.php");
         exit();
     } else {
