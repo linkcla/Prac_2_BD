@@ -179,7 +179,7 @@ $permisos = $_SESSION['permisos'];
         
         // Miram si es un PaaS o un SaaS. Si es un PaaS la condició serà falsa.
         if (mysqli_num_rows($result) == 0) {
-            $descripcioSaaS = "SaaS: Domini: " . $row['domini'] . " | " . getSaaSDescripcio($idConfig);
+            $descripcioSaaS = "SaaS: Domini: " . $domini . " | " . getSaaSDescripcio($idConfig);
             return $descripcioSaaS;
         }
         return getPaaSDescripcio($idConfig);
