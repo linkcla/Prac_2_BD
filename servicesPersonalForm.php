@@ -5,7 +5,7 @@
 include "conexion.php";
 $conn = Conexion::getConnection();  
 
-// Verificar si el usuario ha iniciado sesión
+// Verificar si l'usuari ha iniciat sessió
 if (!isset($_SESSION['email'])) {
     header("Location: loginform.php");
     exit();
@@ -13,23 +13,22 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Obtener el nombre de la organización del usuario
+// Per obtenir les dades del personal
 $sql = "SELECT p.email, p.nom, p.cognom, p.contrasenya, personal.dni FROM PERSONA as p
-        JOIN personal ON p.email = personal.email";
+        JOIN PERSONAL ON p.email = PERSONAL.email
+        WHERE p.email = '$email'";
 $result = mysqli_query($conn, $sql);
 
-if ($result->num_rows > 0) {
-    $usuario = $result->fetch_assoc();
-    
+if (mysqli_num_rows($result) > 0) {
+    $usuario = mysqli_fetch_assoc($result);
 } else {
-    $_SESSION["error_msg"] = "Usuario no encontrado.";
+    $_SESSION["error_msg"] = "Usuari no trobat.";
     header("Location: loginform.php");
     exit();
 }
 ?>
 
 <html>
-
 <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -61,7 +60,6 @@ if ($result->num_rows > 0) {
 
 <body>
     <div class="hero_area">
-        <!-- header section strats -->
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container">
@@ -70,7 +68,6 @@ if ($result->num_rows > 0) {
                             MPHB
                         </span>
                     </a>
-
                     <div class="navbar-collapse" id="">
                         <div class="custom_menu-btn">
                             <button onclick="openNav()">
@@ -100,32 +97,30 @@ if ($result->num_rows > 0) {
                 </nav>
             </div>
         </header>
-        <!-- end header section -->
     </div>
-
-    <!-- about section -->
 
     <section class="about_section layout_paddingAbout"  style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-            <?php echo ($usuario['nom']) . ' ' . ($usuario['cognom']); ?> 
+                <?php echo ($usuario['nom']) . ' ' . ($usuario['cognom']); ?> 
             </h2>
             <?php
-        if (isset($_SESSION['success_msg'])) {
-            echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
-            unset($_SESSION['success_msg']);
-        }
-        if (isset($_SESSION['error_msg'])) {
-            echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
-            unset($_SESSION['error_msg']);
-        }
-        if (isset($_SESSION['info_msg'])) {
-            echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
-            unset($_SESSION['info_msg']);
-        }
-        ?>
+                if (isset($_SESSION['success_msg'])) {
+                    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+                    unset($_SESSION['success_msg']);
+                }
+                if (isset($_SESSION['error_msg'])) {
+                    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+                    unset($_SESSION['error_msg']);
+                }
+                if (isset($_SESSION['info_msg'])) {
+                    echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
+                    unset($_SESSION['info_msg']);
+                }
+            ?>
         <div class="text-center mt-4">
-            <form id="deleteForm" action="borrarPersona.php" method="post" onsubmit="return confirmDelete()" class="d-inline">
+            <form id="deleteForm" action="./src/vista/usuariVista.php" method="post" onsubmit="return confirmDelete()" class="d-inline">
+                <input type="hidden" name="accio" value="eliminar">
                 <button type="submit" id="borrarBtn" class="btn btn-primary mx-2">Borrar</button>
                 <input type="hidden" id="selectedEmail" name="email" value="<?php echo $email; ?>">
             </form>
@@ -157,25 +152,18 @@ if ($result->num_rows > 0) {
             </form>
         </div>
         <script>
+            // Confirmar si el personal vol eliminar-se
             function confirmDelete() {
-                return confirm("Estas segur de que vols eliminarel teu compte?\nDeixaras de pertanyer a l'organització i a la plataforma.");
+                return confirm("Estas segur de que vols eliminar el teu compte?\nDeixaras de pertanyer a l'organització i a la plataforma.");
             }
         </script>             
     </section>
 
-    <!-- end about section -->
-
-
-    <!-- footer section -->
     <section class="container-fluid footer_section">
         <p>
             &copy; 2024 (UIB - EPS). Design by MPHB
         </p>
     </section>
-    <!-- footer section -->
-
-    <!--script type="text/javascript" src="js/jquery-3.4.1.min.js"></script-->
-    <!--script type="text/javascript" src="js/bootstrap.js"></script-->
 
     <script>
         function openNav() {

@@ -5,7 +5,7 @@
 include "conexion.php";
 $conn = Conexion::getConnection();  
 
-// Verificar si el usuario ha iniciado sesión
+// Verificar si l'usuari ha iniciat sessió
 if (!isset($_SESSION['email'])) {
     header("Location: loginform.php");
     exit();
@@ -13,27 +13,23 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Obtener el nombre de la organización del usuario
+// Per obtenir les dades de l'usuari
 $sql = "SELECT p.nom, p.cognom, p.email, u.nomOrg, u.grup AS nomG, pdg.tipusPriv FROM USUARI u
         JOIN PERSONA p ON u.email = p.email
         JOIN PRIV_DE_GRUP pdg ON u.grup = pdg.nomG
-        WHERE u.email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+        WHERE u.email = '$email'";
+$result = mysqli_query($conn, $sql);
 
-if ($result->num_rows > 0) {
-    $usuario = $result->fetch_assoc();
+if (mysqli_num_rows($result) > 0) {
+    $usuario = mysqli_fetch_assoc($result);
 } else {
-    $_SESSION["error_msg"] = "Usuario no encontrado.";
+    $_SESSION["error_msg"] = "Usuari no trobat.";
     header("Location: loginform.php");
     exit();
 }
 ?>
 
 <html>
-
 <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -74,7 +70,6 @@ if ($result->num_rows > 0) {
                             MPHB
                         </span>
                     </a>
-
                     <div class="navbar-collapse" id="">
                         <div class="custom_menu-btn">
                             <button onclick="openNav()">
@@ -95,86 +90,77 @@ if ($result->num_rows > 0) {
                 </nav>
             </div>
         </header>
-        <!-- end header section -->
     </div>
-
-    <!-- about section -->
 
     <section class="about_section layout_paddingAbout " style="min-height: calc(100vh - 200px);">
         <div class="container">
             <h2 class="text-uppercase">
-            <?php echo htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognom']); ?> 
+                <?php echo ($usuario['nom']) . ' ' . ($usuario['cognom']); ?> 
             </h2>
             <?php
-        if (isset($_SESSION['success_msg'])) {
-            echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
-            unset($_SESSION['success_msg']);
-        }
-        if (isset($_SESSION['error_msg'])) {
-            echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
-            unset($_SESSION['error_msg']);
-        }
-        if (isset($_SESSION['info_msg'])) {
-            echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
-            unset($_SESSION['info_msg']);
-        }
-        ?>
-        <div class="text-center mt-4">
-            <form id="deleteForm" action="borrarPersona.php" method="post" onsubmit="return confirmDelete()" class="d-inline">
-                <button type="submit" id="borrarBtn" class="btn btn-primary mx-2">Borrar</button>
-                <input type="hidden" id="selectedEmail" name="email" value="<?php echo $email; ?>">
-            </form>
-            <form id="editForm" action="editarUsuariform.php" method="post" class="d-inline">
-                <button type="submit" id="editarBtn" class="btn btn-primary mx-2">Editar</button>
-                <input type="hidden" id="selectedEmailEdit" name="email" value="<?php echo $email; ?>">
-            </form>
-               </div>
-                <div class="mt-4">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Cognom</th>
-                                <th>Email</th>
-                                <th>Organització</th>
-                                <th>Grup</th>
-                                <th>Privilegis</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><?php echo ($usuario['nom']); ?></td>
-                                <td><?php echo ($usuario['cognom']); ?></td>
-                                <td><?php echo ($usuario['email']); ?></td>
-                                <td><?php echo ($usuario['nomOrg']); ?></td>
-                                <td><?php echo ($usuario['nomG']); ?></td>
-                                <td><?php echo ($usuario['tipusPriv']); ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                if (isset($_SESSION['success_msg'])) {
+                    echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+                    unset($_SESSION['success_msg']);
+                }
+                if (isset($_SESSION['error_msg'])) {
+                    echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+                    unset($_SESSION['error_msg']);
+                }
+                if (isset($_SESSION['info_msg'])) {
+                    echo "<div class='alert alert-info' role='alert'>{$_SESSION['info_msg']}</div>";
+                    unset($_SESSION['info_msg']);
+                }
+            ?>
+            <div class="text-center mt-4">
+                <form id="deleteForm" action="./src/vista/usuariVista.php" method="post" onsubmit="return confirmDelete()" class="d-inline">
+                    <input type="hidden" name="accio" value="eliminar">
+                    <button type="submit" id="borrarBtn" class="btn btn-primary mx-2">Borrar</button>
+                    <input type="hidden" id="selectedEmail" name="email" value="<?php echo $email; ?>">
+                </form>
+                <form id="editForm" action="editarUsuariform.php" method="post" class="d-inline">
+                    <button type="submit" id="editarBtn" class="btn btn-primary mx-2">Editar</button>
+                    <input type="hidden" id="selectedEmailEdit" name="email" value="<?php echo $email; ?>">
+                </form>
                 </div>
-            </form>
-        </div>
-        <script>
-            function confirmDelete() {
-                return confirm("Estas segur de que vols eliminarel teu compte?\nDeixaras de pertanyer a l'organització i a la plataforma.");
-            }
-        </script>             
-    </section>
+                    <div class="mt-4">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Cognom</th>
+                                    <th>Email</th>
+                                    <th>Organització</th>
+                                    <th>Grup</th>
+                                    <th>Privilegis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><?php echo ($usuario['nom']); ?></td>
+                                    <td><?php echo ($usuario['cognom']); ?></td>
+                                    <td><?php echo ($usuario['email']); ?></td>
+                                    <td><?php echo ($usuario['nomOrg']); ?></td>
+                                    <td><?php echo ($usuario['nomG']); ?></td>
+                                    <td><?php echo ($usuario['tipusPriv']); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <script>
+                // Confirmar si es vol eliminar l'usuari
+                function confirmDelete() {
+                    return confirm("Estas segur de que vols eliminar el teu compte?\nDeixaras de pertanyer a l'organització i a la plataforma.");
+                }
+            </script>             
+     </section>
 
-    <!-- end about section -->
-
-
-    <!-- footer section -->
     <section class="container-fluid footer_section">
         <p>
             &copy; 2024 (UIB - EPS). Design by MPHB
         </p>
     </section>
-    <!-- footer section -->
-
-    <!--script type="text/javascript" src="js/jquery-3.4.1.min.js"></script-->
-    <!--script type="text/javascript" src="js/bootstrap.js"></script-->
 
     <script>
         function openNav() {
