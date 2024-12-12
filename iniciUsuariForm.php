@@ -108,7 +108,7 @@ $permisos = $_SESSION['permisos'];
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT p.idConfig, p.nom, p.descripcio, c.idContracte, c.dataInici, c.mesos, c.estat
+                        $query = "SELECT p.idConfig, p.nom, p.descripcio, c.idContracte, c.dataInici, c.mesos, c.estat, c.domini
                                   FROM CONTRACTE c 
                                   JOIN PRODUCTE p ON c.idConfigProducte = p.idConfig 
                                   WHERE c.nom = '$nomOrg'
@@ -116,7 +116,7 @@ $permisos = $_SESSION['permisos'];
                         $result = mysqli_query($conn, $query);
                         while ($row = mysqli_fetch_assoc($result)) {
                             // Generar la descripció del producte a partir de les característiques
-                            $descripcio = getDescripcio($row['idConfig']);
+                            $descripcio = getDescripcio($row['idConfig'], $row['domini']);
                             $dataFin = calcularDataFinal($row['dataInici'], $row['mesos']);
                             echo "<tr>
                                     <td>{$row['idContracte']}</td>
@@ -166,7 +166,7 @@ $permisos = $_SESSION['permisos'];
 </html>
 
 <?php
-    function getDescripcio($idConfig) {
+    function getDescripcio($idConfig, $domini) {
         
         $query = "SELECT idConfig FROM paas WHERE idConfig = '{$idConfig}'";
         $result = mysqli_query(Conexion::getConnection(), $query);
@@ -179,7 +179,8 @@ $permisos = $_SESSION['permisos'];
         
         // Miram si es un PaaS o un SaaS. Si es un PaaS la condició serà falsa.
         if (mysqli_num_rows($result) == 0) {
-            return getSaaSDescripcio($idConfig);
+            $descripcioSaaS = "Domini: " . $row['domini'] . " | " . getSaaSDescripcio($idConfig);
+            return $descripcioSaaS;
         }
         return getPaaSDescripcio($idConfig);
     }
@@ -197,7 +198,6 @@ $permisos = $_SESSION['permisos'];
         // Només hi haurà una fila ja que l'idConfig és clau primària.
         // Concatenam tota la informació per poder mostrar-la en una sola fila.
         while ($row = mysqli_fetch_assoc($result)) {
-            $descripcioSaaS .= "Domini: " . $row['domini'] . " | ";
             $descripcioSaaS .= "Data Creacio: " . $row['dataCreacio'] . " | ";
             $descripcioSaaS .= "MCMS: " . $row['tipusMCMS'] . " | ";
             $descripcioSaaS .= "CDN: " . $row['tipusCDN'] . " | ";
