@@ -1,10 +1,10 @@
-<!-- @Author: Blanca Atienzar Martinez -->
+<!-- @Author: Pau Toni Bibiloni Martínez -->
 <?php session_start() ; 
 include "conexion.php";
-$conn = Conexion::getConnection(); 
+$conn = Conexion::getConnection();
 
 
-        // PROCESO PARA ACTUALIZAR EL ESTADO DEL CONTRATO Y LOS MESES
+// PROCESO PARA ACTUALIZAR EL ESTADO DEL CONTRATO Y LOS MESES
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $idContracte = $_POST['update'];
     $nuevoEstat = $_POST['estat'][$idContracte];
