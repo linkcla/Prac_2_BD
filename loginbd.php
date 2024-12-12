@@ -22,8 +22,8 @@ if (!$resultado || mysqli_num_rows($resultado) == 0)
 else
 {
     while ($fila = $resultado->fetch_assoc()) {
-        //if (!password_verify($loccont, $fila['contrasenya'])) {
-        if ($loccont != $fila['contrasenya']) {
+        if (!password_verify($loccont, $fila['contrasenya'])) {
+        //if ($loccont != $fila['contrasenya']) {
         // contrasenya incorrecte
             $_SESSION["error_msg"] = "Contraseña incorrecta";
             header("Location: ./loginform.php");

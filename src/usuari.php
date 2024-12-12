@@ -12,7 +12,8 @@ class Usuari {
 
         if (!$result_p || mysqli_num_rows($result_p) == 0) {       
             // Insertar a la taula PERSONA
-            $cadena_persona = "INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES ('$nom', '$cognom', '$email', '$contrasenya')";
+            $contrasenya_hash = password_hash($contrasenya, PASSWORD_BCRYPT);
+            $cadena_persona = "INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES ('$nom', '$cognom', '$email', '$contrasenya_hash')";
             if (mysqli_query($conn, $cadena_persona) == false) {
                 // Error al insertar persona a la BD
                 // Error el usuario ja existeix
