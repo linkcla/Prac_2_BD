@@ -302,15 +302,6 @@ class PaaSFuncionalidades {
             return false;
         }
 
-        // Verificar que la combinación de tipusRAM y GBRam existe en la tabla RAM
-        $ramCheckQuery = "SELECT * FROM RAM WHERE tipus='$tipusRAM' AND GB='$GBRam'";
-        $ramCheckResult = mysqli_query($this->conn, $ramCheckQuery);
-
-        if (mysqli_num_rows($ramCheckResult) == 0) {
-            $_SESSION["error_msg"] = "La combinación de tipo de RAM y cantidad de RAM no es válida.";
-            return false;
-        }
-
         // Actualizamos los atributos del PaaS en la base de datos
         $updateQuery = "UPDATE PAAS SET iPv4='$iPv4', iPv6='$iPv6', nomSO='$nomSO', tipusRAM='$tipusRAM', GBRam='$GBRam', tipusDD='$tipusDD', GBDD='$GBDD', modelCPU='$modelCPU', nNuclis='$nNuclis' WHERE idConfig='$idConfig'";
         if (mysqli_query($this->conn, $updateQuery)) {
