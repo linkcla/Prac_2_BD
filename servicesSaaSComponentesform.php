@@ -112,7 +112,7 @@ if (isset($_SESSION['error_msg'])) {
             <h4 class="text-uppercase">
                 Añadir Componentes
             </h4>
-            <form id="componentForm" action="" method="POST">
+            <form id="componentForm" action="" method="POST" onsubmit="return validateForm(event)">
                 <input type="hidden" id="accio" name="accio" value="crearS">
                 <div class="form-group">
                     <label for="component">Selecciona Componente</label>
@@ -152,7 +152,7 @@ if (isset($_SESSION['error_msg'])) {
                     </div>
                     <div class="form-group">
                         <label for="precio_cdn">Precio</label>
-                        <input type="text" name="precio" id="precio_cdn" class="form-control" placeholder="Max: 99.99">
+                        <input type="text" name="precio" id="precio_cdn" class="form-control" placeholder="Max: 9.99">
                     </div>
                 </fieldset>
                 <?php endif; ?>
@@ -171,7 +171,7 @@ if (isset($_SESSION['error_msg'])) {
                     </div>
                     <div class="form-group">
                         <label for="precio_ssl">Precio</label>
-                        <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
+                        <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 9.99">
                     </div>
                 </fieldset>
                 <?php endif; ?>
@@ -262,67 +262,18 @@ if (isset($_SESSION['error_msg'])) {
                 </fieldset>
                 <?php endif; ?>
 
-                <button type="submit" id="addComponentButton" class="btn btn-primary" >Añadir Componente</button>
-            </form>
-             <script>
-                document.getElementById('componentForm').addEventListener('submit', function(event) {
-                    let valid = true;
-                    const component = document.getElementById('component').value;
-                    if (!component) {
-                        valid = false;
-                        alert('Por favor, selecciona un componente.');
-                    }
-
-                    tipo = document.querySelector('select[name="tipo"]');
-                    const tipotipo = document.querySelector('input[name="tipotipo"]');
-                    const precio = document.querySelector('input[name="precio"]');
-                    const gb = document.querySelector('select[name="gb"]');
-
-                    if ((component === 'CMS' || component === 'SGBD') && (!tipotipo || !tipotipo.value)) {
-                        valid = false;
-                        alert('Por favor, ingresa el tipo.');
-                    }
-
-                    if (((component === 'CDN' || component === 'SSL')||(component === 'DISC_DUR' && (!gb.value))) && 
-                        (!tipo || !tipo.value) && (!precio || !precio.value)) {
-                        valid = false;
-                        alert('Por favor, selecciona todos los campos.');
-                    }
-
-                    if (component === 'RAM'){
-                        
-                        if (!gb.value || !precio || !precio.value) {
-                            valid = false;
-                            alert('Por favor, la cantidad de GB y el precio.');
-                        }else if (tipo && tipo.value && tipotipo && tipotipo.value) {
-                            valid = false;
-                            alert('Por favor, selecciona un tipo de RAM ya creado o crea uno, pero no los dos a la vez .');
-                        }else if ((!tipo || !tipo.value) && (!tipotipo || !tipotipo.value)) {
-                            valid = false;
-                            alert('Por favor, selecciona un tipo de RAM.');
-                        }
-                    }
-
-                    if (!valid) {
-                        event.preventDefault();
-                    } else {
-                        this.action = './src/vista/componentesVista.php';
-                    }
-                });
-            </script>
+                <button type="submit" id="addComponentButton" class="btn btn-primary" name="new">Añadir Componente</button>
+            
+             
         </div>
-
-    </section>
    
-    <section class="about_section layout_paddingAbout">
         <div class="container">
             <h4 class="text-uppercase">
                 Editar Precios/ Eliminar Componentes
             </h4>
         </div>
         <div class="container">
-            <form action="./src/vista/componentesVista.php" method="POST" onsubmit="return validateForm(event)">
-                <input type="hidden" name="accio" id="accio" value="eliminarS">
+            
                     <!-- Tabla para mostrar los datos de CONTRACTE -->
                     <table class="table table-striped">
                         <thead>
@@ -354,7 +305,7 @@ if (isset($_SESSION['error_msg'])) {
                                     $value = $row['componente'] . '|' . $row['tipo']. '|' . $row['preu']. '|' . $row['GB'];
                                         echo "<tr>
                                         <td>
-                                            <input type='radio' id='selectedRow' name='selectedRow' value='{$value}'>
+                                            <input type='radio' id='selectedRow' name='selectedRow1' value='{$value}'>
                                         </td>
                                         <td>{$row['componente']}</td>
                                         <td>{$row['tipo']}</td>
@@ -372,7 +323,7 @@ if (isset($_SESSION['error_msg'])) {
                                 <label for="precio_ssl">Precio</label>
                             </div>
                             <div class="col-auto2">
-                                <input type="text" name="precio" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
+                                <input type="text" name="precio1" id="precio_ssl" class="form-control" placeholder="Max: 99.99">
                             </div>
                             <div class="col-auto2">
                                 <button type="submit" class="btn btn-primary mb-3" name="edit">Actualizar Precio </button>
@@ -382,27 +333,74 @@ if (isset($_SESSION['error_msg'])) {
                     </div>
             </form>
             <script>
-            function validateForm(event) {
-                const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
-                const precio = document.querySelector('input[name="precio"]');
-                const buttonClicked = event.submitter.name;
+                document.addEventListener('DOMContentLoaded', function() {
+                    function validateForm(event) {
+                        let valid = true;
+                        const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
+                        const selectedRow1 = document.querySelector('input[name="selectedRow1"]:checked');
+                        const precio = document.querySelector('input[name="precio"]');
+                        const precio1 = document.querySelector('input[name="precio1"]');
+                        const buttonClicked = event.submitter.name;
+                        const component = document.getElementById('component').value;
+                        const tipo = document.querySelector('select[name="tipo"]');
+                        const tipotipo = document.querySelector('input[name="tipotipo"]');
+                        const gb = document.querySelector('select[name="gb"]');
 
-                if (buttonClicked === 'edit') {
-                    if (!selectedRow || !precio || !precio.value) {
-                        alert('Por favor, selecciona un componente y un precio.');
-                        return false;
-                    }else {
-                        document.getElementById('accio').value = 'editarS';
+                        if (buttonClicked === 'edit') {
+                            console.log(document.getElementById('accio').value); // Mostrar por consola (F12 en la página web)
+                            if (!selectedRow1 || !precio1 || !precio1.value) {
+                                alert('Por favor, selecciona un componente y un precio.');
+                                valid = false;
+                            } else {
+                                document.getElementById('accio').value = 'editarS';
+                            }
+                        } else if (buttonClicked === 'elimar') {
+                            if (!selectedRow1) {
+                                alert('Por favor, selecciona un componente.');
+                                valid = false;
+                            } else {
+                                document.getElementById('accio').value = 'eliminarS';
+                            }
+                        }else if (buttonClicked === 'new') {
+                            if (!component) {
+                                valid = false;
+                                alert('Por favor, selecciona un componente.');
+                            }
+
+                            if ((component === 'CMS' || component === 'SGBD') && (!tipotipo || !tipotipo.value)) {
+                                valid = false;
+                                alert('Por favor, ingresa el tipo.');
+                            }
+
+                            if (((component === 'CDN' || component === 'SSL') || (component === 'DISC_DUR' && (!gb.value))) &&
+                                (!tipo || !tipo.value) && (!precio || !precio.value)) {
+                                valid = false;
+                                alert('Por favor, selecciona todos los campos.');
+                            }
+
+                            if (component === 'RAM') {
+                                if (!gb.value || !precio || !precio.value) {
+                                    valid = false;
+                                    alert('Por favor, la cantidad de GB y el precio.');
+                                } else if (tipo && tipo.value && tipotipo && tipotipo.value) {
+                                    valid = false;
+                                    alert('Por favor, selecciona un tipo de RAM ya creado o crea uno, pero no los dos a la vez.');
+                                } else if ((!tipo || !tipo.value) && (!tipotipo || !tipotipo.value)) {
+                                    valid = false;
+                                    alert('Por favor, selecciona un tipo de RAM.');
+                                }
+                            }
+                        }
+
+                        if (!valid) {
+                            event.preventDefault();
+                        } else {
+                            event.target.action = './src/vista/componentesVista.php';
+                        }
                     }
-                } 
-                if (buttonClicked === 'elimar') {
-                    if (!selectedRow) {
-                        alert('Por favor, selecciona un componente.');
-                        return false;
-                    } 
-                }
-                return true;
-            }
+
+                    document.getElementById('componentForm').addEventListener('submit', validateForm);
+                });
             </script>
         </div>
     </section>
@@ -431,6 +429,13 @@ if (isset($_SESSION['error_msg'])) {
                 .classList.toggle("menu_btn-style");
         }
     </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var precio = document.getElementById('precio_ram');
+    console.log('El valor de precio es:', precio);
+});
+</script>
 </body>
 
 

@@ -24,6 +24,7 @@ function crearSaaS() {
     $tipotipo = isset($_POST['tipotipo']) ? $_POST['tipotipo'] : null;
     $gb = isset($_POST['gb']) ? $_POST['gb'] : null;
     $precio = isset($_POST['precio']) ? $_POST['precio'] : null;
+    echo "Debug: crearSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
     
     $res = Componentes::crearComponentesSaas($component, $tipo, $tipotipo, $gb, $precio);
 
@@ -33,7 +34,7 @@ function crearSaaS() {
 }
 
 function eliminarSaaS() {
-    $selectedRow = $_POST['selectedRow'];
+    $selectedRow = $_POST['selectedRow1'];
     list($componente, $tipo, $precio, $gb) = explode('|', $selectedRow);
     echo "Debug: eliminarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
 
@@ -46,23 +47,19 @@ function eliminarSaaS() {
 }
 
 function editarSaaS() {
-    $selectedRow = explode('|', $_POST['selectedRow']);
+    $selectedRow = explode('|', $_POST['selectedRow1']);
     $componente = $selectedRow[0];
     $tipo = $selectedRow[1];
-    $precio = $selectedRow[2];
     $gb = $selectedRow[3];
-    $precioCambiar = $_POST['precio'];
-    echo "Debug: eliminarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precio, GB: $gb<br>";
+    $precioCambiar = $_POST['precio1'];
+    echo "<p>Debug: editarSaaS - Componente: $componente, Tipo: $tipo, Precio: $precioCambiar, GB: $gb<br></p>";
 
 
     $res = Componentes::editarComponentesSaas($componente, $tipo, $gb, $precioCambiar);
 
-    if ($res) {
-        // Redirecciona a la pagina 
-        header("Location: ./../../servicesSaaSComponentesform.php");
-        exit();
-    } else {
-        echo "Error al editar el componente.";
-    }
+    
+    // Redirecciona a la pagina 
+    header("Location: ./../../servicesSaaSComponentesform.php");
+    exit();
 }
 ?>
