@@ -68,10 +68,10 @@ class Contratos {
         return true;        
     }
 
-    public static function actualizarContrato($conn, $idContracte, $nuevoEstat, $nuevosMesos) {
+    public static function actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos) {
         if (self::validarMesosPaaS($nuevosMesos)) {
             self::insertarDuradaPaaS($conn, $nuevosMesos);
-            return self::actualizarContractePaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
+            return self::queryActualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
         } else {
             $_SESSION["error_msg"] = "La duración debe ser un número positivo y al menos 3 meses.";
             return false;
@@ -95,7 +95,7 @@ class Contratos {
         return true;
     }
 
-    private static function actualizarContractePaaS($conn, $idContracte, $estat, $mesos) {
+    private static function queryActualizarContratoPaaS($conn, $idContracte, $estat, $mesos) {
         $updateQuery = "UPDATE CONTRACTE SET estat = '$estat', mesos = '$mesos' WHERE idContracte = '$idContracte'";
         if (mysqli_query($conn, $updateQuery) == false) {
             $_SESSION["error_msg"] = "Error al actualizar el contrato.";

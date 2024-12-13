@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $idContracte = $_POST['idContracte'];
     $nuevoEstat = $_POST['estat'][$idContracte];
     $nuevosMesos = $_POST['mesos'][$idContracte];
-    Contratos::actualizarContrato($conn, $idContracte, $nuevoEstat, $nuevosMesos);
+    Contratos::actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
 }
 ?>
 
