@@ -68,21 +68,21 @@ class Contratos {
         return true;        
     }
 
-    public function actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos) {
-        if ($this->validarMesosPaaS($nuevosMesos)) {
-            $this->insertarDuradaPaaS($conn, $nuevosMesos);
-            return $this->actualizarContractePaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
+    public static function actualizarContrato($conn, $idContracte, $nuevoEstat, $nuevosMesos) {
+        if (self::validarMesosPaaS($nuevosMesos)) {
+            self::insertarDuradaPaaS($conn, $nuevosMesos);
+            return self::actualizarContractePaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
         } else {
             $_SESSION["error_msg"] = "La duración debe ser un número positivo y al menos 3 meses.";
             return false;
         }
     }
 
-    private function validarMesosPaaS($mesos) {
+    private static function validarMesosPaaS($mesos) {
         return is_numeric($mesos) && $mesos >= 3;
     }
 
-    private function insertarDuradaPaaS($conn, $mesos) {
+    private static function insertarDuradaPaaS($conn, $mesos) {
         $selectQuery = "SELECT mesos FROM DURADA WHERE mesos = '$mesos'";
         $result = mysqli_query($conn, $selectQuery);
         if (mysqli_num_rows($result) == 0) {
@@ -95,7 +95,7 @@ class Contratos {
         return true;
     }
 
-    private function actualizarContractePaaS($conn, $idContracte, $estat, $mesos) {
+    private static function actualizarContractePaaS($conn, $idContracte, $estat, $mesos) {
         $updateQuery = "UPDATE CONTRACTE SET estat = '$estat', mesos = '$mesos' WHERE idContracte = '$idContracte'";
         if (mysqli_query($conn, $updateQuery) == false) {
             $_SESSION["error_msg"] = "Error al actualizar el contrato.";
@@ -105,7 +105,7 @@ class Contratos {
         return true;
     }
 
-    public function obtenerContratosPaaS($conn) {
+    public static function obtenerContratosPaaS($conn) {
         $cadenaContracte = "SELECT c.idContracte, c.dataInici, c.estat, c.nom, c.emailU, c.idConfigProducte, c.mesos
                             FROM CONTRACTE c
                             JOIN PAAS s ON c.idConfigProducte = s.idConfig";

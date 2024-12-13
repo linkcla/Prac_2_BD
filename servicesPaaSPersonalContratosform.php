@@ -4,13 +4,12 @@ include "src/conexio.php";
 include "src/contratos.php";
 
 $conn = Conexion::getConnection();
-$contratos = new Contratos();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $idContracte = $_POST['idContracte'];
     $nuevoEstat = $_POST['estat'][$idContracte];
     $nuevosMesos = $_POST['mesos'][$idContracte];
-    $contratos->actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
+    Contratos::actualizarContrato($conn, $idContracte, $nuevoEstat, $nuevosMesos);
 }
 ?>
 
@@ -141,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
                     </thead>
                     <tbody>
                         <?php
-                        $resultadoContracte = $contratos->obtenerContratosPaaS($conn);
+                        $resultadoContracte = Contratos::obtenerContratosPaaS($conn);
 
                         if ($resultadoContracte->num_rows > 0) {
                             while ($rowContracte = $resultadoContracte->fetch_assoc()) {
