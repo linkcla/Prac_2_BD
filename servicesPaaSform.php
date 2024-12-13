@@ -2,7 +2,7 @@
 <!-- @Author: Pau Toni Bibiloni Martínez (PHP y funcionalidad de PaaS) -->
 
 <?php session_start() ;
-include "conexion.php";
+require_once "./src/conexio.php";
 $conn = Conexion::getConnection();              
 ?>
 

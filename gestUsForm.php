@@ -1,6 +1,6 @@
 <!-- Author: Marc -->
 <?php session_start() ;
-require_once "conexion.php";
+require_once "./src/conexio.php";
 $conn = Conexion::getConnection(); 
 
 // Agafar els valors que s'han seleccionat.

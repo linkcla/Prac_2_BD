@@ -1,7 +1,7 @@
 <!-- @Author: Marc -->
 
 <?php session_start();
-include "conexion.php";
+include "./src/conexio.php";
 $conn = Conexion::getConnection();
 
 $nomOrg = $_SESSION['nomOrg'];

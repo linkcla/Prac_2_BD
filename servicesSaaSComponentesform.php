@@ -1,7 +1,7 @@
 <!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
 
 <?php session_start() ;
-include "conexion.php";
+require_once "./src/conexio.php";
 $conn = Conexion::getConnection();   
 if (isset($_SESSION['success_msg'])) {
     echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";

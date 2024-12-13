@@ -1,7 +1,7 @@
 <!-- @Author: Hai Zi Bibiloni Trobat -->
  
 <?php 
-include "conexion.php";
+require_once "./src/conexio.php";
 $con = Conexion::getConnection();
 ?>
 

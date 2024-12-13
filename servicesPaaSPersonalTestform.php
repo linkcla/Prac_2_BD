@@ -2,7 +2,7 @@
 
 <?php 
 session_start();
-include "src/conexio.php";
+require_once "./src/conexio.php";
 include "src/test.php";
 
 $conn = Conexion::getConnection();

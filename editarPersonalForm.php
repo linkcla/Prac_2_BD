@@ -1,7 +1,7 @@
 <!-- @Author: Hai Zi Bibiloni Trobat -->
 
 <?php session_start() ;
-include "conexion.php";
+require_once "./src/conexio.php";
 $conn = Conexion::getConnection();  
 
 if (!isset($_POST['email'])) {
