@@ -1,4 +1,5 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
+
 <?php session_start(); 
 include "src/conexio.php";
 include "src/contratos.php";
