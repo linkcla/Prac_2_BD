@@ -892,7 +892,7 @@ INSERT INTO PERSONAL (email, dni) VALUES
 INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES
 ('Usuari', 'Usuari', 'us@gmail.com', '$2y$10$PBlzMcPwK5Yr5NJsAg5rQOtHY.fq3EWYPf49KAveeayKgG73TihMm');
 
--- Insertar PRIVILEGIS
+-- Insertar PRIVILEGIS (IMPRESCINDIBLE)
 INSERT INTO `privilegi` (`tipus`) VALUES ('Visualizar'), ('Borrar'), ('Crear'), ('Editar');
 
 
