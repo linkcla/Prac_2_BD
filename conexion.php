@@ -1,4 +1,4 @@
-<!-- Author: Hai Zi -->
+<!-- Author: Hai Zi Bibiloni Trobat -->
 <?php
 class Conexion {
     public static function getConnection() {

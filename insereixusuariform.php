@@ -1,5 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
-<!-- @Author: Hai Zi Bibiloni Trobat (PHP y funcionalidad per inserir usuari) -->
+<!-- @Author: Hai Zi Bibiloni Trobat -->
  
 <?php 
 include "conexion.php";

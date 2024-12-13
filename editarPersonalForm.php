@@ -1,5 +1,4 @@
-<!-- @Author: Blanca Atienzar Martinez (HTML y CSS) -->
-<!-- @Author: Hai Zi Bibiloni Trobat (PHP y funcionalidad) -->
+<!-- @Author: Hai Zi Bibiloni Trobat -->
 
 <?php session_start() ;
 include "conexion.php";
