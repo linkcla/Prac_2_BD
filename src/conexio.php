@@ -1,3 +1,5 @@
+<!-- @Author: Hai Zi Bibiloni Trobat -->
+
 <?php
 class Conexion {
     
