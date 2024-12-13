@@ -1,31 +1,16 @@
 <!-- @Author: Pau Toni Bibiloni Martínez -->
 <?php session_start(); 
-include "conexion.php";
+include "src/conexio.php";
+include "src/contratos.php";
+
 $conn = Conexion::getConnection();
+$contratos = new Contratos();
 
-
-// PROCESO PARA ACTUALIZAR EL ESTADO DEL CONTRATO Y LOS MESES
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $idContracte = $_POST['idContracte'];
     $nuevoEstat = $_POST['estat'][$idContracte];
     $nuevosMesos = $_POST['mesos'][$idContracte];
-
-    // Verificar que los meses sean un número positivo y al menos 3
-    if (is_numeric($nuevosMesos) && $nuevosMesos >= 3) {
-        // Insertar en la tabla durada si no existe
-        $cadenaInsertDurada = "INSERT INTO durada (mesos) SELECT '$nuevosMesos' WHERE NOT EXISTS (SELECT 1 FROM durada WHERE mesos = '$nuevosMesos')";
-        mysqli_query($conn, $cadenaInsertDurada);
-
-        // Consulta para actualizar el contrato
-        $cadenaUpdate = "UPDATE CONTRACTE SET estat = '$nuevoEstat', mesos = '$nuevosMesos' WHERE idContracte = '$idContracte'";
-        if (mysqli_query($conn, $cadenaUpdate)) {
-            echo "<div class='alert alert-success' role='alert'>Contrato actualizado exitosamente.</div>";
-        } else {
-            echo "<div class='alert alert-danger' role='alert'>Error al actualizar el contrato: " . mysqli_error($conn) . "</div>";
-        }
-    } else {
-        echo "<div class='alert alert-danger' role='alert'>La duración debe ser un número positivo y al menos 3 meses.</div>";
-    }
+    $contratos->actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
 }
 ?>
 
@@ -125,6 +110,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
         </div>
 
         <div class="container">
+            <?php
+            if (isset($_SESSION["success_msg"])) {
+                echo "<div class='alert alert-success' role='alert'>{$_SESSION['success_msg']}</div>";
+                unset($_SESSION["success_msg"]);
+            }
+            if (isset($_SESSION["error_msg"])) {
+                echo "<div class='alert alert-danger' role='alert'>{$_SESSION['error_msg']}</div>";
+                unset($_SESSION["error_msg"]);
+            }
+            if (isset($_SESSION["warning_msg"])) {
+                echo "<div class='alert alert-warning' role='alert'>{$_SESSION['warning_msg']}</div>";
+                unset($_SESSION["warning_msg"]);
+            }
+            ?>
             <form action="servicesPaaSPersonalContratosform.php" method="POST">
                 <!-- Tabla para mostrar los datos del contrato -->
                 <table class="table table-striped">
@@ -142,20 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
                     </thead>
                     <tbody>
                         <?php
-                        // Consulta para obtener los datos de la tabla CONTRACTE donde idConfigProducte 
-                        // esté en la lista de idConfigs de la tabla PAAS
-                        $cadenaContracte = "SELECT c.idContracte, c.dataInici, c.estat, c.nom, c.emailU, c.idConfigProducte, c.mesos
-                                            FROM CONTRACTE c
-                                            JOIN PAAS s ON c.idConfigProducte = s.idConfig";
-                        $resultadoContracte = mysqli_query($conn, $cadenaContracte);
-                        
-                        // Consulta para obtener los valores de 'mesos' disponibles en la tabla 'durada'
-                        $cadenaDurada = "SELECT mesos FROM durada";
-                        $resultadoDurada = mysqli_query($conn, $cadenaDurada);
-                        $mesosOptions = [];
-                        while ($rowDurada = $resultadoDurada->fetch_assoc()) {
-                            $mesosOptions[] = $rowDurada['mesos'];
-                        }
+                        $resultadoContracte = $contratos->obtenerContratosPaaS($conn);
 
                         if ($resultadoContracte->num_rows > 0) {
                             while ($rowContracte = $resultadoContracte->fetch_assoc()) {

@@ -65,7 +65,49 @@ class Contratos {
         return true;        
     }
 
+    public function actualizarContratoPaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos) {
+        if ($this->validarMesosPaaS($nuevosMesos)) {
+            $this->insertarDuradaPaaS($conn, $nuevosMesos);
+            return $this->actualizarContractePaaS($conn, $idContracte, $nuevoEstat, $nuevosMesos);
+        } else {
+            $_SESSION["error_msg"] = "La duración debe ser un número positivo y al menos 3 meses.";
+            return false;
+        }
+    }
 
+    private function validarMesosPaaS($mesos) {
+        return is_numeric($mesos) && $mesos >= 3;
+    }
+
+    private function insertarDuradaPaaS($conn, $mesos) {
+        $selectQuery = "SELECT mesos FROM DURADA WHERE mesos = '$mesos'";
+        $result = mysqli_query($conn, $selectQuery);
+        if (mysqli_num_rows($result) == 0) {
+            $insertQuery = "INSERT INTO DURADA (mesos) VALUES ('$mesos')";
+            if (mysqli_query($conn, $insertQuery) == false) {
+                $_SESSION["error_msg"] = "Error al insertar la durada.";
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function actualizarContractePaaS($conn, $idContracte, $estat, $mesos) {
+        $updateQuery = "UPDATE CONTRACTE SET estat = '$estat', mesos = '$mesos' WHERE idContracte = '$idContracte'";
+        if (mysqli_query($conn, $updateQuery) == false) {
+            $_SESSION["error_msg"] = "Error al actualizar el contrato.";
+            return false;
+        }
+        $_SESSION["success_msg"] = "Contrato actualizado.";
+        return true;
+    }
+
+    public function obtenerContratosPaaS($conn) {
+        $cadenaContracte = "SELECT c.idContracte, c.dataInici, c.estat, c.nom, c.emailU, c.idConfigProducte, c.mesos
+                            FROM CONTRACTE c
+                            JOIN PAAS s ON c.idConfigProducte = s.idConfig";
+        return mysqli_query($conn, $cadenaContracte);
+    }
 
 }
 ?>
