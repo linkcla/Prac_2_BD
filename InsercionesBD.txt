@@ -1,4 +1,47 @@
--- Insertar datos en la tabla TEST
+-- Insertar un PERSONAL
+-- CONTRASEÑA: guest
+INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES
+('Guest', 'Guest', 'guest@gmail.com', '$2y$10$PBlzMcPwK5Yr5NJsAg5rQOtHY.fq3EWYPf49KAveeayKgG73TihMm');
+INSERT INTO PERSONAL (email, dni) VALUES
+('guest@gmail.com', '12345678A');
+
+-- Insertar PRIVILEGIS
+INSERT INTO `privilegi` (`tipus`) VALUES ('Visualizar'), ('Borrar'), ('Crear'), ('Editar');
+
+
+-- Insertar CPU 
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('Intel', '4', 12.50);
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('Intel', '8', 10.00)
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('AMD', '16', 12.00);
+
+-- Insertar SO 
+INSERT INTO SO (nom, preu) VALUES ('Windows', 25.00);
+INSERT INTO SO (nom, preu) VALUES ('Linux', 21.40);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A-- Insertar datos en la tabla TEST
 INSERT INTO TEST (nom, descripció, dataCreacio) VALUES 
 ('Test1', 'Descripción del test 1', '2023-01-01'), 
 ('Test2', 'Descripción del test 2', '2023-02-01'),

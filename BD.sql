@@ -869,3 +869,38 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- INSERCIONES COMPONENETES SAAS
+INSERT INTO CDN (tipus, preu) VALUES ('Bàsic', '3.45'); 
+INSERT INTO C_SSL (tipus, preu) VALUES ('Bàsic', '2.15');
+INSERT INTO MODUL_CMS (tipus) VALUES ('Sense modul'), ('WordPress');
+INSERT INTO SIST_GESTIO_BD (tipus) VALUES ('PostgreSQL');
+INSERT INTO RAM (tipus, GB, preu) VALUES ('DDR3', 4, 17.20);
+INSERT INTO RAM (tipus, GB, preu) VALUES ('DDR4', 16, 21.19);
+INSERT INTO RAM (tipus, GB, preu) VALUES ('DDR5', 64, 35.45);
+INSERT INTO DISC_DUR (tipus, GB, preu) VALUES ('HDD', 500, 20.10);
+
+-- INSERCIO D'UN PERSONAL
+-- CONTRASEÑA: guest
+INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES
+('Guest', 'Guest', 'guest@gmail.com', '$2y$10$PBlzMcPwK5Yr5NJsAg5rQOtHY.fq3EWYPf49KAveeayKgG73TihMm');
+INSERT INTO PERSONAL (email, dni) VALUES
+('guest@gmail.com', '12345678A');
+
+-- INSERCIO d'un USUARI
+-- CONTRASEÑA: guest
+INSERT INTO PERSONA (nom, cognom, email, contrasenya) VALUES
+('Usuari', 'Usuari', 'us@gmail.com', '$2y$10$PBlzMcPwK5Yr5NJsAg5rQOtHY.fq3EWYPf49KAveeayKgG73TihMm');
+
+-- Insertar PRIVILEGIS
+INSERT INTO `privilegi` (`tipus`) VALUES ('Visualizar'), ('Borrar'), ('Crear'), ('Editar');
+
+
+-- Insertar CPU 
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('Intel', '4', 12.50);
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('Intel', '8', 10.00);
+INSERT INTO CPU (model, nNuclis, preu) VALUES ('AMD', '16', 12.00);
+
+-- Insertar SO 
+INSERT INTO SO (nom, preu) VALUES ('Windows', 5.00);
+INSERT INTO SO (nom, preu) VALUES ('Linux', 3.40);
