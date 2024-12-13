@@ -1,3 +1,6 @@
+<!-- @Author: Pau Toni Bibiloni Martínez -->
+<!-- @Author: Blanca Atienzar Martínez -->
+
 <?php
 require_once 'conexio.php';
 
