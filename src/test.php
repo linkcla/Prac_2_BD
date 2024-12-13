@@ -1,4 +1,6 @@
 <!-- @Author: Blanca Atienzar Martinez (HTML, CSS y funcionalidad de SaaS) -->
+<!-- @Author: Pau Toni Bibiloni Martínez -->
+
 <?php
 require_once 'conexio.php';
 
